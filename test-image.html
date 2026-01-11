@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Test</title>
+    <style>
+        body {
+            background: #1a1a1a;
+            color: white;
+            font-family: monospace;
+            padding: 20px;
+        }
+        .test-container {
+            background: #252525;
+            border: 2px solid #E8B4A0;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        img {
+            max-width: 400px;
+            display: block;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>iPhone Image Test</h1>
+
+    <div class="test-container">
+        <h2>Test 1: Direct Image Tag</h2>
+        <img src="assets/images/iphone-2007.jpg" alt="Apple iPhone 2007" />
+        <p>If you see the iPhone image above, the file is loading correctly.</p>
+    </div>
+
+    <div class="test-container">
+        <h2>Test 2: Via JavaScript innerHTML</h2>
+        <div id="js-test"></div>
+        <script>
+            document.getElementById('js-test').innerHTML = '<img src="assets/images/iphone-2007.jpg" alt="Apple iPhone 2007" />';
+        </script>
+        <p>If you see the iPhone image above, innerHTML parsing works correctly.</p>
+    </div>
+
+    <div class="test-container">
+        <h2>Test 3: Check data.js Loading</h2>
+        <div id="data-test">Loading...</div>
+        <script src="js/data.js"></script>
+        <script>
+            const testDiv = document.getElementById('data-test');
+            if (typeof scenarioData !== 'undefined' && scenarioData.artifacts && scenarioData.artifacts['iphone-2g']) {
+                const artifact = scenarioData.artifacts['iphone-2g'];
+                testDiv.innerHTML = `
+                    <p><strong>model3D property:</strong><br><code>${artifact.model3D}</code></p>
+                    <p><strong>Rendered:</strong></p>
+                    ${artifact.model3D}
+                `;
+            } else {
+                testDiv.innerHTML = '<p style="color: red;">ERROR: scenarioData not loaded</p>';
+            }
+        </script>
+    </div>
+</body>
+</html>
