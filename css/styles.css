@@ -435,6 +435,28 @@ a:hover {
     background: rgba(232, 180, 160, 0.1);
 }
 
+.decision-option.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--bg-primary);
+}
+
+.decision-option.disabled:hover {
+    border-color: var(--border-default);
+    box-shadow: none;
+}
+
+.decision-option-disabled-reason {
+    background: rgba(255, 200, 100, 0.15);
+    border: 1px solid rgba(255, 200, 100, 0.3);
+    border-radius: 4px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--text-tertiary);
+    margin-bottom: var(--spacing-sm);
+}
+
 .decision-option-title {
     font-family: var(--font-heading);
     font-size: 1.25rem;
@@ -1857,7 +1879,7 @@ a:hover {
     height: 100%;
     background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
     width: 0%;
-    animation: progressBar 5s linear forwards;
+    animation: progressBar 3s linear forwards;
 }
 
 @keyframes progressBar {
@@ -2090,4 +2112,208 @@ a:hover {
 
 .mb-xl {
     margin-bottom: var(--spacing-xl);
+}
+
+/* ━━━━━━━━━━ ENDING SCREEN - THE SUSTAINABLE THIRD ━━━━━━━━━━ */
+
+.ending-screen {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+}
+
+.ending-subtitle {
+    text-align: center;
+}
+
+.ending-comparison {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--spacing-xl);
+    margin: var(--spacing-xl) 0;
+    padding: var(--spacing-xl);
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    border: 1px solid rgba(232, 180, 160, 0.2);
+}
+
+.comparison-section {
+    padding: var(--spacing-lg);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+}
+
+.comparison-section h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.comparison-stats {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid rgba(232, 180, 160, 0.1);
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.stat-value.positive {
+    color: var(--accent-primary);
+}
+
+.stat-value.negative {
+    color: #ff6b6b;
+}
+
+.comparison-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+    padding: 0 var(--spacing-md);
+}
+
+.savings-banner {
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: linear-gradient(135deg, rgba(232, 180, 160, 0.1) 0%, rgba(232, 180, 160, 0.05) 100%);
+    border: 2px solid var(--accent-primary);
+    border-radius: 8px;
+    margin: var(--spacing-xl) 0;
+}
+
+.key-decisions-section, .lessons-section {
+    margin: var(--spacing-xl) 0;
+    padding: var(--spacing-xl);
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    border: 1px solid rgba(232, 180, 160, 0.2);
+}
+
+.key-decisions-section h3, .lessons-section h3 {
+    font-size: 1.2rem;
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.decision-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing-md) 0 0 0;
+}
+
+.decision-list li {
+    padding: var(--spacing-sm) 0;
+    padding-left: var(--spacing-md);
+    margin: var(--spacing-sm) 0;
+    border-left: 2px solid var(--accent-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+}
+
+.lesson-item {
+    padding: var(--spacing-lg);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    border: 1px solid rgba(232, 180, 160, 0.1);
+}
+
+.lesson-item strong {
+    display: block;
+    color: var(--accent-primary);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1rem;
+}
+
+.lesson-item p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.achievement-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
+    margin: var(--spacing-xl) 0;
+    background: linear-gradient(135deg, rgba(232, 180, 160, 0.15) 0%, rgba(232, 180, 160, 0.05) 100%);
+    border: 2px solid var(--accent-primary);
+    border-radius: 8px;
+}
+
+.badge-icon {
+    font-size: 3rem;
+}
+
+.badge-text h3 {
+    color: var(--accent-primary);
+    font-size: 1.2rem;
+    margin: 0 0 var(--spacing-xs) 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.badge-text p {
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Responsive adjustments for ending screen */
+@media (max-width: 768px) {
+    .ending-comparison {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .comparison-divider {
+        padding: var(--spacing-md) 0;
+    }
+
+    .lesson-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .savings-banner h2 {
+        font-size: 1.5rem !important;
+    }
+
+    .ending-screen {
+        padding: var(--spacing-md);
+    }
 }

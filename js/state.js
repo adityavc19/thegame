@@ -132,6 +132,11 @@ class GameState {
 
         if (this.currentDecisionIndex < scenarioData.decisionPoints.length) {
             this.currentScreen = "story";
+            // Update date to the new decision point's date
+            const nextDecisionPoint = this.getCurrentDecisionPoint();
+            if (nextDecisionPoint && nextDecisionPoint.date) {
+                this.metrics.date = nextDecisionPoint.date;
+            }
         } else {
             this.currentScreen = "complete";
         }
@@ -166,7 +171,7 @@ class GameState {
 
     // Get information card data
     getInfoCard(cardId) {
-        return scenarioData.informationSources[cardId];
+        return scenarioData.infoCards[cardId];
     }
 
     // Save state to localStorage

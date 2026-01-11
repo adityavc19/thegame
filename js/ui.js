@@ -73,7 +73,9 @@ const UI = {
                 <h1 class="story-title">${decisionPoint.title}</h1>
 
                 <div class="story-image">
-                    <span style="font-size: 4rem;">${decisionPoint.storyImage}</span>
+                    ${decisionPoint.storyImage.startsWith('<img')
+                        ? decisionPoint.storyImage
+                        : `<span style="font-size: 4rem;">${decisionPoint.storyImage}</span>`}
                 </div>
 
                 <div class="story-text">
@@ -92,11 +94,13 @@ const UI = {
 
         // Add event listener to continue button
         document.getElementById('start-decision-btn').addEventListener('click', () => {
-            console.log('Button clicked! Transitions object:', Transitions);
+            console.log('Button clicked! Starting transition...');
             // Show pre-decision transition before rendering decision
             Transitions.showPreDecisionTransition(() => {
+                console.log('Transition callback fired! Rendering decision point...');
                 gameState.currentScreen = "decision";
                 this.renderDecisionPoint();
+                console.log('Decision point rendered successfully');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
@@ -104,8 +108,17 @@ const UI = {
 
     // Render decision point screen
     renderDecisionPoint() {
+        console.log('renderDecisionPoint called');
         const decisionPoint = gameState.getCurrentDecisionPoint();
+        console.log('Decision point:', decisionPoint);
+
+        if (!decisionPoint) {
+            console.error('No decision point found!');
+            return;
+        }
+
         const mainContent = document.getElementById('main-content');
+        console.log('Main content element:', mainContent);
 
         mainContent.innerHTML = `
             <div class="decision-point">
@@ -176,6 +189,10 @@ const UI = {
         // Add event listeners to decision options
         document.querySelectorAll('.decision-option').forEach(option => {
             option.addEventListener('click', () => {
+                // Don't allow selecting disabled options
+                if (option.dataset.disabled === 'true') {
+                    return;
+                }
                 const optionId = option.dataset.optionId;
                 this.selectDecisionOption(optionId);
             });
@@ -219,10 +236,12 @@ const UI = {
     // Render decision option
     renderDecisionOption(option) {
         const isSelected = gameState.selectedOption === option.id;
+        const isDisabled = option.disabled === true;
         return `
-            <div class="decision-option ${isSelected ? 'selected' : ''}" data-option-id="${option.id}">
+            <div class="decision-option ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" data-option-id="${option.id}" ${isDisabled ? 'data-disabled="true"' : ''}>
                 <div class="decision-option-title">${option.title}</div>
                 ${option.cost ? `<div class="decision-option-cost">${option.cost}</div>` : ''}
+                ${isDisabled ? `<div class="decision-option-disabled-reason">${option.disabledReason || 'Not available'}</div>` : ''}
                 <div class="decision-option-description">${option.description}</div>
                 <div class="decision-option-details">
                     <div class="decision-detail">
@@ -394,39 +413,115 @@ const UI = {
         const metrics = gameState.getFormattedMetrics();
 
         mainContent.innerHTML = `
-            <div class="consequence-reveal">
-                <h1 class="section-header" style="font-size: 1.5rem; margin: 40px 0;">
-                    SCENARIO ANALYSIS COMPLETE
+            <div class="consequence-reveal ending-screen">
+                <h1 class="section-header" style="font-size: 1.8rem; margin: 40px 0; color: var(--accent-primary);">
+                    THE SUSTAINABLE THIRD
                 </h1>
 
-                <div class="impact-section">
-                    <h3>Your Final Position</h3>
-                    <div class="impact-item">
-                        <span>Stock Price:</span>
-                        <span class="impact-change">${metrics.stock}</span>
+                <div class="ending-subtitle">
+                    <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 40px;">
+                        You found the narrow path to Windows Phone survival
+                    </p>
+                </div>
+
+                <div class="ending-comparison">
+                    <div class="comparison-section your-path">
+                        <h3 style="color: var(--accent-primary); margin-bottom: 20px;">YOUR PATH (2007-2024)</h3>
+                        <div class="comparison-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Investment:</span>
+                                <span class="stat-value">$2.0B</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Market Share:</span>
+                                <span class="stat-value">12% (stable)</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Final Outcome:</span>
+                                <span class="stat-value positive">+$400M profit ✓</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Active Users:</span>
+                                <span class="stat-value">180M worldwide</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="impact-item">
-                        <span>Cash Position:</span>
-                        <span class="impact-change">${metrics.cash}</span>
-                    </div>
-                    <div class="impact-item">
-                        <span>Market Share:</span>
-                        <span class="impact-change">${metrics.marketShare}</span>
-                    </div>
-                    <div class="impact-item">
-                        <span>Morale:</span>
-                        <span class="impact-change">${metrics.moraleText}</span>
+
+                    <div class="comparison-divider">VS</div>
+
+                    <div class="comparison-section actual-history">
+                        <h3 style="color: #ff6b6b; margin-bottom: 20px;">ACTUAL MICROSOFT (2007-2017)</h3>
+                        <div class="comparison-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Investment:</span>
+                                <span class="stat-value">$18.7B</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Market Share:</span>
+                                <span class="stat-value">0.1% (exited)</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Final Outcome:</span>
+                                <span class="stat-value negative">-$13.7B loss ✗</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Status:</span>
+                                <span class="stat-value">Discontinued 2017</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="consequence-narrative">
-                    <p>You've completed this segment of the Microsoft-Nokia mobile strategy scenario. Your decisions have shaped the company's trajectory in the critical early response to the iPhone.</p>
-
-                    <p>In the full experience, you would continue through 2010-2015, facing decisions about the Nokia partnership, Windows Phone 7 launch, and eventual mobile exit strategy.</p>
+                <div class="savings-banner">
+                    <h2 style="font-size: 2rem; color: var(--accent-primary); margin: 0;">
+                        YOU SAVED $14.1 BILLION
+                    </h2>
                 </div>
 
-                <button class="continue-btn" id="restart-btn">
-                    Try Different Approach →
+                <div class="key-decisions-section">
+                    <h3 style="margin-bottom: 20px;">KEY DECISIONS</h3>
+                    <ul class="decision-list">
+                        <li>✓ <strong>Waited 18 months</strong> instead of rushing (avoided $500M mistakes, identified real threat)</li>
+                        <li>✓ <strong>Made OS free</strong> to compete with Android (kept OEMs, preserved market share)</li>
+                        <li>✓ <strong>Built WP7 12 months faster</strong> (launched at 21% share, not 7%)</li>
+                        <li>✓ <strong>Let apps grow organically</strong> at 21% share (avoided $500M fund waste)</li>
+                        <li>✓ <strong>Defended 18%</strong> instead of chasing #2 (avoided $7.2B Nokia disaster)</li>
+                        <li>✓ <strong>Maintained profitable niche</strong> (didn't exit, served 180M users profitably)</li>
+                    </ul>
+                </div>
+
+                <div class="lessons-section">
+                    <h3 style="margin-bottom: 20px;">LESSONS LEARNED</h3>
+                    <div class="lesson-grid">
+                        <div class="lesson-item">
+                            <strong>Being #3 is okay if you're profitable</strong>
+                            <p>Mac survived at 7% for 30+ years. 12-15% is above viability threshold.</p>
+                        </div>
+                        <div class="lesson-item">
+                            <strong>Sustainability > Growth at any cost</strong>
+                            <p>Small profitable business beats expensive failure. Focus matters.</p>
+                        </div>
+                        <div class="lesson-item">
+                            <strong>Platform wars aren't winner-take-all</strong>
+                            <p>Third platforms can survive with the right positioning and economics.</p>
+                        </div>
+                        <div class="lesson-item">
+                            <strong>Timing determines market share</strong>
+                            <p>Launching WP7 at 21% vs 7% made the difference between viable and desperate.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="achievement-badge">
+                    <div class="badge-icon">🏆</div>
+                    <div class="badge-text">
+                        <h3>ACHIEVEMENT UNLOCKED</h3>
+                        <p>"The Sustainable Third"</p>
+                    </div>
+                </div>
+
+                <button class="continue-btn" id="restart-btn" style="margin-top: 40px;">
+                    Try Different Path →
                 </button>
             </div>
         `;

@@ -61,10 +61,18 @@ const Transitions = {
             </div>
         `;
 
-        // Trigger callback after 5 seconds
+        // Trigger callback after 3 seconds (reduced for better UX)
         setTimeout(() => {
-            callback();
-        }, 5000);
+            try {
+                callback();
+            } catch (error) {
+                console.error('Transition callback error:', error);
+                // Fallback: try to proceed anyway
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            }
+        }, 3000);
     },
 
     // Get context-aware transition messages based on decision point
@@ -90,12 +98,48 @@ const Transitions = {
                 ];
                 break;
 
-            case "d2-android-response":
-                messages.mainLabel = "Q4 2007 ending...";
+            case "d2-android-threat":
+                messages.mainLabel = "Q3 2009 concluding...";
                 messages.indicators = [
-                    { label: "iPhone Market Share", oldValue: "2%", newValue: "8%" },
-                    { label: "Android Announcements", oldValue: "SDK Beta", newValue: "30+ OEMs Interested" },
-                    { label: "WinMobile Developer Activity", oldValue: "Declining", newValue: "Accelerating Decline" }
+                    { label: "Your Market Share", oldValue: "37%", newValue: "32%" },
+                    { label: "Android Growth", oldValue: "2.5%", newValue: "8%" },
+                    { label: "OEM Commitment", oldValue: "Weakening", newValue: "Critical Decision Point" }
+                ];
+                break;
+
+            case "d3-platform-rebuild":
+                messages.mainLabel = "Q4 2009 concluding...";
+                messages.indicators = [
+                    { label: "Your Market Share", oldValue: "32%", newValue: "29%" },
+                    { label: "Platform Status", oldValue: "WinMobile 6.5", newValue: "Planning WP7" },
+                    { label: "Competition", oldValue: "Android 24%, iOS 16%", newValue: "Growing Fast" }
+                ];
+                break;
+
+            case "d4-app-ecosystem":
+                messages.mainLabel = "Q4 2010 concluding...";
+                messages.indicators = [
+                    { label: "Windows Phone 7 Launch", oldValue: "In Development", newValue: "Live - 18K Apps" },
+                    { label: "Your Market Share", oldValue: "29%", newValue: "21%" },
+                    { label: "App Gap vs iOS", oldValue: "200K apps", newValue: "425K apps" }
+                ];
+                break;
+
+            case "d5-sustainability":
+                messages.mainLabel = "Q4 2012 concluding...";
+                messages.indicators = [
+                    { label: "Your Market Share", oldValue: "21%", newValue: "18%" },
+                    { label: "App Ecosystem", oldValue: "18K apps", newValue: "62K apps" },
+                    { label: "Financial Status", oldValue: "-$1.1B invested", newValue: "Path to Profit Visible" }
+                ];
+                break;
+
+            case "d6-long-term":
+                messages.mainLabel = "2013-2016 concluding...";
+                messages.indicators = [
+                    { label: "Your Market Share", oldValue: "18%", newValue: "15%" },
+                    { label: "Profitability", oldValue: "-$150M loss (2013)", newValue: "+$240M profit (2016)" },
+                    { label: "CEO Transition", oldValue: "Steve Ballmer", newValue: "Satya Nadella" }
                 ];
                 break;
 
