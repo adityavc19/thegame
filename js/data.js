@@ -368,8 +368,36 @@ You could rush a response, but that might lead to expensive mistakes. Or wait, w
                     risk: "Expensive mistakes. Rushed product. Poor quality. Could waste $500M+.",
                     upside: "Quick market response. Show urgency. May capture early touch-phone market.",
                     cost: "$500M",
-                    disabled: true,
-                    disabledReason: "Path not implemented in this playthrough"
+                    consequences: {
+                        immediate: {
+                            cash: -0.5,
+                            stock: -0.8,
+                            marketShare: 0,
+                            morale: "urgent",
+                            unlockedArtifacts: ["iphone-2g"],
+                            narrative: `Emergency board meeting. You commit $500M to immediate consumer platform response. "We cannot let Apple define the future of mobile."
+
+Engineering protests timeline is unrealistic. "Touch-first OS needs 18-24 months minimum. Rushing means compromises." Management overrules: "Ship SOMETHING by Q4 2007 or we lose the market."
+
+Teams pulled from Windows Mobile 7 roadmap. Panic hiring of UI designers. Ballmer declares: "Microsoft will not be left behind in consumer mobile revolution."
+
+Wall Street applauds urgency. Stock drops slightly on $500M commitment but analysts praise "aggressive response to iPhone threat."`
+                        },
+                        delayed: {
+                            date: "Q4 2008",
+                            cash: -0.3,
+                            stock: -2.5,
+                            marketShare: -5,
+                            morale: "frustrated",
+                            narrative: `The rushed platform misses Q4 2007 deadline. Then Q1 2008. Finally ships Q4 2008 as "Windows Mobile 7 Touch Edition"—18 months late, inferior to iPhone.
+
+Reviews brutal: "Feels rushed. Touch interface inconsistent. Still requires stylus for many functions. Battery life poor." Engadget: "Microsoft's iPhone response looks two years old on arrival."
+
+Market share dropped 42% → 37% during development. Product can't recover lost ground. Meanwhile, Android announced (free OS) and growing fast.
+
+The $500M bought you a mediocre product, damaged reputation, and 18 months of chaos. Engineering team demoralized: "We told them it was impossible."`
+                        }
+                    }
                 },
                 {
                     id: "wait-and-watch",
@@ -458,8 +486,36 @@ Match Android's free model and sacrifice revenue now? Or maintain licensing and 
                     risk: "OEMs defect to Android. Lose market share rapidly. Death spiral.",
                     upside: "Maintain revenue short-term. No shareholder panic. Traditional business model.",
                     cost: null,
-                    disabled: true,
-                    disabledReason: "Path not implemented in this playthrough"
+                    consequences: {
+                        immediate: {
+                            cash: 0,
+                            stock: +0.5,
+                            marketShare: 0,
+                            morale: "defensive",
+                            unlockedArtifacts: ["htc-hero-android"],
+                            narrative: `Microsoft announces continuation of licensing model. "$15 licensing reflects Windows Mobile value." CFO celebrates protecting $1.2B revenue stream.
+
+Wall Street initially positive—revenue maintained. Stock rises 2% on "disciplined approach." Analysts: "Microsoft choosing profitability over market share race."
+
+But OEMs react poorly. HTC executive (off-record): "Android is free. We can't compete paying Microsoft $15/device." Samsung, Motorola, LG prioritize Android development.
+
+Within weeks, OEM commitment to Windows Mobile weakens. Development resources shift to Android. Your platform future depends on reversing this trend—but how?`
+                        },
+                        delayed: {
+                            date: "Q4 2009",
+                            cash: -0.1,
+                            stock: -3.5,
+                            marketShare: -12,
+                            morale: "alarmed",
+                            narrative: `Catastrophic market share collapse. You drop from 32% to 20% in 9 months—fastest decline in smartphone history.
+
+HTC, Samsung, LG all announce "Android-first" strategies. Windows Mobile becomes second priority. Carriers shift shelf space to Android. Verizon's "Droid" campaign directly attacks iPhone—Windows Mobile not even mentioned.
+
+Revenue reality hits: $1.2B licensing revenue drops to $700M as unit volumes collapse. You protected the business model but lost the business.
+
+Board emergency meeting. "We chose short-term revenue over long-term survival." The licensing model must end—but damage to OEM relationships may be permanent.`
+                        }
+                    }
                 },
                 {
                     id: "make-os-free",
@@ -596,8 +652,36 @@ At 21% share, Windows Phone has critical mass. Developers will support platform.
                     risk: "Nokia's Symbian failing. Cultural clash. Divided control. Delayed timeline.",
                     upside: "Share $500M cost. Nokia's hardware expertise. Combined market share.",
                     cost: "$250M + partnership",
-                    disabled: true,
-                    disabledReason: "Path not implemented in this playthrough"
+                    consequences: {
+                        immediate: {
+                            cash: -0.25,
+                            stock: +1.5,
+                            marketShare: 0,
+                            morale: "hopeful",
+                            unlockedArtifacts: [],
+                            narrative: `Microsoft and Nokia announce strategic partnership. Nokia abandons Symbian, goes "all-in" on Windows Phone. Wall Street euphoric—combined share could reach 35-40%.
+
+Stephen Elop (former Microsoft exec) becomes Nokia CEO February 2011. His "Burning Platform" memo leaked: "We are standing on a burning platform... we must change our behavior."
+
+Partnership terms emerging: Microsoft pays Nokia $1B+ annually for exclusivity. Nokia gets Windows Phone for free plus development support. Joint engineering—Metro UI meets Nokia hardware excellence.
+
+Press celebrates: "The alliance that could challenge iOS and Android." Stock jumps 5% on potential scale. Board believes Nokia's 29% + your 20% = game changer.`
+                        },
+                        delayed: {
+                            date: "Q4 2011",
+                            cash: -1.2,
+                            stock: -2.8,
+                            marketShare: -13,
+                            morale: "stressed",
+                            narrative: `Windows Phone 7 delayed to Q4 2011—20 months instead of 12. Nokia joint development created coordination hell. Two engineering cultures, conflicting priorities, integration nightmares.
+
+Market share catastrophe: You dropped from 20% to 7% during extended delay. Nokia fell from 29% to 15% during transition from Symbian. Combined: 22%, not the promised 40-50%.
+
+First Nokia Windows Phones (Lumia 800/710) launch November 2011 to muted reception. "Beautiful but late." App gap massive: iOS 500K apps, Android 400K, Windows Phone 18K.
+
+Partnership cost: $1.2B/year to Nokia ($250M development + $1B+ partnership payments). Nokia now Microsoft's only major OEM—HTC, Samsung reduced commitment. "Too much control by Nokia."`
+                        }
+                    }
                 },
                 {
                     id: "license-android",
@@ -638,8 +722,36 @@ Pay developers directly ($500M fund)? Let organic growth work? Or accept being #
                     risk: "$500M spent. Creates dependency. Apps may be low quality ports just for money.",
                     upside: "Close app gap fast. All major apps within 12 months. Show urgency.",
                     cost: "$500M",
-                    disabled: true,
-                    disabledReason: "Path not implemented in this playthrough"
+                    consequences: {
+                        immediate: {
+                            cash: -0.5,
+                            stock: -1.2,
+                            marketShare: 0,
+                            morale: "desperate",
+                            unlockedArtifacts: [],
+                            narrative: `Microsoft announces $500M developer fund. Paying top 500 app developers $50K-$5M each to build Windows Phone versions. "Whatever it takes to close the app gap."
+
+Developer community split. Some welcome money ("Finally Microsoft gets serious"). Others cynical: "Paying for ports nobody wants. Apps built for money, not users."
+
+Wall Street concerned: "$500M is admission that organic ecosystem growth failed. Are you buying users or building platform?"
+
+Internally, engineering worried: "We're creating dependency. What happens when money stops?" But board demands action: "7% share with 18K apps. Android has 400K. We must close gap NOW."`
+                        },
+                        delayed: {
+                            date: "Q4 2012",
+                            cash: -0.3,
+                            stock: -2.5,
+                            marketShare: -2,
+                            morale: "disillusioned",
+                            narrative: `18 months later: Apps grew from 18K to 95K. But quality problematic—many are lazy iOS ports with broken UI, missing features, no updates.
+
+Market share: 7% → 5%. Apps didn't save you. Users complain: "Instagram took 18 months and still missing features." Developers took money but prioritized iOS/Android updates.
+
+The $500M bought quantity, not quality. Worse: Created resentment. "Microsoft has to PAY developers to build for their platform." Press narrative shifted from "Windows Phone viable" to "Windows Phone desperate."
+
+Total spending so far: $2.5B+ (rushed development $500M, Nokia partnership $1.2B/year x 2 years, developer fund $500M). Share at 5%. Board alarmed.`
+                        }
+                    }
                 },
                 {
                     id: "organic-growth",
@@ -776,8 +888,41 @@ The sustainable third platform is real. 15% share, profitable, serving 180M user
                     risk: "$3B spent. May fail like actual history. Could end in -$13.7B total loss.",
                     upside: "If successful, 25%+ share. Strong #2. Long-term dominance. Beat iOS.",
                     cost: "$3B",
-                    disabled: true,
-                    disabledReason: "Path not implemented in this playthrough"
+                    consequences: {
+                        immediate: {
+                            cash: -1.0,
+                            stock: -3.5,
+                            marketShare: 0,
+                            morale: "all-in",
+                            unlockedArtifacts: [],
+                            narrative: `Microsoft doubles down. $3B investment to "win mobile." Ballmer's final push before retirement: "We will be #2 platform or we will have spent everything trying."
+
+Strategy: Acquire Nokia's device business ($7.2B), increase developer payments ($1B more), massive marketing ($800M/year), carrier incentives ($400M). "Whatever it takes."
+
+Wall Street divided. Bulls: "Finally showing conviction." Bears: "Throwing good money after bad. Already spent $5B at 5% share. Now $3B more?"
+
+Board approves narrowly. One director resigns: "This is sunk cost fallacy. We're defending past investments, not making rational new ones." CFO warns: "If this fails, total loss exceeds $15B."`
+                        },
+                        delayed: {
+                            date: "Q4 2016",
+                            cash: -5.2,
+                            stock: -8.5,
+                            marketShare: -2,
+                            morale: "defeated",
+                            narrative: `Four years later: The $3B bet failed catastrophically.
+
+Nokia acquisition (2014): $7.2B paid. Writedown (2015): $7.6B. Destroyed value. Nokia employees laid off. Integration disaster. HTC/Samsung completely abandoned Windows Phone after Nokia acquisition.
+
+Market share: 5% → 3% (2013-2016). Apps peaked at 340K then declined as developers left. Snapchat never came. Google actively blocked apps.
+
+Final accounting (2007-2016):
+• Total spent: $15.2B+ (development $2B, Nokia partnership $6B, acquisition $7.2B+)
+• Revenue: ~$1.5B
+• NET LOSS: -$13.7B ❌
+
+July 2017: Satya Nadella announces Windows Phone discontinuation. "We will no longer develop new features or hardware." The $15B bet on mobile is over.`
+                        }
+                    }
                 },
                 {
                     id: "niche-focus",
@@ -894,8 +1039,48 @@ THE SUSTAINABLE THIRD PATH: +$400M profit vs actual history's -$13.7B loss. Save
                     risk: "Abandon 180M users. Lose mobile platform. No hardware presence.",
                     upside: "Free up $300M/year for Azure. Full focus on cloud. Clear exit.",
                     cost: "$0",
-                    disabled: true,
-                    disabledReason: "Path not implemented in this playthrough"
+                    consequences: {
+                        immediate: {
+                            cash: +0.2,
+                            stock: +2.5,
+                            marketShare: 0,
+                            morale: "resigned",
+                            unlockedArtifacts: [],
+                            narrative: `July 2017: Satya Nadella announces Windows Phone discontinuation. "We will continue to support existing users but will no longer develop new features or hardware."
+
+Wall Street celebrates. Stock jumps 8%. "Finally, Microsoft exits money-losing mobile distraction to focus on cloud growth." Analysts: "Cutting losses. Smart capital allocation."
+
+Internally, Windows Phone team devastated. 10 years of work ended. Thousands laid off. But Azure team celebrates—resources shift to cloud. "Mobile first meant mobile SERVICES (Office, OneDrive on iOS/Android), not Windows Phone."
+
+Users abandoned. 3% market share means app support already dying. Within 18 months, major apps (banking, Uber, Instagram) stop updates. Platform becomes zombie—technically alive but effectively dead.
+
+The $15.2B mobile adventure ends. Lesson learned: Know when to exit.`
+                        },
+                        delayed: {
+                            date: "2024",
+                            cash: +2.0,
+                            stock: +25.0,
+                            marketShare: -3,
+                            morale: "focused",
+                            narrative: `Seven years later (2017-2024): Windows Phone is history. The "what if" platform.
+
+Final tally (2007-2017):
+• Investment: $15.2B
+• Revenue: $1.5B
+• NET LOSS: -$13.7B ❌
+
+But Microsoft thrived without mobile:
+• Market cap: $500B (2017) → $3.2T (2024)
+• Azure: $60B annual revenue, #2 cloud provider
+• Office 365: 400M subscribers, $50B revenue
+• Gaming: Xbox + Activision, $20B revenue
+• AI: ChatGPT partnership, Copilot everywhere
+
+Windows Phone's $300M/year budget went to Azure/AI instead. That investment returned 50X more value.
+
+Lesson learned: Sometimes the right decision is EXIT. Microsoft's mobile failure taught it to focus on cloud success. The $13.7B loss was expensive tuition.`
+                        }
+                    }
                 },
                 {
                     id: "open-source",

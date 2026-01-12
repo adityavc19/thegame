@@ -314,6 +314,14 @@ const UI = {
 
     // Render consequence screen
     renderConsequence(option) {
+        // Safety check: ensure option has consequences
+        if (!option || !option.consequences || !option.consequences.immediate) {
+            console.error('Cannot render consequence: option missing consequences', option);
+            gameState.reset();
+            this.renderStoryPoint();
+            return;
+        }
+
         const consequences = option.consequences.immediate;
         const mainContent = document.getElementById('main-content');
 
@@ -609,6 +617,12 @@ const UI = {
             const decisionPoint = gameState.getCurrentDecisionPoint();
             const lastDecision = gameState.decisions[gameState.decisions.length - 1];
             const option = decisionPoint.options.find(opt => opt.id === lastDecision.optionId);
+            // If option doesn't have consequences (e.g., disabled option), reset to story
+            if (!option || !option.consequences) {
+                gameState.reset();
+                this.renderStoryPoint();
+                return;
+            }
             this.renderConsequence(option);
         } else if (gameState.currentScreen === "complete") {
             this.renderComplete();

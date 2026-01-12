@@ -19,6 +19,7 @@ const ArtifactUI = {
 
         artifactGrid.innerHTML = gameState.unlockedArtifacts.map(artifactId => {
             const artifact = gameState.getArtifact(artifactId);
+            if (!artifact) return ''; // Skip if artifact doesn't exist
             return this.renderArtifactCard(artifact);
         }).join('');
 
@@ -45,6 +46,7 @@ const ArtifactUI = {
     // Open artifact viewer modal with forensic museum UI
     openArtifactViewer(artifactId) {
         const artifact = gameState.getArtifact(artifactId);
+        if (!artifact) return; // Skip if artifact doesn't exist
         const modal = document.getElementById('artifact-modal');
         const viewer = document.getElementById('artifact-viewer');
 

@@ -155,7 +155,22 @@ class GameState {
             'stressed': '🟡',
             'hopeful': '🟢',
             'uncertain': '🟡',
-            'shocked': '🔴'
+            'shocked': '🔴',
+            'urgent': '🟡',
+            'cautious': '🟢',
+            'defensive': '🟡',
+            'alarmed': '🔴',
+            'cautiously optimistic': '🟢',
+            'excited': '🟢',
+            'desperate': '🔴',
+            'disillusioned': '🔴',
+            'satisfied': '🟢',
+            'relieved': '🟢',
+            'all-in': '🟡',
+            'defeated': '🔴',
+            'focused': '🟢',
+            'proud': '🟢',
+            'resigned': '🟡'
         };
 
         return {
