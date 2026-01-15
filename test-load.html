@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Script Load Test</title>
+</head>
+<body>
+    <h1>Testing Script Load</h1>
+    <div id="output"></div>
+    
+    <script>
+        window.onerror = function(msg, url, line, col, error) {
+            document.getElementById('output').innerHTML += `<p style="color: red;">ERROR: ${msg}<br>File: ${url}<br>Line: ${line}</p>`;
+            return false;
+        };
+        
+        console.log('Starting script load test...');
+    </script>
+    
+    <script src="js/data.js"></script>
+    <script>
+        console.log('data.js loaded');
+        document.getElementById('output').innerHTML += '<p style="color: green;">✓ data.js loaded</p>';
+        console.log('gameData:', typeof gameData !== 'undefined' ? 'defined' : 'undefined');
+    </script>
+    
+    <script src="js/state.js"></script>
+    <script>
+        console.log('state.js loaded');
+        document.getElementById('output').innerHTML += '<p style="color: green;">✓ state.js loaded</p>';
+        console.log('gameState:', typeof gameState !== 'undefined' ? 'defined' : 'undefined');
+    </script>
+    
+    <script src="js/artifacts.js"></script>
+    <script>
+        console.log('artifacts.js loaded');
+        document.getElementById('output').innerHTML += '<p style="color: green;">✓ artifacts.js loaded</p>';
+    </script>
+    
+    <script src="js/transitions.js"></script>
+    <script>
+        console.log('transitions.js loaded');
+        document.getElementById('output').innerHTML += '<p style="color: green;">✓ transitions.js loaded</p>';
+    </script>
+    
+    <script src="js/ui.js"></script>
+    <script>
+        console.log('ui.js loaded');
+        document.getElementById('output').innerHTML += '<p style="color: green;">✓ ui.js loaded</p>';
+    </script>
+    
+    <script src="js/app.js"></script>
+    <script>
+        console.log('app.js loaded');
+        document.getElementById('output').innerHTML += '<p style="color: green;">✓ app.js loaded</p>';
+        document.getElementById('output').innerHTML += '<p><strong>All scripts loaded successfully!</strong></p>';
+    </script>
+</body>
+</html>

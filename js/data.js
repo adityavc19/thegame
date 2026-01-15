@@ -20,6 +20,36 @@ const scenarioData = {
 
     // Artifacts - Success Path Phones
     artifacts: {
+        "microsoft-zune": {
+            id: "microsoft-zune",
+            name: "Microsoft Zune 30 (2006)",
+            category: "Device",
+            rarity: "Rare",
+            unlockedBy: "Learning from past consumer failures",
+            caseNumber: "000",
+            forensicTitle: "The Brown Lesson - Microsoft's Consumer Strategy",
+            status: "MARKET FAILURE",
+            casualties: "Consumer Credibility",
+            description: "Microsoft's attempt to compete with iPod. The 'brown Zune' became a symbol of misunderstanding consumer markets.",
+            model3D: '<iframe src="artifacts/zune.html" style="width: 100%; height: 100%; border: none;" allow="accelerometer; gyroscope"></iframe>',
+            timelineProgress: 15,
+            timelineMarkers: [
+                { label: "Launch", value: "Nov 2006" },
+                { label: "Peak Share", value: "9% (2008)" },
+                { label: "Discontinued", value: "2011" }
+            ],
+            hotspots: [],
+            failureTags: ["Poor Marketing", "Late to Market", "Ecosystem Fail"],
+            stats: {
+                "Launch Date": "November 14, 2006",
+                "Launch Price": "$249",
+                "Peak Market Share": "~9% (2008)",
+                "Total Sales": "~2 million units",
+                "Discontinued": "2011"
+            },
+            story: "The Zune had good hardware and innovative features like WiFi sharing ('squirting'). But it launched 5 years after iPod dominated. Microsoft learned: entering consumer markets late against entrenched leaders is brutal. This lesson shaped their iPhone response strategy in 2007."
+        },
+
         "iphone-2g": {
             id: "iphone-2g",
             name: "Apple iPhone (2007)",
@@ -239,6 +269,7 @@ const scenarioData = {
                 <p>Steve Jobs unveiled iPhone: Multi-touch interface, $499-599 pricing.</p>
                 <p><strong>Current Market:</strong> Windows Mobile 42%, BlackBerry 20%, Symbian 18%</p>
                 <p><strong>Immediate Risk:</strong> LOW ($500+ limits mass market)</p>
+                <p><strong>Past Lesson:</strong> Remember how <span class="artifact-link" data-artifact-id="microsoft-zune">Microsoft Zune</span> fared against the iPod—launching late against an entrenched leader is brutal.</p>
                 <p><strong>Long-term Risk:</strong> MEDIUM-HIGH (if touch becomes standard)</p>`,
             conflicts: []
         },
@@ -885,7 +916,7 @@ The sustainable third platform is real. 15% share, profitable, serving 180M user
                     id: "push-for-2",
                     title: "Push for #2",
                     description: "Try to overtake iOS (20% share). Massive $3B investment for growth.",
-                    risk: "$3B spent. May fail like actual history. Could end in -$13.7B total loss.",
+                    risk: "$3B spent. Could end in -$13.7B total loss.",
                     upside: "If successful, 25%+ share. Strong #2. Long-term dominance. Beat iOS.",
                     cost: "$3B",
                     consequences: {

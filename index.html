@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aurora Labs - Interactive Business Intelligence</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=1768466913">
 </head>
 <body>
     <!-- Metrics Bar -->
@@ -14,14 +14,6 @@
             <span class="metric-value" id="date-metric">JAN 2007</span>
         </div>
         <div class="metric-detail">
-            <span class="metric-label">CEO</span>
-            <span class="metric-value" id="ceo-metric">Steve Ballmer</span>
-        </div>
-        <div class="metric-detail">
-            <span class="metric-label">CASH POSITION</span>
-            <span class="metric-value" id="cash-metric">$32.0B</span>
-        </div>
-        <div class="metric-detail">
             <span class="metric-label">STOCK PRICE</span>
             <span class="metric-value" id="stock-metric">$29.80</span>
         </div>
@@ -29,10 +21,14 @@
             <span class="metric-label">MARKET SHARE</span>
             <span class="metric-value" id="share-metric">42%</span>
         </div>
-        <div class="metric-detail">
-            <span class="metric-label">MORALE</span>
-            <span class="metric-value" id="morale-metric">🟢 Neutral</span>
-        </div>
+
+        <!-- Profile Icon -->
+        <button id="profile-icon-btn" class="profile-icon-btn" aria-label="View Profile">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+                <path d="M5 20c0-4 3-7 7-7s7 3 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
     </div>
 
     <!-- Main Content Container -->
@@ -96,11 +92,24 @@
         </div>
     </div>
 
-    <script src="js/data.js?v=1768150273"></script>
-    <script src="js/state.js?v=1768150273"></script>
-    <script src="js/artifacts.js?v=1768150273"></script>
-    <script src="js/transitions.js?v=1768150273"></script>
-    <script src="js/ui.js?v=1768150273"></script>
-    <script src="js/app.js?v=1768150273"></script>
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal profile-modal hidden">
+        <div class="profile-modal-content">
+            <div class="profile-modal-header">
+                <h2>Leadership Profile</h2>
+                <button class="modal-close" id="profile-modal-close">✕</button>
+            </div>
+            <div class="profile-modal-body" id="profile-modal-body">
+                <!-- Profile content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js?v=1768466913"></script>
+    <script src="js/state.js?v=1768466913"></script>
+    <script src="js/artifacts.js?v=1768466913"></script>
+    <script src="js/transitions.js?v=1768466913"></script>
+    <script src="js/ui.js?v=1768466913"></script>
+    <script src="js/app.js?v=1768466913"></script>
 </body>
 </html>

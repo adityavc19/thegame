@@ -113,6 +113,14 @@ class GameState {
         return scenarioData.artifacts[artifactId];
     }
 
+    // Unlock a specific artifact (for manual unlocking via links)
+    unlockArtifact(artifactId) {
+        if (!this.unlockedArtifacts.includes(artifactId)) {
+            this.unlockedArtifacts.push(artifactId);
+            this.saveState();
+        }
+    }
+
     // Get metric change direction
     getMetricChange(metricName) {
         const current = this.metrics[metricName];

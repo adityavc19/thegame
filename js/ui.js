@@ -7,19 +7,15 @@ const UI = {
     updateMetricsBar(showArrows = false) {
         const metrics = gameState.getFormattedMetrics();
 
-        // Update metrics with arrows
-        this.updateMetricWithArrow('cash-metric', metrics.cash, 'cash', showArrows);
+        // Update metrics with arrows (only the ones still in the UI)
         this.updateMetricWithArrow('stock-metric', metrics.stock, 'stock', showArrows);
         this.updateMetricWithArrow('share-metric', metrics.marketShare, 'marketShare', showArrows);
 
-        // Update non-arrow metrics
+        // Update date metric (no arrow)
         document.getElementById('date-metric').textContent = metrics.date;
-        document.getElementById('ceo-metric').textContent = metrics.ceo === "S. Ballmer" ? "Steve Ballmer" : metrics.ceo;
-        document.getElementById('morale-metric').textContent = `${metrics.morale} ${metrics.moraleText}`;
 
         // Add animation class for changes
         if (showArrows) {
-            this.animateMetricChange('cash-metric');
             this.animateMetricChange('stock-metric');
             this.animateMetricChange('share-metric');
         }
@@ -84,8 +80,6 @@ const UI = {
                     ).join('')}
                 </div>
 
-                <div class="continue-hint">Scroll down to continue</div>
-
                 <button class="continue-btn" id="start-decision-btn">
                     View Decision Point →
                 </button>
@@ -132,9 +126,6 @@ const UI = {
                         return this.renderInfoCard(card);
                     }).join('')}
                 </div>
-                <p class="text-center" style="color: var(--text-tertiary); font-size: 0.875rem; margin-top: -10px;">
-                    ← → swipe to see all
-                </p>
 
                 <div class="take-action-container">
                     <button class="take-action-btn" id="take-action-btn">
@@ -170,12 +161,18 @@ const UI = {
                 <button class="modal-close-btn" id="action-modal-close">✕</button>
             </div>
             <div class="action-modal-body">
-                <input type="text" class="action-input" placeholder="Type anything, or choose a suggestion below." id="custom-action-input">
-
                 <div class="decision-options" id="decision-options">
                     ${decisionPoint.options.map(option =>
                         this.renderDecisionOption(option)
                     ).join('')}
+                </div>
+
+                <div class="custom-action-container">
+                    <div class="custom-action-label">
+                        <span>Custom Action</span>
+                        <span class="coming-soon-badge">Coming Soon</span>
+                    </div>
+                    <input type="text" class="action-input" placeholder="Type your own action..." id="custom-action-input" disabled>
                 </div>
 
                 <div class="action-modal-footer">
@@ -580,12 +577,141 @@ const UI = {
             </div>
         `;
 
+        // Set up artifact link handlers
+        const artifactLinks = modalBody.querySelectorAll('.artifact-link');
+        artifactLinks.forEach(link => {
+            const artifactId = link.getAttribute('data-artifact-id');
+
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                // Unlock the artifact if not already unlocked
+                if (!gameState.unlockedArtifacts.includes(artifactId)) {
+                    gameState.unlockArtifact(artifactId);
+
+                    // Show notification
+                    this.showArtifactUnlockNotification(artifactId);
+                }
+
+                // Close the info modal
+                this.closeModal();
+
+                // Open artifact viewer after a brief delay
+                setTimeout(() => {
+                    ArtifactUI.openArtifactViewer(artifactId);
+                }, 300);
+            });
+        });
+
         modal.classList.remove('hidden');
+    },
+
+    // Show artifact unlock notification
+    showArtifactUnlockNotification(artifactId) {
+        const artifact = gameState.getArtifact(artifactId);
+        if (!artifact) return;
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'artifact-unlock-notification';
+        notification.innerHTML = `
+            <div class="artifact-unlock-icon">🏆</div>
+            <div class="artifact-unlock-text">
+                <div class="artifact-unlock-title">Artifact Unlocked!</div>
+                <div class="artifact-unlock-name">${artifact.name}</div>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => notification.classList.add('show'), 10);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+
+        // Update artifact counter and collection
+        ArtifactUI.updateArtifactBar();
     },
 
     // Close modal
     closeModal() {
         document.getElementById('card-modal').classList.add('hidden');
+    },
+
+    // Open profile modal
+    openProfileModal() {
+        const modal = document.getElementById('profile-modal');
+        const modalBody = document.getElementById('profile-modal-body');
+        const metrics = gameState.getFormattedMetrics();
+
+        // Build past decisions list
+        let pastDecisionsHTML = '';
+        if (gameState.decisions.length === 0) {
+            pastDecisionsHTML = '<div class="empty-state">No decisions made yet</div>';
+        } else {
+            pastDecisionsHTML = '<ul class="past-decisions-list">';
+            gameState.decisions.forEach(decision => {
+                const decisionPoint = scenarioData.decisionPoints.find(dp => dp.id === decision.decisionId);
+                const option = decisionPoint.options.find(opt => opt.id === decision.optionId);
+
+                pastDecisionsHTML += `
+                    <li class="past-decision-item">
+                        <div class="past-decision-title">${decisionPoint.title}</div>
+                        <div class="past-decision-choice">
+                            <strong>${option.title}</strong>
+                        </div>
+                    </li>
+                `;
+            });
+            pastDecisionsHTML += '</ul>';
+        }
+
+        // Get board sentiment based on metrics
+        let boardSentiment = 'Neutral';
+        const stock = gameState.metrics.stock;
+        const marketShare = gameState.metrics.marketShare;
+
+        if (stock > 32 && marketShare > 35) {
+            boardSentiment = '🟢 Confident';
+        } else if (stock > 28 && marketShare > 25) {
+            boardSentiment = '🟡 Cautious';
+        } else if (stock < 25 || marketShare < 20) {
+            boardSentiment = '🔴 Concerned';
+        } else {
+            boardSentiment = '🟡 Monitoring';
+        }
+
+        modalBody.innerHTML = `
+            <div class="profile-section">
+                <h3>Leadership</h3>
+                <div class="profile-info-grid">
+                    <span class="profile-label">CEO</span>
+                    <span class="profile-value">${metrics.ceo === "S. Ballmer" ? "Steve Ballmer" : metrics.ceo}</span>
+
+                    <span class="profile-label">Board Sentiment</span>
+                    <span class="profile-value">${boardSentiment}</span>
+
+                    <span class="profile-label">Team Morale</span>
+                    <span class="profile-value morale">${metrics.morale} ${metrics.moraleText}</span>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3>Past Decisions</h3>
+                ${pastDecisionsHTML}
+            </div>
+        `;
+
+        modal.classList.remove('hidden');
+    },
+
+    // Close profile modal
+    closeProfileModal() {
+        document.getElementById('profile-modal').classList.add('hidden');
     },
 
     // Initialize UI
@@ -599,6 +725,23 @@ const UI = {
         document.getElementById('card-modal').addEventListener('click', (e) => {
             if (e.target.id === 'card-modal') {
                 this.closeModal();
+            }
+        });
+
+        // Profile icon button handler
+        document.getElementById('profile-icon-btn').addEventListener('click', () => {
+            this.openProfileModal();
+        });
+
+        // Profile modal close handlers
+        document.getElementById('profile-modal-close').addEventListener('click', () => {
+            this.closeProfileModal();
+        });
+
+        // Close profile modal on outside click
+        document.getElementById('profile-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'profile-modal') {
+                this.closeProfileModal();
             }
         });
 
