@@ -122,7 +122,7 @@ p {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 35%;
+    width: 30%;
     height: 1px;
     background: var(--accent-secondary);
 }
@@ -163,12 +163,11 @@ a:hover {
     background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-default);
     padding: var(--spacing-lg) var(--spacing-xl);
-    padding-right: calc(var(--spacing-xl) * 2 + 60px);
+    padding-right: calc(var(--spacing-xl) + 80px);
     z-index: 1000;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    justify-content: space-around;
     align-items: center;
-    gap: var(--spacing-lg);
 }
 
 .metric-detail {
@@ -176,14 +175,20 @@ a:hover {
     flex-direction: column;
     gap: var(--spacing-xs);
     min-width: 0;
+    flex: 1 1 0;
+    max-width: 200px;
+}
+
+.metric-detail:nth-child(1) {
+    align-items: flex-start;
 }
 
 .metric-detail:nth-child(2) {
-    justify-self: center;
+    align-items: center;
 }
 
 .metric-detail:nth-child(3) {
-    justify-self: end;
+    align-items: flex-end;
 }
 
 .metric-label {
@@ -2508,6 +2513,40 @@ a:hover {
 .profile-icon-btn svg {
     width: 24px;
     height: 24px;
+}
+
+/* Mobile responsiveness for metrics bar */
+@media (max-width: 768px) {
+    .metrics-bar {
+        padding: var(--spacing-md) var(--spacing-md);
+        padding-right: calc(var(--spacing-md) + 60px);
+        gap: var(--spacing-sm);
+    }
+
+    .metric-detail {
+        max-width: 150px;
+        gap: 2px;
+    }
+
+    .metric-label {
+        font-size: 0.5rem;
+        letter-spacing: 1px;
+    }
+
+    .metric-value {
+        font-size: 0.875rem;
+    }
+
+    .profile-icon-btn {
+        width: 36px;
+        height: 36px;
+        right: var(--spacing-md);
+    }
+
+    .profile-icon-btn svg {
+        width: 20px;
+        height: 20px;
+    }
 }
 
 /* ━━━━━━━━━━ PROFILE MODAL ━━━━━━━━━━ */
