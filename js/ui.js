@@ -72,7 +72,7 @@ const UI = {
                     <h1 class="landing-title">the mobile<br>wars.</h1>
 
                     <div class="landing-info">
-                        <p class="landing-subtitle">redmond, 2007–2017.</p>
+                        <p class="landing-subtitle">redmond, 2007</p>
                         <p class="landing-description">you are the ceo of the world's largest software company.</p>
                         <p class="landing-description">the iphone has just launched. the board is skeptical.</p>
                     </div>
