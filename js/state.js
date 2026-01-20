@@ -10,7 +10,7 @@ class GameState {
         this.previousMetrics = { ...scenarioData.initialMetrics };
         this.unlockedCards = [];
         this.unlockedArtifacts = [];
-        this.currentScreen = "story";
+        this.currentScreen = "landing";
         this.selectedOption = null;
     }
 
@@ -30,7 +30,7 @@ class GameState {
         this.previousMetrics = { ...scenarioData.initialMetrics };
         this.unlockedCards = [];
         this.unlockedArtifacts = [];
-        this.currentScreen = "story";
+        this.currentScreen = "landing";
         this.selectedOption = null;
         this.saveState();
     }
@@ -155,30 +155,30 @@ class GameState {
     // Get formatted metrics for display
     getFormattedMetrics() {
         const moralEmoji = {
-            'optimistic': '🟢',
-            'neutral': '🟢',
-            'concerned': '🟡',
-            'mixed': '🟡',
-            'frustrated': '🔴',
-            'stressed': '🟡',
-            'hopeful': '🟢',
-            'uncertain': '🟡',
-            'shocked': '🔴',
-            'urgent': '🟡',
-            'cautious': '🟢',
-            'defensive': '🟡',
-            'alarmed': '🔴',
-            'cautiously optimistic': '🟢',
-            'excited': '🟢',
-            'desperate': '🔴',
-            'disillusioned': '🔴',
-            'satisfied': '🟢',
-            'relieved': '🟢',
-            'all-in': '🟡',
-            'defeated': '🔴',
-            'focused': '🟢',
-            'proud': '🟢',
-            'resigned': '🟡'
+            'optimistic': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'neutral': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'concerned': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
+            'mixed': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
+            'frustrated': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
+            'stressed': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
+            'hopeful': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'uncertain': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
+            'shocked': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
+            'urgent': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
+            'cautious': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'defensive': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
+            'alarmed': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
+            'cautiously optimistic': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'excited': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'desperate': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
+            'disillusioned': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
+            'satisfied': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'relieved': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'all-in': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
+            'defeated': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
+            'focused': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'proud': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'resigned': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>'
         };
 
         return {
@@ -187,7 +187,7 @@ class GameState {
             cash: `$${this.metrics.cash.toFixed(1)}B`,
             stock: `$${this.metrics.stock.toFixed(2)}`,
             marketShare: `${this.metrics.marketShare}%`,
-            morale: moralEmoji[this.metrics.morale] || '🟢',
+            morale: moralEmoji[this.metrics.morale] || '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
             moraleText: this.metrics.morale.charAt(0).toUpperCase() + this.metrics.morale.slice(1)
         };
     }

@@ -58,6 +58,59 @@ const UI = {
         }, 1000);
     },
 
+    // Render landing screen
+    renderLandingScreen() {
+        const mainContent = document.getElementById('main-content');
+
+        // Hide metrics bar on landing screen
+        document.getElementById('metrics-bar').style.display = 'none';
+        document.getElementById('artifact-toggle-btn').style.display = 'none';
+
+        mainContent.innerHTML = `
+            <div class="landing-screen">
+                <div class="landing-content">
+                    <h1 class="landing-title">the mobile<br>wars.</h1>
+
+                    <div class="landing-info">
+                        <p class="landing-subtitle">redmond, 2007–2017.</p>
+                        <p class="landing-description">you are the ceo of the world's largest software company.</p>
+                        <p class="landing-description">the iphone has just launched. the board is skeptical.</p>
+                    </div>
+
+                    <div class="landing-challenge">
+                        <p>experience what it's like to lead at the highest level.</p>
+                        <p>can you save the company from missing the biggest platform shift in history?</p>
+                    </div>
+
+                    <div class="landing-actions">
+                        <button class="landing-begin-btn" id="begin-btn">
+                            begin →
+                        </button>
+                        <button class="landing-manifesto-btn" id="manifesto-btn">
+                            view manifesto
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add event listeners
+        document.getElementById('begin-btn').addEventListener('click', () => {
+            // Show metrics bar when game starts
+            document.getElementById('metrics-bar').style.display = 'flex';
+            document.getElementById('artifact-toggle-btn').style.display = 'flex';
+
+            gameState.currentScreen = "story";
+            this.renderStoryPoint();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.getElementById('manifesto-btn').addEventListener('click', () => {
+            // TODO: Implement manifesto modal or page
+            alert('Manifesto feature coming soon!');
+        });
+    },
+
     // Render story point screen
     renderStoryPoint() {
         const decisionPoint = gameState.getCurrentDecisionPoint();
@@ -69,7 +122,7 @@ const UI = {
                 <h1 class="story-title">${decisionPoint.title}</h1>
 
                 <div class="story-image">
-                    ${decisionPoint.storyImage.startsWith('<img')
+                    ${decisionPoint.storyImage.startsWith('<img') || decisionPoint.storyImage.startsWith('<i')
                         ? decisionPoint.storyImage
                         : `<span style="font-size: 4rem;">${decisionPoint.storyImage}</span>`}
                 </div>
@@ -495,30 +548,8 @@ const UI = {
                     </ul>
                 </div>
 
-                <div class="lessons-section">
-                    <h3 style="margin-bottom: 20px;">LESSONS LEARNED</h3>
-                    <div class="lesson-grid">
-                        <div class="lesson-item">
-                            <strong>Being #3 is okay if you're profitable</strong>
-                            <p>Mac survived at 7% for 30+ years. 12-15% is above viability threshold.</p>
-                        </div>
-                        <div class="lesson-item">
-                            <strong>Sustainability > Growth at any cost</strong>
-                            <p>Small profitable business beats expensive failure. Focus matters.</p>
-                        </div>
-                        <div class="lesson-item">
-                            <strong>Platform wars aren't winner-take-all</strong>
-                            <p>Third platforms can survive with the right positioning and economics.</p>
-                        </div>
-                        <div class="lesson-item">
-                            <strong>Timing determines market share</strong>
-                            <p>Launching WP7 at 21% vs 7% made the difference between viable and desperate.</p>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="achievement-badge">
-                    <div class="badge-icon">🏆</div>
+                    <div class="badge-icon"><i class="ph ph-trophy"></i></div>
                     <div class="badge-text">
                         <h3>ACHIEVEMENT UNLOCKED</h3>
                         <p>"The Sustainable Third"</p>
@@ -615,7 +646,7 @@ const UI = {
         const notification = document.createElement('div');
         notification.className = 'artifact-unlock-notification';
         notification.innerHTML = `
-            <div class="artifact-unlock-icon">🏆</div>
+            <div class="artifact-unlock-icon"><i class="ph ph-trophy"></i></div>
             <div class="artifact-unlock-text">
                 <div class="artifact-unlock-title">Artifact Unlocked!</div>
                 <div class="artifact-unlock-name">${artifact.name}</div>
@@ -676,13 +707,13 @@ const UI = {
         const marketShare = gameState.metrics.marketShare;
 
         if (stock > 32 && marketShare > 35) {
-            boardSentiment = '🟢 Confident';
+            boardSentiment = '<i class="ph-fill ph-circle" style="color: #22c55e;"></i> Confident';
         } else if (stock > 28 && marketShare > 25) {
-            boardSentiment = '🟡 Cautious';
+            boardSentiment = '<i class="ph-fill ph-circle" style="color: #eab308;"></i> Cautious';
         } else if (stock < 25 || marketShare < 20) {
-            boardSentiment = '🔴 Concerned';
+            boardSentiment = '<i class="ph-fill ph-circle" style="color: #ef4444;"></i> Concerned';
         } else {
-            boardSentiment = '🟡 Monitoring';
+            boardSentiment = '<i class="ph-fill ph-circle" style="color: #eab308;"></i> Monitoring';
         }
 
         modalBody.innerHTML = `
@@ -752,7 +783,9 @@ const UI = {
         this.updateMetricsBar();
 
         // Render initial screen
-        if (gameState.currentScreen === "story") {
+        if (gameState.currentScreen === "landing") {
+            this.renderLandingScreen();
+        } else if (gameState.currentScreen === "story") {
             this.renderStoryPoint();
         } else if (gameState.currentScreen === "decision") {
             this.renderDecisionPoint();

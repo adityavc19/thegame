@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Zune 30 - Forensic Artifact</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #0f0f0f; }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef, useEffect } = React;
+
+        // --- Data: Narrative ---
+        const HOTSPOTS = [
+            { id: 1, position: [0, 0.4, 0.16], label: "The UI", title: "The Twist Interface", content: "While the iPod relied on endless nested lists, the Zune introduced the 'Twist' interface. It used large, lower-case typography to pivot horizontally between categories. It was the grandfather of the Windows Phone 'Metro' design language.", side: "front" },
+            { id: 2, position: [0.56, 0, 0], label: "The Halo", title: "Double-Shot Injection", content: "The Zune 30's most distinct feature. A premium manufacturing process wrapped the opaque brown core in a translucent green/amber shell. In the right light, the edges glowed.", side: "right" },
+            { id: 3, position: [0, -0.55, 0.22], label: "The Squircle", title: "The Phantom Scroll", content: "It looks exactly like an iPod Click Wheel, but it wasn't. It was a standard 4-way D-pad. Users instinctively tried to swirl their thumbs in circles to scroll, only to realize they had to click up or down repeatedly.", side: "front" },
+            { id: 4, position: [-0.35, -0.55, 0.16], label: "The Layout", title: "Landscape Mode", content: "The Zune was designed with a larger 3-inch screen specifically for video. When you flipped the device sideways, the screen rotated, but the buttons didn't—leaving controls awkwardly placed on one side.", side: "left" }
+        ];
+
+        // --- Data: Stats & Specs ---
+        const SPECS = [
+            { label: "Launch Date", value: "Nov 14, 2006" },
+            { label: "Launch Price", value: "$249.99" },
+            { label: "Storage", value: "30 GB HDD" },
+            { label: "Display", value: "3.0\" LCD (320x240)" },
+            { label: "Battery", value: "14 hours (Music)" },
+            { label: "Units Sold", value: "~1.5 Million (2007)" },
+            { label: "Killer Feature", value: "WiFi Sharing ('Squirting')" },
+        ];
+
+        // --- Icons ---
+        const IconX = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>;
+        const IconInfo = () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>;
+        const IconList = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>;
+
+        // --- 3D Viewer ---
+        const ThreeViewer = ({ activeHotspotId, onHotspotClick, onMiss }) => {
+            const mountRef = useRef(null);
+            const modelGroupRef = useRef(null);
+            const hotspotsRef = useRef([]);
+            const isDragging = useRef(false);
+            const previousMousePosition = useRef({ x: 0, y: 0 });
+            const frameIdRef = useRef(null);
+
+            useEffect(() => {
+                if (!mountRef.current) return;
+                hotspotsRef.current = [];
+
+                // 1. Scene Setup
+                const width = mountRef.current.clientWidth;
+                const height = mountRef.current.clientHeight;
+                const scene = new THREE.Scene();
+
+                const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+                camera.position.set(0, 0, 4.2);
+
+                const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setSize(width, height);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                mountRef.current.appendChild(renderer.domElement);
+
+                // 2. Lights
+                const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+                scene.add(ambientLight);
+                const dirLight = new THREE.DirectionalLight(0xffffff, 1.8);
+                dirLight.position.set(5, 5, 10);
+                scene.add(dirLight);
+                const rimLight = new THREE.PointLight(0xa3e635, 2.5, 10);
+                rimLight.position.set(3, 2, -3);
+                scene.add(rimLight);
+
+                // 3. Model Construction
+                const modelGroup = new THREE.Group();
+                modelGroupRef.current = modelGroup;
+                scene.add(modelGroup);
+
+                // Materials
+                const coreMat = new THREE.MeshStandardMaterial({ color: 0x5C4033, roughness: 0.6 });
+                const shellMat = new THREE.MeshStandardMaterial({
+                    color: 0x82735C, transparent: true, opacity: 0.4,
+                    roughness: 0.1, metalness: 0.5, side: THREE.DoubleSide
+                });
+
+                // Screen Texture
+                const canvas = document.createElement('canvas');
+                canvas.width = 512; canvas.height = 640;
+                const ctx = canvas.getContext('2d');
+                // Background
+                const grd = ctx.createLinearGradient(0, 0, 0, 640);
+                grd.addColorStop(0, '#1a1a1a'); grd.addColorStop(1, '#000000');
+                ctx.fillStyle = grd; ctx.fillRect(0,0, 512, 640);
+                // Text
+                ctx.font = '500 60px Arial, sans-serif';
+                ctx.fillStyle = '#ffffff'; ctx.fillText('music', 40, 200);
+                ctx.fillStyle = '#a3a3a3'; ctx.fillText('videos', 40, 280);
+                ctx.fillText('pictures', 40, 360); ctx.fillText('social', 40, 440);
+                // Highlight
+                ctx.fillStyle = "#ffffff"; ctx.fillRect(20, 155, 5, 55);
+                const screenTex = new THREE.CanvasTexture(canvas);
+
+                // Geometry
+                const core = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.75, 0.25), coreMat);
+                modelGroup.add(core);
+
+                const shell = new THREE.Mesh(new THREE.BoxGeometry(1.05, 1.85, 0.35), shellMat);
+                modelGroup.add(shell);
+
+                const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.1), new THREE.MeshBasicMaterial({ map: screenTex }));
+                screen.position.set(0, 0.25, 0.18);
+                modelGroup.add(screen);
+
+                // Pad Group - FIXED Z-INDEX to 0.20 to prevent flickering
+                const padGroup = new THREE.Group();
+                padGroup.position.set(0, -0.55, 0.20);
+                modelGroup.add(padGroup);
+
+                const padRing = new THREE.Mesh(new THREE.CircleGeometry(0.28, 32), new THREE.MeshStandardMaterial({ color: 0x3f2e26 }));
+                padGroup.add(padRing);
+                const padBtn = new THREE.Mesh(new THREE.CircleGeometry(0.12, 32), new THREE.MeshStandardMaterial({ color: 0x111111 }));
+                padBtn.position.z = 0.01;
+                padGroup.add(padBtn);
+
+                const btnMat = new THREE.MeshStandardMaterial({ color: 0x5c4a3d, transparent: true, opacity: 0.9 });
+                const leftBtn = new THREE.Mesh(new THREE.CircleGeometry(0.06, 32), btnMat); leftBtn.position.set(-0.35, 0, 0); padGroup.add(leftBtn);
+                const rightBtn = new THREE.Mesh(new THREE.CircleGeometry(0.06, 32), btnMat); rightBtn.position.set(0.35, 0, 0); padGroup.add(rightBtn);
+
+                // Hotspots
+                HOTSPOTS.forEach(spot => {
+                    const mesh = new THREE.Mesh(new THREE.CircleGeometry(0.05, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.0, depthTest: false }));
+                    mesh.position.set(...spot.position);
+                    mesh.userData = { isHotspot: true, id: spot.id };
+                    const ring = new THREE.Mesh(new THREE.RingGeometry(0.06, 0.07, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7, side: THREE.DoubleSide, depthTest: false }));
+                    ring.position.set(...spot.position);
+                    modelGroup.add(mesh); modelGroup.add(ring);
+                    hotspotsRef.current.push({ mesh, ring });
+                });
+
+                // Inputs
+                const raycaster = new THREE.Raycaster();
+                const mouse = new THREE.Vector2();
+
+                const handleInput = (clientX, clientY, type) => {
+                    if (type === 'down') {
+                        isDragging.current = true;
+                        previousMousePosition.current = { x: clientX, y: clientY };
+                    } else if (type === 'move' && isDragging.current) {
+                        const deltaX = clientX - previousMousePosition.current.x;
+                        const deltaY = clientY - previousMousePosition.current.y;
+                        if (modelGroupRef.current) {
+                            modelGroupRef.current.rotation.y += deltaX * 0.005;
+                            modelGroupRef.current.rotation.x += deltaY * 0.005;
+                        }
+                        previousMousePosition.current = { x: clientX, y: clientY };
+                    } else if (type === 'up') {
+                        if (isDragging.current) {
+                           const rect = renderer.domElement.getBoundingClientRect();
+                           mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+                           mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+                           raycaster.setFromCamera(mouse, camera);
+                           const intersects = raycaster.intersectObjects(hotspotsRef.current.map(h => h.mesh));
+                           if (intersects.length > 0) onHotspotClick(intersects[0].object.userData.id);
+                        }
+                        isDragging.current = false;
+                    }
+                };
+
+                const dom = renderer.domElement;
+                dom.addEventListener('mousedown', e => handleInput(e.clientX, e.clientY, 'down'));
+                dom.addEventListener('mousemove', e => handleInput(e.clientX, e.clientY, 'move'));
+                dom.addEventListener('mouseup', e => handleInput(e.clientX, e.clientY, 'up'));
+                dom.addEventListener('touchstart', e => handleInput(e.touches[0].clientX, e.touches[0].clientY, 'down'), {passive: false});
+                dom.addEventListener('touchmove', e => handleInput(e.touches[0].clientX, e.touches[0].clientY, 'move'), {passive: false});
+                dom.addEventListener('touchend', e => isDragging.current = false);
+
+                // Handle Resize
+                const handleResize = () => {
+                    if(!mountRef.current) return;
+                    const newW = mountRef.current.clientWidth;
+                    const newH = mountRef.current.clientHeight;
+                    camera.aspect = newW / newH;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(newW, newH);
+                };
+                window.addEventListener('resize', handleResize);
+                setTimeout(handleResize, 100);
+
+                // Animation Loop
+                const animate = (time) => {
+                    frameIdRef.current = requestAnimationFrame(animate);
+                    if (modelGroupRef.current && !isDragging.current && activeHotspotId === null) {
+                        modelGroupRef.current.rotation.y = Math.sin(time * 0.0005) * 0.15;
+                    }
+                    hotspotsRef.current.forEach(h => {
+                        h.mesh.lookAt(camera.position);
+                        h.ring.lookAt(camera.position);
+                        const s = 1 + Math.sin(time * 0.003) * 0.2;
+                        h.ring.scale.set(s,s,s);
+                    });
+                    renderer.render(scene, camera);
+                };
+                animate(0);
+
+                return () => {
+                    cancelAnimationFrame(frameIdRef.current);
+                    window.removeEventListener('resize', handleResize);
+                    if(mountRef.current && renderer.domElement) mountRef.current.removeChild(renderer.domElement);
+                };
+            }, []);
+
+            // Highlight Effect
+            useEffect(() => {
+                hotspotsRef.current.forEach(h => {
+                    h.ring.material.color.setHex(h.mesh.userData.id === activeHotspotId ? 0xa3e635 : 0xffffff);
+                });
+            }, [activeHotspotId]);
+
+            return <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" onClick={(e) => { if(e.target === mountRef.current) onMiss(); }} />;
+        };
+
+        // --- Main App ---
+        const App = () => {
+            const [activeHotspotId, setActiveHotspotId] = useState(null);
+            const [showSpecs, setShowSpecs] = useState(true); // Default to true, let CSS handle responsive visibility
+            const activeData = HOTSPOTS.find(h => h.id === activeHotspotId);
+
+            return (
+                <div className="w-full h-screen bg-[#0f0f0f] relative overflow-hidden font-sans text-white">
+                    {/* Background Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-[#1a1005] via-[#0f0f0f] to-[#0a1f0a] opacity-50 pointer-events-none"></div>
+
+                    {/* Header */}
+                    <div className="absolute top-0 left-0 w-full p-6 z-10 pointer-events-none">
+                        <div className="max-w-7xl mx-auto flex justify-between items-start">
+                            <div>
+                                <h1 className="text-4xl font-light tracking-tighter text-white">Microsoft <span className="text-[#a3e635]">Zune</span></h1>
+                                <p className="text-gray-400 text-sm mt-1 tracking-wide">Exhibit 2006: The "Double Shot" Brown.</p>
+                            </div>
+
+                            {/* Mobile Toggle for Specs */}
+                            <div className="pointer-events-auto md:hidden">
+                                <button
+                                    onClick={() => setShowSpecs(!showSpecs)}
+                                    className={`p-2 rounded-full backdrop-blur-md transition-colors ${showSpecs ? 'bg-[#a3e635]/20 text-[#a3e635]' : 'bg-white/10 text-white'}`}
+                                >
+                                    <IconList />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Stats Panel - Left Side Layout + Responsive Visibility */}
+                    <div className={`
+                        absolute top-24 left-4 md:left-8 w-64 z-10
+                        transition-all duration-300 ease-in-out
+                        ${showSpecs ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}
+                    `}>
+                        <div className="bg-black/40 backdrop-blur-sm border-l-2 border-[#a3e635]/50 pl-4 py-3 rounded-r">
+                            <h3 className="text-[#a3e635] text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <IconInfo /> System Specs
+                            </h3>
+                            <div className="space-y-3">
+                                {SPECS.map((spec, i) => (
+                                    <div key={i}>
+                                        <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-0.5">{spec.label}</div>
+                                        <div className="text-sm font-normal text-gray-100">{spec.value}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 3D Viewport */}
+                    <ThreeViewer activeHotspotId={activeHotspotId} onHotspotClick={setActiveHotspotId} onMiss={() => setActiveHotspotId(null)} />
+
+                    {/* Interactive Info Panel (Bottom) */}
+                    {activeData && (
+                        <div className="absolute bottom-6 left-6 right-6 md:w-96 md:bottom-12 md:left-auto md:right-12 bg-[#1a1a1a]/95 backdrop-blur-md border-t-2 md:border-t-0 md:border-l-4 border-[#a3e635] p-6 shadow-2xl animate-slide-up rounded-b-lg md:rounded-r-lg z-20">
+                            <div className="flex justify-between items-start mb-3">
+                                <span className="text-xs font-bold text-[#a3e635] uppercase tracking-widest">{activeData.label}</span>
+                                <button onClick={() => setActiveHotspotId(null)} className="text-gray-500 hover:text-white transition-colors">
+                                    <IconX />
+                                </button>
+                            </div>
+                            <h2 className="text-2xl font-light mb-3 text-white">{activeData.title}</h2>
+                            <p className="text-gray-400 text-sm leading-relaxed">{activeData.content}</p>
+                        </div>
+                    )}
+
+                    {/* Footer Stripe */}
+                    <div className="absolute bottom-0 w-full h-1 bg-gradient-to-r from-[#5C4033] via-[#a3e635] to-[#5C4033] opacity-60" />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
