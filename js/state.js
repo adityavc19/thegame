@@ -144,8 +144,15 @@ class GameState {
         const currentDecision = this.getCurrentDecisionPoint();
         const lastDecision = this.decisions[this.decisions.length - 1];
 
+        console.log('[DEBUG] continueToNext called');
+        console.log('[DEBUG] currentDecision:', currentDecision?.id);
+        console.log('[DEBUG] lastDecision:', lastDecision);
+        console.log('[DEBUG] currentDecisionIndex:', this.currentDecisionIndex);
+
         // Check for conditional routing based on choices
         const nextIndex = this.getNextDecisionIndex(currentDecision?.id, lastDecision?.optionId);
+
+        console.log('[DEBUG] nextIndex from routing:', nextIndex);
 
         if (nextIndex !== null) {
             this.currentDecisionIndex = nextIndex;
@@ -153,16 +160,21 @@ class GameState {
             this.currentDecisionIndex++;
         }
 
+        console.log('[DEBUG] new currentDecisionIndex:', this.currentDecisionIndex);
+        console.log('[DEBUG] total decision points:', scenarioData.decisionPoints.length);
+
         this.selectedOption = null;
 
         if (this.currentDecisionIndex < scenarioData.decisionPoints.length) {
             this.currentScreen = "story";
             // Update date to the new decision point's date
             const nextDecisionPoint = this.getCurrentDecisionPoint();
+            console.log('[DEBUG] next decision:', nextDecisionPoint?.id);
             if (nextDecisionPoint && nextDecisionPoint.date) {
                 this.metrics.date = nextDecisionPoint.date;
             }
         } else {
+            console.log('[DEBUG] Game complete - index out of bounds');
             this.currentScreen = "complete";
         }
 
@@ -171,6 +183,8 @@ class GameState {
 
     // Get next decision index based on routing rules
     getNextDecisionIndex(currentDecisionId, chosenOptionId) {
+        console.log('[DEBUG] getNextDecisionIndex called with:', currentDecisionId, chosenOptionId);
+
         // Define conditional routing rules
         const routingRules = {
             // D1: iPhone Response - Enterprise double down branches to alternate path
@@ -190,16 +204,22 @@ class GameState {
             // }
         };
 
+        console.log('[DEBUG] routingRules:', routingRules);
+
         // Check if current decision has routing rules
         if (routingRules[currentDecisionId] && routingRules[currentDecisionId][chosenOptionId]) {
             const targetDecisionId = routingRules[currentDecisionId][chosenOptionId];
+            console.log('[DEBUG] Found routing rule, target:', targetDecisionId);
 
             // Find the index of the target decision
             const targetIndex = scenarioData.decisionPoints.findIndex(dp => dp.id === targetDecisionId);
+            console.log('[DEBUG] Target index:', targetIndex);
 
             if (targetIndex !== -1) {
                 return targetIndex;
             }
+        } else {
+            console.log('[DEBUG] No routing rule found for', currentDecisionId, chosenOptionId);
         }
 
         // Return null to use default sequential behavior
