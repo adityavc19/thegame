@@ -4,20 +4,17 @@
 
 const FeedbackSystem = {
     // Google Forms configuration
-    // IMPORTANT: Replace this URL with your actual Google Forms action URL
-    // See FEEDBACK_SETUP.md for instructions
-    FORM_ACTION_URL: 'YOUR_GOOGLE_FORM_URL_HERE',
+    FORM_ACTION_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSc8uq1UPZj79K6K8T4X5ecBtUP03cRcrbjp0CwpnH4x89Bu-g/formResponse',
 
     // Form field IDs (these correspond to Google Forms entry IDs)
-    // Update these after creating your Google Form
     FIELD_IDS: {
-        rating: 'entry.123456789',        // Overall rating
-        enjoyed: 'entry.987654321',       // What they enjoyed (checkboxes)
-        improvements: 'entry.111111111',  // Improvement suggestions (text)
-        playAgain: 'entry.222222222',     // Would play another scenario
-        email: 'entry.333333333',         // Email for updates
-        scenarioId: 'entry.444444444',    // Which scenario they played
-        completionTime: 'entry.555555555' // How long it took
+        rating: 'entry.1740982212',        // Overall rating
+        enjoyed: 'entry.1114690169',       // What they enjoyed (checkboxes)
+        improvements: 'entry.831580574',   // Improvement suggestions (text)
+        playAgain: 'entry.2103147851',     // Would play another scenario / other scenarios interest
+        email: 'entry.1791517394',         // Email for updates
+        scenarioId: 'entry.831580574',     // Using improvements field for now (can add hidden field to form)
+        completionTime: 'entry.831580574'  // Using improvements field for now (can add hidden field to form)
     },
 
     // State
@@ -111,27 +108,20 @@ const FeedbackSystem = {
                         <div class="char-count" id="improvements-count">0/500</div>
                     </div>
 
-                    <!-- Question 4: Play again -->
+                    <!-- Question 4: Other scenarios interest -->
                     <div class="feedback-question">
-                        <label class="feedback-label">Would you play another scenario?</label>
-                        <div class="rating-options">
-                            <label class="rating-option">
-                                <input type="radio" name="playAgain" value="Definitely" required>
-                                <span class="rating-text">Definitely</span>
-                            </label>
-                            <label class="rating-option">
-                                <input type="radio" name="playAgain" value="Probably">
-                                <span class="rating-text">Probably</span>
-                            </label>
-                            <label class="rating-option">
-                                <input type="radio" name="playAgain" value="Maybe">
-                                <span class="rating-text">Maybe</span>
-                            </label>
-                            <label class="rating-option">
-                                <input type="radio" name="playAgain" value="No">
-                                <span class="rating-text">No</span>
-                            </label>
-                        </div>
+                        <label class="feedback-label">What other scenarios or stories would you want to experience in an interactive format?</label>
+                        <textarea
+                            name="playAgain"
+                            class="feedback-textarea"
+                            placeholder="E.g., Netflix vs Blockbuster, Tesla's rise, COVID-19 response decisions..."
+                            maxlength="500"
+                            rows="4"
+                        ></textarea>
+                        <div class="char-count" id="scenarios-count">0/500</div>
+                        <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 8px;">
+                            Help us understand what decisions interest you most
+                        </p>
                     </div>
 
                     <!-- Email signup -->
@@ -199,7 +189,7 @@ const FeedbackSystem = {
     attachEventListeners() {
         const form = document.getElementById('feedback-form');
         const skipLink = document.getElementById('skip-feedback');
-        const textarea = document.querySelector('.feedback-textarea');
+        const textareas = document.querySelectorAll('.feedback-textarea');
 
         if (form) {
             form.addEventListener('submit', (e) => this.handleSubmit(e));
@@ -212,15 +202,25 @@ const FeedbackSystem = {
             });
         }
 
-        if (textarea) {
+        // Add character counters for all textareas
+        textareas.forEach((textarea) => {
             textarea.addEventListener('input', (e) => {
                 const count = e.target.value.length;
-                const counter = document.getElementById('improvements-count');
+                const name = e.target.name;
+                let counterId = '';
+
+                if (name === 'improvements') {
+                    counterId = 'improvements-count';
+                } else if (name === 'playAgain') {
+                    counterId = 'scenarios-count';
+                }
+
+                const counter = document.getElementById(counterId);
                 if (counter) {
                     counter.textContent = `${count}/500`;
                 }
             });
-        }
+        });
     },
 
     // Handle form submission
