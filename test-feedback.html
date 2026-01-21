@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Feedback Form</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 { margin-top: 0; color: #333; }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover { background: #45a049; }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0288d1;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-box">
+        <h1>🧪 Feedback Form Integration Test</h1>
+
+        <div class="info">
+            <strong>Purpose:</strong> This page tests if your feedback form is properly connected to Google Forms.
+        </div>
+
+        <h3>Form Configuration:</h3>
+        <p><strong>Form ID:</strong> <code>1FAIpQLSc8uq1UPZj79K6K8T4X5ecBtUP03cRcrbjp0CwpnH4x89Bu-g</code></p>
+        <p><strong>Status:</strong> <span id="config-status">Checking...</span></p>
+
+        <h3>Test Actions:</h3>
+        <button onclick="testSubmission()">Send Test Submission</button>
+        <button onclick="openFormDirectly()">Open Form in New Tab</button>
+        <button onclick="openResponses()">Open Form Responses</button>
+
+        <div id="status" class="status"></div>
+
+        <div class="info" style="margin-top: 30px;">
+            <h4>✅ Next Steps:</h4>
+            <ol>
+                <li>Click "Send Test Submission" above</li>
+                <li>Click "Open Form Responses" to view in Google Forms</li>
+                <li>Sign in with your Google account</li>
+                <li>Check if the test submission appears!</li>
+            </ol>
+        </div>
+
+        <div class="info" style="background: #fff3cd; border-left-color: #ffc107;">
+            <strong>⚠️ Important:</strong> Make sure you're signed into the Google account that created the form.
+        </div>
+    </div>
+
+    <script>
+        const FORM_ACTION_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc8uq1UPZj79K6K8T4X5ecBtUP03cRcrbjp0CwpnH4x89Bu-g/formResponse';
+
+        const FIELD_IDS = {
+            rating: 'entry.1011962974',
+            enjoyed: 'entry.1333243759',
+            improvements: 'entry.1755580600',
+            playAgain: 'entry.1364191561',
+            email: 'entry.2010499039'
+        };
+
+        // Check configuration on load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('config-status').innerHTML =
+                '<span style="color: green;">✓ Configured</span>';
+        });
+
+        async function testSubmission() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'status';
+            statusDiv.innerHTML = '⏳ Sending test submission...';
+
+            try {
+                const formData = new FormData();
+                formData.append(FIELD_IDS.rating, 'Excellent');
+                formData.append(FIELD_IDS.enjoyed, 'Decision-making process');
+                formData.append(FIELD_IDS.enjoyed, 'Artifact collection');
+                formData.append(FIELD_IDS.improvements, 'This is a test submission from the test page');
+                formData.append(FIELD_IDS.playAgain, 'Netflix vs Blockbuster, Tesla startup story');
+                formData.append(FIELD_IDS.email, 'test@example.com');
+
+                await fetch(FORM_ACTION_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                });
+
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `
+                    <strong>✓ Test submission sent!</strong><br><br>
+                    <strong>Next:</strong> Click "Open Form Responses" button above to check if it appeared in your Google Form.<br><br>
+                    <em>Note: Because we use 'no-cors' mode, we can't verify the response directly,
+                    but the submission should appear in your Google Form within a few seconds.</em>
+                `;
+
+                // Also save to localStorage as backup
+                localStorage.setItem('test_feedback_' + Date.now(), JSON.stringify({
+                    rating: 'Excellent',
+                    enjoyed: ['Decision-making process', 'Artifact collection'],
+                    improvements: 'This is a test submission',
+                    playAgain: 'Netflix vs Blockbuster',
+                    email: 'test@example.com',
+                    timestamp: new Date().toISOString()
+                }));
+
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `
+                    <strong>✗ Error:</strong> ${error.message}<br><br>
+                    This might be a CORS issue, but the submission may have still succeeded.
+                    Check your Google Form responses to verify.
+                `;
+            }
+        }
+
+        function openFormDirectly() {
+            window.open('https://docs.google.com/forms/d/e/1FAIpQLSc8uq1UPZj79K6K8T4X5ecBtUP03cRcrbjp0CwpnH4x89Bu-g/viewform', '_blank');
+        }
+
+        function openResponses() {
+            // Open the edit page where you can see responses
+            window.open('https://docs.google.com/forms/d/1FAIpQLSc8uq1UPZj79K6K8T4X5ecBtUP03cRcrbjp0CwpnH4x89Bu-g/edit', '_blank');
+
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'status';
+            statusDiv.innerHTML = `
+                <strong>Opening Google Forms...</strong><br><br>
+                Steps to view responses:<br>
+                1. Sign in with your Google account<br>
+                2. Click the "Responses" tab at the top<br>
+                3. Look for the test submission<br><br>
+                If you don't see it, the form might not be accepting responses.
+                Check the form settings.
+            `;
+        }
+    </script>
+</body>
+</html>

@@ -8,13 +8,13 @@ const FeedbackSystem = {
 
     // Form field IDs (these correspond to Google Forms entry IDs)
     FIELD_IDS: {
-        rating: 'entry.1740982212',        // Overall rating
-        enjoyed: 'entry.1114690169',       // What they enjoyed (checkboxes)
-        improvements: 'entry.831580574',   // Improvement suggestions (text)
-        playAgain: 'entry.2103147851',     // Would play another scenario / other scenarios interest
-        email: 'entry.1791517394',         // Email for updates
-        scenarioId: 'entry.831580574',     // Using improvements field for now (can add hidden field to form)
-        completionTime: 'entry.831580574'  // Using improvements field for now (can add hidden field to form)
+        rating: 'entry.1011962974',        // Overall rating
+        enjoyed: 'entry.1333243759',       // What they enjoyed (checkboxes)
+        improvements: 'entry.1755580600',  // Improvement suggestions (text)
+        playAgain: 'entry.1364191561',     // What other scenarios would you like
+        email: 'entry.2010499039',         // Email for updates
+        scenarioId: 'entry.1755580600',    // Using improvements field for tracking
+        completionTime: 'entry.1755580600' // Using improvements field for tracking
     },
 
     // State

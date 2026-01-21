@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Form Submission</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        h2 { color: #666; font-size: 1.2em; }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+        button:hover { background: #45a049; }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .error {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #f44336;
+        }
+        .success {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Google Form Submission Debugger</h1>
+
+    <div class="section info">
+        <strong>Purpose:</strong> This tool helps debug why form submissions aren't working.
+        It will test different submission methods and show you what's happening.
+    </div>
+
+    <div class="section">
+        <h2>Current Configuration</h2>
+        <pre id="config"></pre>
+    </div>
+
+    <div class="section">
+        <h2>🧪 Test Methods</h2>
+
+        <button onclick="method1()">Method 1: FormData (Current)</button>
+        <button onclick="method2()">Method 2: URLSearchParams</button>
+        <button onclick="method3()">Method 3: Fetch with Body</button>
+        <button onclick="method4()">Method 4: Hidden Form Submit</button>
+
+        <div id="result" style="margin-top: 20px;"></div>
+    </div>
+
+    <div class="section">
+        <h2>📝 Manual Test Form</h2>
+        <p>Fill this out and submit to test with real data:</p>
+
+        <label>Rating:</label>
+        <select id="rating">
+            <option>Excellent</option>
+            <option>Good</option>
+            <option>Fair</option>
+            <option>Poor</option>
+        </select>
+
+        <label>Enjoyed (separate multiple with commas):</label>
+        <input type="text" id="enjoyed" placeholder="Decision-making process, Artifact collection">
+
+        <label>Improvements:</label>
+        <textarea id="improvements" rows="3" placeholder="Your suggestions..."></textarea>
+
+        <label>Other Scenarios:</label>
+        <textarea id="scenarios" rows="3" placeholder="Netflix vs Blockbuster..."></textarea>
+
+        <label>Email:</label>
+        <input type="email" id="email" placeholder="your@email.com">
+
+        <button onclick="submitManual()">Submit Test</button>
+
+        <div id="manualResult" style="margin-top: 15px;"></div>
+    </div>
+
+    <div class="section">
+        <h2>🔍 Direct Form Access</h2>
+        <button onclick="openForm()">Open Your Form</button>
+        <button onclick="inspectForm()">Get Entry IDs from Form</button>
+    </div>
+
+    <script>
+        const FORM_ID = '1FAIpQLSc8uq1UPZj79K6K8T4X5ecBtUP03cRcrbjp0CwpnH4x89Bu-g';
+        const FORM_URL = `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse`;
+
+        const ENTRY_IDS = {
+            rating: 'entry.1011962974',
+            enjoyed: 'entry.1333243759',
+            improvements: 'entry.1755580600',
+            scenarios: 'entry.1364191561',
+            email: 'entry.2010499039'
+        };
+
+        // Display config
+        document.getElementById('config').textContent = JSON.stringify({
+            FORM_ID,
+            FORM_URL,
+            ENTRY_IDS
+        }, null, 2);
+
+        function showResult(method, status, details) {
+            const resultDiv = document.getElementById('result');
+            const className = status === 'success' ? 'success' : status === 'error' ? 'error' : 'info';
+            resultDiv.innerHTML = `
+                <div class="${className}">
+                    <strong>${method}</strong><br>
+                    ${details}
+                </div>
+            `;
+        }
+
+        // Method 1: FormData with no-cors
+        async function method1() {
+            showResult('Method 1', 'info', 'Testing FormData with no-cors...');
+
+            try {
+                const formData = new FormData();
+                formData.append(ENTRY_IDS.rating, 'Excellent');
+                formData.append(ENTRY_IDS.enjoyed, 'Decision-making process');
+                formData.append(ENTRY_IDS.improvements, 'Test from Method 1');
+                formData.append(ENTRY_IDS.scenarios, 'Netflix story');
+                formData.append(ENTRY_IDS.email, 'test@example.com');
+
+                const response = await fetch(FORM_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                });
+
+                showResult('Method 1', 'success', `
+                    Submission sent (no-cors mode).<br>
+                    Response type: ${response.type}<br>
+                    <br>
+                    <strong>Check your Google Form responses to verify!</strong><br>
+                    Note: no-cors mode prevents us from seeing errors, but submission likely succeeded.
+                `);
+            } catch (error) {
+                showResult('Method 1', 'error', `Error: ${error.message}`);
+            }
+        }
+
+        // Method 2: URLSearchParams
+        async function method2() {
+            showResult('Method 2', 'info', 'Testing URLSearchParams...');
+
+            try {
+                const params = new URLSearchParams();
+                params.append(ENTRY_IDS.rating, 'Excellent');
+                params.append(ENTRY_IDS.enjoyed, 'Decision-making process');
+                params.append(ENTRY_IDS.improvements, 'Test from Method 2');
+                params.append(ENTRY_IDS.scenarios, 'Netflix story');
+                params.append(ENTRY_IDS.email, 'test@example.com');
+
+                const response = await fetch(FORM_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: params.toString()
+                });
+
+                showResult('Method 2', 'success', `
+                    Submission sent with URLSearchParams.<br>
+                    <strong>Check your Google Form responses!</strong>
+                `);
+            } catch (error) {
+                showResult('Method 2', 'error', `Error: ${error.message}`);
+            }
+        }
+
+        // Method 3: Direct POST
+        async function method3() {
+            showResult('Method 3', 'info', 'Testing direct POST...');
+
+            try {
+                const body = [
+                    `${ENTRY_IDS.rating}=Excellent`,
+                    `${ENTRY_IDS.enjoyed}=Decision-making process`,
+                    `${ENTRY_IDS.improvements}=Test from Method 3`,
+                    `${ENTRY_IDS.scenarios}=Netflix story`,
+                    `${ENTRY_IDS.email}=test@example.com`
+                ].join('&');
+
+                await fetch(FORM_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: body
+                });
+
+                showResult('Method 3', 'success', `
+                    Submission sent with direct body.<br>
+                    <strong>Check your Google Form responses!</strong>
+                `);
+            } catch (error) {
+                showResult('Method 3', 'error', `Error: ${error.message}`);
+            }
+        }
+
+        // Method 4: Hidden form submit
+        function method4() {
+            showResult('Method 4', 'info', 'Creating hidden form...');
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = FORM_URL;
+            form.target = 'hidden_iframe';
+
+            const fields = {
+                [ENTRY_IDS.rating]: 'Excellent',
+                [ENTRY_IDS.enjoyed]: 'Decision-making process',
+                [ENTRY_IDS.improvements]: 'Test from Method 4',
+                [ENTRY_IDS.scenarios]: 'Netflix story',
+                [ENTRY_IDS.email]: 'test@example.com'
+            };
+
+            for (const [name, value] of Object.entries(fields)) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                form.appendChild(input);
+            }
+
+            // Create hidden iframe
+            let iframe = document.getElementById('hidden_iframe');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.name = 'hidden_iframe';
+                iframe.id = 'hidden_iframe';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+
+            showResult('Method 4', 'success', `
+                Form submitted via hidden iframe.<br>
+                <strong>Check your Google Form responses!</strong><br>
+                This method bypasses CORS completely.
+            `);
+        }
+
+        // Manual submit
+        async function submitManual() {
+            const rating = document.getElementById('rating').value;
+            const enjoyed = document.getElementById('enjoyed').value;
+            const improvements = document.getElementById('improvements').value;
+            const scenarios = document.getElementById('scenarios').value;
+            const email = document.getElementById('email').value;
+
+            const resultDiv = document.getElementById('manualResult');
+            resultDiv.innerHTML = '<div class="info">Submitting...</div>';
+
+            try {
+                const formData = new FormData();
+                formData.append(ENTRY_IDS.rating, rating);
+                formData.append(ENTRY_IDS.enjoyed, enjoyed);
+                formData.append(ENTRY_IDS.improvements, improvements);
+                formData.append(ENTRY_IDS.scenarios, scenarios);
+                formData.append(ENTRY_IDS.email, email);
+
+                await fetch(FORM_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                });
+
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <strong>✓ Submission sent!</strong><br>
+                        Check your Google Form responses to verify it appeared.
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>✗ Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        function openForm() {
+            window.open('https://forms.gle/GhA1MHR1YuRaDUy7A', '_blank');
+        }
+
+        function inspectForm() {
+            const instructions = `
+                <div class="info">
+                    <strong>How to get entry IDs:</strong><br>
+                    1. Open your form in new tab<br>
+                    2. Right-click → "Inspect" or "View Page Source"<br>
+                    3. Press Ctrl+F (Cmd+F on Mac)<br>
+                    4. Search for: <code>entry.</code><br>
+                    5. Copy all entry IDs you find<br>
+                    <br>
+                    They should look like: <code>entry.1740982212</code>
+                </div>
+            `;
+            document.getElementById('result').innerHTML = instructions;
+            openForm();
+        }
+    </script>
+</body>
+</html>
