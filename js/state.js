@@ -197,6 +197,17 @@ class GameState {
                 "secure-enterprise-fortress": "d3-platform-rebuild",
                 "acquire-blackberry-2009": "d3-platform-rebuild",
                 "hybrid-strategy-doomed": "d3-platform-rebuild"
+            },
+            // D2: Android Threat - Acquire Palm branches to alternate path
+            "d2-android-threat": {
+                "acquire-palm-2009": "d3-alt-integration-crisis"
+            },
+            // D3-ALT: Integration Crisis - All options converge to D5 Sustainability
+            "d3-alt-integration-crisis": {
+                "commit-webos": "d5-sustainability",
+                "merge-platforms-nightmare": "d5-sustainability",
+                "abandon-palm-writeoff": "d5-sustainability",
+                "dual-track-platforms": "d5-sustainability"
             }
             // Add more routing rules here as needed
             // "decision-id": {
