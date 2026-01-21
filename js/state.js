@@ -200,7 +200,7 @@ class GameState {
             },
             // D2: Android Threat - Acquire Palm branches to alternate path
             "d2-android-threat": {
-                "acquire-palm-2009": "d3-alt-integration-crisis"
+                "acquire-palm": "d3-alt-integration-crisis"
             },
             // D3-ALT: Integration Crisis - All options converge to D5 Sustainability
             "d3-alt-integration-crisis": {
