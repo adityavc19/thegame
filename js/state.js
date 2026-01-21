@@ -141,7 +141,18 @@ class GameState {
 
     // Continue to next decision
     continueToNext() {
-        this.currentDecisionIndex++;
+        const currentDecision = this.getCurrentDecisionPoint();
+        const lastDecision = this.decisions[this.decisions.length - 1];
+
+        // Check for conditional routing based on choices
+        const nextIndex = this.getNextDecisionIndex(currentDecision?.id, lastDecision?.optionId);
+
+        if (nextIndex !== null) {
+            this.currentDecisionIndex = nextIndex;
+        } else {
+            this.currentDecisionIndex++;
+        }
+
         this.selectedOption = null;
 
         if (this.currentDecisionIndex < scenarioData.decisionPoints.length) {
@@ -156,6 +167,43 @@ class GameState {
         }
 
         this.saveState();
+    }
+
+    // Get next decision index based on routing rules
+    getNextDecisionIndex(currentDecisionId, chosenOptionId) {
+        // Define conditional routing rules
+        const routingRules = {
+            // D1: iPhone Response - Enterprise double down branches to alternate path
+            "d1-iphone-response": {
+                "enterprise-double-down": "d1-alt-enterprise-fortress"
+            },
+            // D1-ALT: Enterprise Fortress - All options merge back to main timeline at D2
+            "d1-alt-enterprise-fortress": {
+                "consumer-pivot-late": "d2-android-threat",
+                "secure-enterprise-fortress": "d2-android-threat",
+                "acquire-blackberry-2009": "d2-android-threat",
+                "hybrid-strategy-doomed": "d2-android-threat"
+            }
+            // Add more routing rules here as needed
+            // "decision-id": {
+            //     "option-id": "target-decision-id"
+            // }
+        };
+
+        // Check if current decision has routing rules
+        if (routingRules[currentDecisionId] && routingRules[currentDecisionId][chosenOptionId]) {
+            const targetDecisionId = routingRules[currentDecisionId][chosenOptionId];
+
+            // Find the index of the target decision
+            const targetIndex = scenarioData.decisionPoints.findIndex(dp => dp.id === targetDecisionId);
+
+            if (targetIndex !== -1) {
+                return targetIndex;
+            }
+        }
+
+        // Return null to use default sequential behavior
+        return null;
     }
 
     // Get formatted metrics for display
