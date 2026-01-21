@@ -4602,7 +4602,7 @@ The fortress fell. You're now in free fall. Next decision: How do you land?`
                     stock: -8.5,
                     marketShare: +18,
                     morale: "anxious",
-                    unlockedArtifacts: ["blackberry-bold-9000", "blackberry-storm-9530"],
+                    unlockedArtifacts: [],
                     narrative: `August 2009: Microsoft acquires Research In Motion (BlackBerry) for $6.8 billion. Largest mobile acquisition in history.
 
 Announcement shocks industry. "Microsoft and BlackBerry—the two enterprise fortresses—merging to fight iPhone."
@@ -4960,7 +4960,7 @@ Next decision (Q4 2011): Do you finally admit failure and exit? Or do you sink a
                     stock: -4.5,
                     marketShare: -7,
                     morale: "confused",
-                    unlockedArtifacts: ["htc-touch-pro2"],
+                    unlockedArtifacts: [],
                     narrative: `September 2009: You announce Windows Mobile 6.5 "Professional Edition" - The hybrid strategy.
 
 Tagline: "The Best of Both Worlds: Touch Innovation Meets Professional Power"
