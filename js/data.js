@@ -3330,60 +3330,23 @@ Lesson: Open sourcing dying platform is slow, painful death. Better to maintain 
 
 {
     id: "d1-alt-enterprise-fortress",
-    date: {
-        date: "JUL 2009",
-        ceo: "S. Ballmer",
-        cash: 29.5,
-        stock: 23.40,
-        marketShare: 22,
-        morale: "uncertain"
-    },
+    type: "decision",
+    date: "JUL 2009",
+    timeMarker: "JUL 2009",
     title: "The BYOD Threat",
-    context: "30 months after doubling down on enterprise. Your fortress strategy assumed consumer and business markets would stay separate. They're converging.",
-    situation: `July 2009. The enterprise fortress is under siege.
+    storyImage: '<i class="ph ph-shield-warning" style="font-size: 4rem; color: #ef4444;"></i>',
+    storyText: `30 months after doubling down on enterprise. Your fortress strategy assumed consumer and business markets would stay separate. They're converging.
+
+July 2009. The enterprise fortress is under siege.
 
 You ignored the iPhone in 2007. Bet everything on enterprise: bigger screens, physical keyboards, Exchange integration, IT admin controls. Spent $100M on enterprise-only features. For 18 months, it worked. CIOs loved the control. Market share held at 28%.
 
 Then the Goldman Sachs CIO sent the email heard around Redmond: "Our traders want iPhones. Security concerns are secondary to productivity. We're allowing them."
 
-The data is brutal:
+The enterprise-only strategy is collapsing. Market share dropping from 28% to 22%. CIOs can't stop the BYOD wave. Your moat is gone.`,
 
-**BYOD Explosion (2008-2009):**
-- 47% of enterprises now allowing personal devices (up from 8% in 2007)
-- iPhone 3GS (June 2009) has full Exchange support - your enterprise moat is gone
-- "Consumerization of IT" is the new buzzword - CIOs losing control to end users
-
-**Market Share Collapse:**
-- Q4 2007: 38% (pre-iPhone enterprise focus)
-- Q2 2008: 28% (held strong initially)
-- Q2 2009: 22% (now in freefall)
-
-**The Defection Pattern:**
-- Enterprise customers aren't leaving immediately
-- But new device purchases: 65% iPhone/Android, 18% Windows Mobile
-- Your install base is aging - replacements going elsewhere
-
-**iPhone 3GS Changed Everything (June 2009):**
-- Exchange ActiveSync built-in (Apple hired Microsoft Exchange engineers)
-- Remote wipe, PIN lock, encryption - enterprise features you thought were your moat
-- Consumer appeal + enterprise features = your worst nightmare
-
-**BlackBerry Bleeding Too:**
-- They also bet on enterprise-only: 43% → 20% share
-- Watching their playbook is watching your future
-
-Your board is furious. "We told you to address the iPhone threat in 2007. You said enterprise would protect us. It didn't."
-
-Three strategic options remain, none good:
-
-1. **Consumer Pivot** - Build a touch-based consumer Windows Phone now (30 months late, iPhone 3GS has 4M app advantage)
-2. **Secure Enterprise** - Block iPhones, tighter IT controls, enterprise-only doubling down (will CIOs enforce this or rebel?)
-3. **Acquire BlackBerry** - Merge two dying enterprise platforms ($7B, but RIM has 20% share and QNX OS)
-4. **Hybrid Strategy** - Touch-enabled enterprise device (split the difference, satisfy no one?)
-
-Your CFO: "The enterprise fortress strategy cost us the consumer market. Now BYOD is costing us the enterprise market too. We're trapped."
-
-The clock is ticking. Every quarter you stay enterprise-only, you lose another 3 percentage points.`,
+    objective: "Respond to Enterprise Collapse",
+    availableInfo: ["byod-enterprise-disruption-2009"],
 
     informationSources: [
         {
