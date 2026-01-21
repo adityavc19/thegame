@@ -119,19 +119,64 @@
             statusDiv.innerHTML = '⏳ Sending test submission...';
 
             try {
-                const formData = new FormData();
-                formData.append(FIELD_IDS.rating, 'Excellent');
-                formData.append(FIELD_IDS.enjoyed, 'Decision-making process');
-                formData.append(FIELD_IDS.enjoyed, 'Artifact collection');
-                formData.append(FIELD_IDS.improvements, 'This is a test submission from the test page');
-                formData.append(FIELD_IDS.playAgain, 'Netflix vs Blockbuster, Tesla startup story');
-                formData.append(FIELD_IDS.email, 'test@example.com');
+                // Try using iframe submission method instead
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = FORM_ACTION_URL;
+                form.target = 'hidden_iframe';
+                form.style.display = 'none';
 
-                await fetch(FORM_ACTION_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: formData
+                // Add rating (required)
+                const ratingInput = document.createElement('input');
+                ratingInput.type = 'hidden';
+                ratingInput.name = FIELD_IDS.rating;
+                ratingInput.value = 'Excellent';
+                form.appendChild(ratingInput);
+
+                // Add enjoyed items (required, multiple checkboxes)
+                const enjoyedItems = ['Decision-making process', 'Artifact collection'];
+                enjoyedItems.forEach(item => {
+                    const enjoyedInput = document.createElement('input');
+                    enjoyedInput.type = 'hidden';
+                    enjoyedInput.name = FIELD_IDS.enjoyed;
+                    enjoyedInput.value = item;
+                    form.appendChild(enjoyedInput);
                 });
+
+                // Add improvements (optional)
+                const improvementsInput = document.createElement('input');
+                improvementsInput.type = 'hidden';
+                improvementsInput.name = FIELD_IDS.improvements;
+                improvementsInput.value = 'This is a test submission from the test page';
+                form.appendChild(improvementsInput);
+
+                // Add scenarios (optional)
+                const scenariosInput = document.createElement('input');
+                scenariosInput.type = 'hidden';
+                scenariosInput.name = FIELD_IDS.playAgain;
+                scenariosInput.value = 'Netflix vs Blockbuster, Tesla startup story';
+                form.appendChild(scenariosInput);
+
+                // Add email (optional)
+                const emailInput = document.createElement('input');
+                emailInput.type = 'hidden';
+                emailInput.name = FIELD_IDS.email;
+                emailInput.value = 'test@example.com';
+                form.appendChild(emailInput);
+
+                // Create hidden iframe if doesn't exist
+                let iframe = document.getElementById('hidden_iframe');
+                if (!iframe) {
+                    iframe = document.createElement('iframe');
+                    iframe.name = 'hidden_iframe';
+                    iframe.id = 'hidden_iframe';
+                    iframe.style.display = 'none';
+                    document.body.appendChild(iframe);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
 
                 statusDiv.className = 'status success';
                 statusDiv.innerHTML = `

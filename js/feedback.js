@@ -302,22 +302,72 @@ const FeedbackSystem = {
             return;
         }
 
-        // Create form data for Google Forms submission
-        const formData = new FormData();
-        formData.append(this.FIELD_IDS.rating, data.rating);
-        formData.append(this.FIELD_IDS.enjoyed, data.enjoyed);
-        formData.append(this.FIELD_IDS.improvements, data.improvements);
-        formData.append(this.FIELD_IDS.playAgain, data.playAgain);
-        formData.append(this.FIELD_IDS.email, data.email);
-        formData.append(this.FIELD_IDS.scenarioId, data.scenarioId);
-        formData.append(this.FIELD_IDS.completionTime, data.completionTime);
+        // Use hidden iframe submission to avoid CORS issues
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = this.FORM_ACTION_URL;
+        form.target = 'aurora_feedback_iframe';
+        form.style.display = 'none';
 
-        // Submit to Google Forms (using no-cors mode to avoid CORS issues)
-        await fetch(this.FORM_ACTION_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: formData
-        });
+        // Add rating (required)
+        if (data.rating) {
+            const ratingInput = document.createElement('input');
+            ratingInput.name = this.FIELD_IDS.rating;
+            ratingInput.value = data.rating;
+            form.appendChild(ratingInput);
+        }
+
+        // Add enjoyed items (required, checkboxes - need multiple entries)
+        if (data.enjoyed) {
+            const enjoyedItems = data.enjoyed.split(', ');
+            enjoyedItems.forEach(item => {
+                if (item.trim()) {
+                    const enjoyedInput = document.createElement('input');
+                    enjoyedInput.name = this.FIELD_IDS.enjoyed;
+                    enjoyedInput.value = item.trim();
+                    form.appendChild(enjoyedInput);
+                }
+            });
+        }
+
+        // Add improvements (optional)
+        if (data.improvements) {
+            const improvementsInput = document.createElement('input');
+            improvementsInput.name = this.FIELD_IDS.improvements;
+            improvementsInput.value = data.improvements;
+            form.appendChild(improvementsInput);
+        }
+
+        // Add scenario ideas (optional)
+        if (data.playAgain) {
+            const playAgainInput = document.createElement('input');
+            playAgainInput.name = this.FIELD_IDS.playAgain;
+            playAgainInput.value = data.playAgain;
+            form.appendChild(playAgainInput);
+        }
+
+        // Add email (optional)
+        if (data.email) {
+            const emailInput = document.createElement('input');
+            emailInput.name = this.FIELD_IDS.email;
+            emailInput.value = data.email;
+            form.appendChild(emailInput);
+        }
+
+        // Create hidden iframe if doesn't exist
+        let iframe = document.getElementById('aurora_feedback_iframe');
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.name = 'aurora_feedback_iframe';
+            iframe.id = 'aurora_feedback_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+        }
+
+        // Submit form
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
 
         // Also save locally as backup
         this.saveToLocalStorage(data);
