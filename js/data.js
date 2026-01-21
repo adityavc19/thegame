@@ -3346,7 +3346,7 @@ Then the Goldman Sachs CIO sent the email heard around Redmond: "Our traders wan
 The enterprise-only strategy is collapsing. Market share dropping from 28% to 22%. CIOs can't stop the BYOD wave. Your moat is gone.`,
 
     objective: "Respond to Enterprise Collapse",
-    availableInfo: ["byod-enterprise-disruption-2009"],
+    availableInfo: [],
 
     informationSources: [
         {
