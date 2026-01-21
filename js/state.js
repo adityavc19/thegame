@@ -177,12 +177,12 @@ class GameState {
             "d1-iphone-response": {
                 "enterprise-double-down": "d1-alt-enterprise-fortress"
             },
-            // D1-ALT: Enterprise Fortress - All options merge back to main timeline at D2
+            // D1-ALT: Enterprise Fortress - All options converge to D3 Platform Rebuild
             "d1-alt-enterprise-fortress": {
-                "consumer-pivot-late": "d2-android-threat",
-                "secure-enterprise-fortress": "d2-android-threat",
-                "acquire-blackberry-2009": "d2-android-threat",
-                "hybrid-strategy-doomed": "d2-android-threat"
+                "consumer-pivot-late": "d3-platform-rebuild",
+                "secure-enterprise-fortress": "d3-platform-rebuild",
+                "acquire-blackberry-2009": "d3-platform-rebuild",
+                "hybrid-strategy-doomed": "d3-platform-rebuild"
             }
             // Add more routing rules here as needed
             // "decision-id": {
