@@ -556,6 +556,8 @@ const UI = {
                     </div>
                 </div>
 
+                ${FeedbackSystem.renderFeedbackForm()}
+
                 <button class="continue-btn" id="restart-btn" style="margin-top: 40px;">
                     Try Different Path →
                 </button>
@@ -571,6 +573,9 @@ const UI = {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
+
+        // Attach feedback form event listeners
+        FeedbackSystem.attachEventListeners();
     },
 
     // Open info card modal

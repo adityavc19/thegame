@@ -32,6 +32,12 @@ class GameState {
         this.unlockedArtifacts = [];
         this.currentScreen = "landing";
         this.selectedOption = null;
+
+        // Track game start time for completion metrics
+        if (!localStorage.getItem('aurora_game_start_time')) {
+            localStorage.setItem('aurora_game_start_time', Date.now().toString());
+        }
+
         this.saveState();
     }
 
