@@ -1922,13 +1922,7 @@ But you have cash—more than Google's mobile division, more than any Android pa
 
 Project Pink becomes the KIN—Microsoft's first consumer phone. Verizon agrees to a April 2010 launch with a major marketing push. The team pulls all-nighters to hit the date. They're exhausted but proud.
 
-The reviews are brutal.
-
-"A phone for people who don't want smartphones" (Engadget).
-"Confusingly positioned" (Gizmodo).
-"DOA" (TechCrunch).
-
-But you're in the market. You're learning. The question is whether you can learn fast enough—and whether Verizon's patience will last.`
+The reviews are brutal. "A phone for people who don't want smartphones" (Engadget). "Confusingly positioned" (Gizmodo). "DOA" (TechCrunch). But you're in the market. You're learning. The question is whether you can learn fast enough—and whether Verizon's patience will last.`
                                 },
                                 delayed: {
                                     date: "MAR 2010",
