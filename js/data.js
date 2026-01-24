@@ -43,7 +43,7 @@ const scenarioData = {
             name: "HTC TyTN II (Windows Mobile 6)",
             category: "Device",
             rarity: "Uncommon",
-            unlockedBy: "Chose 'Fortify Enterprise' in D1",
+            unlockedBy: "Chose 'Reinforce Enterprise' in D1",
             caseNumber: "WM-001",
             forensicTitle: "The Enterprise Champion",
             status: "DISCONTINUED",
@@ -1386,7 +1386,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
             options: [
                 {
                     id: "d1-enterprise-fortress",
-                    title: "Fortify Enterprise",
+                    title: "Reinforce Enterprise",
                     description: "Double down on what's working. Accelerate Windows Mobile enterprise features, deepen IT partnerships, let Apple have the consumer toy market.",
                     risk: "Consumer market evolves into the real market",
                     upside: "Protect $28B enterprise ecosystem",
@@ -1454,10 +1454,10 @@ Your enterprise team is furious about the split focus. "We're winning in enterpr
 The press catches wind of Project Pink. "Microsoft finally takes iPhone seriously," writes Engadget. Your stock dips 2% on concerns about spending. The clock starts.`
                         },
                         delayed: {
-                            date: "SEP 2007",
+                            date: "SEP 2009",
                             cash: -0.5,
                             marketCap: -2,
-                            marketShare: -1,
+                            marketShare: -20,
                             morale: "low",
                             narrative: `Project Pink is behind schedule. The industrial design team and the software team can't agree on anything. J Allard wants revolutionary; your mobile veterans want evolutionary. Meanwhile, the iPhone SDK launches to 100,000 developer downloads in four days.
 
