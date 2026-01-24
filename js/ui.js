@@ -737,7 +737,7 @@ const UI = {
                 ${option.consequences.delayed ? `
                     <div class="impact-section">
                         <h3>Emerging Challenges</h3>
-                        <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">
+                        <p style="font-size: 1rem; line-height: 1.7; margin: 0;">
                             ${option.consequences.delayed.narrative}
                         </p>
                     </div>
