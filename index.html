@@ -4,19 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aurora Labs - Interactive Business Intelligence</title>
-    <link rel="stylesheet" href="css/styles.css?v=1768466913">
+    <link rel="stylesheet" href="css/styles.css?v=1769100024">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
     <!-- Metrics Bar -->
     <div id="metrics-bar" class="metrics-bar">
-        <div class="metric-detail">
+        <div class="metric-detail clickable" id="progress-trigger" role="button" tabindex="0" aria-label="View journey progress">
             <span class="metric-label">DATE</span>
-            <span class="metric-value" id="date-metric">JAN 2007</span>
+            <span class="metric-value">
+                <span id="date-metric">JAN 2007</span>
+                <span class="progress-badge" id="progress-badge" title="Decisions made - Click to view journey">0/6</span>
+            </span>
         </div>
         <div class="metric-detail">
-            <span class="metric-label">STOCK PRICE</span>
-            <span class="metric-value" id="stock-metric">$29.80</span>
+            <span class="metric-label">MARKET CAP</span>
+            <span class="metric-value" id="marketcap-metric">$250B</span>
         </div>
         <div class="metric-detail">
             <span class="metric-label">MARKET SHARE</span>
@@ -30,6 +33,11 @@
                 <path d="M5 20c0-4 3-7 7-7s7 3 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
         </button>
+
+        <!-- Progress Bar (thin line at bottom of metrics bar) -->
+        <div class="progress-bar-container" id="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
     </div>
 
     <!-- Main Content Container -->
@@ -68,7 +76,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button class="modal-close" id="modal-close">✕</button>
-                <button class="modal-share">Share</button>
             </div>
             <div id="modal-body" class="modal-body">
                 <!-- Card content will be inserted here -->
@@ -106,12 +113,25 @@
         </div>
     </div>
 
-    <script src="js/data.js?v=1769000684"></script>
-    <script src="js/state.js?v=1769000684"></script>
-    <script src="js/artifacts.js?v=1769000684"></script>
-    <script src="js/transitions.js?v=1769000684"></script>
-    <script src="js/feedback.js?v=1769000684"></script>
-    <script src="js/ui.js?v=1769000684"></script>
-    <script src="js/app.js?v=1769000684"></script>
+    <!-- Journey/Progress Modal -->
+    <div id="journey-modal" class="modal journey-modal hidden">
+        <div class="journey-modal-content">
+            <div class="journey-modal-header">
+                <h2>Your Journey</h2>
+                <button class="modal-close" id="journey-modal-close">✕</button>
+            </div>
+            <div class="journey-modal-body" id="journey-modal-body">
+                <!-- Journey timeline will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js?v=1769100024"></script>
+    <script src="js/state.js?v=1769100024"></script>
+    <script src="js/artifacts.js?v=1769100024"></script>
+    <script src="js/transitions.js?v=1769100024"></script>
+    <script src="js/feedback.js?v=1769100024"></script>
+    <script src="js/ui.js?v=1769100024"></script>
+    <script src="js/app.js?v=1769100024"></script>
 </body>
 </html>

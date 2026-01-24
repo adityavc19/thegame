@@ -75,79 +75,392 @@ const Transitions = {
         }, 3000);
     },
 
+    // ========================================
+    // TRANSITION MESSAGE DATA
+    // ========================================
+    //
+    // To add/edit transition messages for a specific decision point:
+    // 1. Find the decision ID from data.js (e.g., 'd2-a-enterprise-path')
+    // 2. Add an entry to TRANSITION_MESSAGES with that exact ID
+    // 3. If no exact match exists, the system falls back to prefix matching
+    //
+    // Format:
+    // 'decision-id': {
+    //     mainLabel: "Status text shown at top",
+    //     indicators: [
+    //         { label: "Metric Name", oldValue: "Before", newValue: "After" },
+    //         { label: "Metric Name", oldValue: "Before", newValue: "After" },
+    //         { label: "Metric Name", oldValue: "Before", newValue: "After" }
+    //     ]
+    // }
+
+    TRANSITION_MESSAGES: {
+    // ========================================
+    // D1 - THE iPHONE MOMENT (JAN 2007 → SEP 2009)
+    // ========================================
+    'd1-iphone-moment': {
+    mainLabel: "Market Status",
+    indicators: [
+        { label: "Global Smartphone Users", oldValue: "122M", newValue: "?" },
+        { label: "Your Share", oldValue: "42%", newValue: "?" },
+        { label: "Apple Share", oldValue: "0%", newValue: "?" }
+    ]
+},
+
+    // ========================================
+    // D2 - STRATEGIC PATH (JAN 2007 → SEP 2009)
+    // 32 months from iPhone announcement to Android's rise
+    // ========================================
+    'd2-a-enterprise-path': {
+        mainLabel: "32 months pass...",
+        indicators: [
+            { label: "Windows Mobile Share", oldValue: "42%", newValue: "25%" },
+            { label: "Android Market Share", oldValue: "0%", newValue: "25%" },
+            { label: "BYOD Requests", oldValue: "Rare", newValue: "+400%" }
+        ]
+    },
+    'd2-b-consumer-path': {
+        mainLabel: "32 months pass...",
+        indicators: [
+            { label: "Windows Mobile Share", oldValue: "42%", newValue: "22%" },
+            { label: "Project Pink Status", oldValue: "Approved", newValue: "$200M over budget" },
+            { label: "OEM Loyalty", oldValue: "Strong", newValue: "Wavering" }
+        ]
+    },
+    'd2-c-acquisition-path': {
+        mainLabel: "32 months pass...",
+        indicators: [
+            { label: "Combined Share", oldValue: "82%", newValue: "65%" },
+            { label: "Integration Status", oldValue: "Planned", newValue: "18 months delayed" },
+            { label: "Platform Strategy", oldValue: "TBD", newValue: "Still debating" }
+        ]
+    },
+    'd2-d-wait-path': {
+        mainLabel: "32 months pass...",
+        indicators: [
+            { label: "Windows Mobile Share", oldValue: "42%", newValue: "20%" },
+            { label: "Market Clarity", oldValue: "Uncertain", newValue: "iPhone + Android win" },
+            { label: "Strategic Options", oldValue: "Many", newValue: "Fewer" }
+        ]
+    },
+
+    // ========================================
+    // D3 - PLATFORM & PARTNERSHIP (Q4 2009 → Q4 2010)
+    // ========================================
+    
+    // Platform rebuild variants
+    'd3-p-standard': {
+        mainLabel: "12 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "34%", newValue: "62%" },
+            { label: "Carrier Subsidy Demands", oldValue: "$0", newValue: "$150/device" },
+            { label: "Platform R&D Burn", oldValue: "$0", newValue: "$890M" }
+        ]
+    },
+    'd3-p-vertical': {
+        mainLabel: "12 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "34%", newValue: "62%" },
+            { label: "Hardware Prototypes Built", oldValue: "0", newValue: "4" },
+            { label: "Vertical Integration Spend", oldValue: "$0", newValue: "$1.4B" }
+        ]
+    },
+    'd3-p-already-building': {
+        mainLabel: "12 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "34%", newValue: "62%" },
+            { label: "WinMo 7 Development", oldValue: "Alpha", newValue: "Beta" },
+            { label: "Total Platform Investment", oldValue: "$340M", newValue: "$920M" }
+        ]
+    },
+
+    // Enterprise pivot
+    'd3-e': {
+        mainLabel: "12 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "34%", newValue: "62%" },
+            { label: "BYOD Adoption Rate", oldValue: "12%", newValue: "38%" },
+            { label: "Enterprise Contracts Renewed", oldValue: "94%", newValue: "71%" }
+        ]
+    },
+
+    // Partnership/Integration variants
+    'd3-i-bb': {
+        mainLabel: "12 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "34%", newValue: "62%" },
+            { label: "BlackBerry Market Share", oldValue: "20%", newValue: "16%" },
+            { label: "Partnership Investment", oldValue: "$0", newValue: "$450M" }
+        ]
+    },
+    'd3-i-force-windows': {
+        mainLabel: "12 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "34%", newValue: "62%" },
+            { label: "OEM Partners Remaining", oldValue: "8", newValue: "3" },
+            { label: "Licensing Revenue Lost", oldValue: "$0", newValue: "$280M" }
+        ]
+    },
+    'd3-i-dual': {
+        mainLabel: "12 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "34%", newValue: "62%" },
+            { label: "Platforms Under Development", oldValue: "1", newValue: "2" },
+            { label: "Dual Strategy Burn Rate", oldValue: "$0", newValue: "$1.6B/yr" }
+        ]
+    },
+    'd3-i-nokia-leads': {
+        mainLabel: "12 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "34%", newValue: "62%" },
+            { label: "Nokia Stock Price", oldValue: "$12.40", newValue: "$8.12" },
+            { label: "Partnership Investment", oldValue: "$0", newValue: "$1.8B" }
+        ]
+    },
+    'd3-i-nokia': {
+        mainLabel: "12 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "34%", newValue: "62%" },
+            { label: "Nokia Stock Price", oldValue: "$12.40", newValue: "$8.12" },
+            { label: "Partnership Investment", oldValue: "$0", newValue: "$1.2B" }
+        ]
+    },
+
+    // Android variants
+    'd3-a-nokia-android': {
+        mainLabel: "12 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "34%", newValue: "62%" },
+            { label: "Google Services Dependency", oldValue: "None", newValue: "Critical" },
+            { label: "Internal Opposition", oldValue: "Strong", newValue: "Ongoing" }
+        ]
+    },
+    'd3-a-fork-no-hardware': {
+        mainLabel: "12 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "34%", newValue: "62%" },
+            { label: "Android Forks Attempted", oldValue: "0", newValue: "3" },
+            { label: "Fork Development Cost", oldValue: "$0", newValue: "$680M" }
+        ]
+    },
+
+    // ========================================
+    // D4 - APP ECOSYSTEM (Q4 2010 → Q4 2012)
+    // ========================================
+    'd4-still-fighting': {
+        mainLabel: "24 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "72%", newValue: "91%" },
+            { label: "Nokia Stock Price", oldValue: "$8.12", newValue: "$2.78" },
+            { label: "Total Mobile Investment", oldValue: "$3.2B", newValue: "$8.1B" }
+        ]
+    },
+    'd4-crisis-mode': {
+        mainLabel: "24 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "72%", newValue: "91%" },
+            { label: "Nokia Stock Price", oldValue: "$8.12", newValue: "$2.78" },
+            { label: "Monthly Cash Burn", oldValue: "$180M", newValue: "$95M" }
+        ]
+    },
+    'd4-crisis-mode-nokia-owned': {
+        mainLabel: "24 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "72%", newValue: "91%" },
+            { label: "Nokia Integration Status", oldValue: "Struggling", newValue: "Failing" },
+            { label: "Total Acquisition Cost", oldValue: "$45B", newValue: "$57B" }
+        ]
+    },
+    'd4-differentiated': {
+        mainLabel: "24 months pass...",
+        indicators: [
+            { label: "iOS + Android Combined", oldValue: "72%", newValue: "91%" },
+            { label: "Nokia Stock Price", oldValue: "$8.12", newValue: "$2.78" },
+            { label: "Enterprise Mobile Revenue", oldValue: "$890M", newValue: "$1.4B" }
+        ]
+    },
+
+    // ========================================
+    // D5 - FINAL DECISION (Q4 2012 → Q1 2017)
+    // ========================================
+    'd5-last-stand': {
+        mainLabel: "24 months pass...",
+        indicators: [
+            { label: "CEO", oldValue: "Ballmer", newValue: "Nadella" },
+            { label: "Nokia Write-down", oldValue: "Pending", newValue: "$7.6B" },
+            { label: "Windows Phone Share", oldValue: "2.5%", newValue: "1.8%" }
+        ]
+    },
+    'd5-niche-survivor': {
+        mainLabel: "24 months pass...",
+        indicators: [
+            { label: "CEO", oldValue: "Ballmer", newValue: "Nadella" },
+            { label: "Mobile Division", oldValue: "Subsidy", newValue: "Profitable" },
+            { label: "Active Users", oldValue: "40M", newValue: "35M" }
+        ]
+    },
+    'd5-platform-contender': {
+        mainLabel: "24 months pass...",
+        indicators: [
+            { label: "CEO", oldValue: "Ballmer", newValue: "Nadella" },
+            { label: "Windows Phone Share", oldValue: "8%", newValue: "12%" },
+            { label: "Active Users", oldValue: "100M", newValue: "150M" }
+        ]
+    }
+},
+
+    // Prefix-based fallback messages (used when no exact match found)
+    TRANSITION_PREFIXES: [
+        {
+            prefixes: ['d1-'],
+            messages: {
+                mainLabel: "Q1 2007 concluding...",
+                indicators: [
+                    { label: "iPhone Pre-orders", oldValue: "—", newValue: "270K" },
+                    { label: "Media Coverage", oldValue: "Neutral", newValue: "Enthusiastic" },
+                    { label: "Carrier Interest", oldValue: "AT&T Exclusive", newValue: "Others Watching" }
+                ]
+            }
+        },
+        {
+            prefixes: ['d2-a', 'd2a'],
+            messages: {
+                mainLabel: "Q3 2008 concluding...",
+                indicators: [
+                    { label: "Enterprise Contracts", oldValue: "Stable", newValue: "Under Review" },
+                    { label: "iPhone Enterprise", oldValue: "0%", newValue: "Growing" },
+                    { label: "IT Department Pressure", oldValue: "Low", newValue: "Increasing" }
+                ]
+            }
+        },
+        {
+            prefixes: ['d2-b', 'd2b'],
+            messages: {
+                mainLabel: "Q3 2008 concluding...",
+                indicators: [
+                    { label: "Consumer Mindshare", oldValue: "Declining", newValue: "Critical" },
+                    { label: "App Store Apps", oldValue: "500", newValue: "10,000+" },
+                    { label: "Touch Interface Gap", oldValue: "Noticeable", newValue: "Widening" }
+                ]
+            }
+        },
+        {
+            prefixes: ['d2-c', 'd2c'],
+            messages: {
+                mainLabel: "Q3 2008 concluding...",
+                indicators: [
+                    { label: "Acquisition Targets", oldValue: "Scanning", newValue: "Evaluating" },
+                    { label: "Board Sentiment", oldValue: "Open", newValue: "Cautious" },
+                    { label: "Available Capital", oldValue: "$21B", newValue: "Ready to Deploy" }
+                ]
+            }
+        },
+        {
+            prefixes: ['d2-d', 'd2d'],
+            messages: {
+                mainLabel: "Q3 2008 concluding...",
+                indicators: [
+                    { label: "Market Position", oldValue: "42%", newValue: "38%" },
+                    { label: "Competitive Intel", oldValue: "Gathering", newValue: "Analyzing" },
+                    { label: "Android Threat", oldValue: "Emerging", newValue: "Accelerating" }
+                ]
+            }
+        },
+        {
+            prefixes: ['d3-p', 'd3p'],
+            messages: {
+                mainLabel: "Q4 2009 concluding...",
+                indicators: [
+                    { label: "Platform Strategy", oldValue: "WinMobile 6.5", newValue: "Evaluating Options" },
+                    { label: "Developer Interest", oldValue: "Declining", newValue: "Waiting" },
+                    { label: "Android Market Share", oldValue: "4%", newValue: "9%" }
+                ]
+            }
+        },
+        {
+            prefixes: ['d3-e', 'd3e'],
+            messages: {
+                mainLabel: "Q4 2009 concluding...",
+                indicators: [
+                    { label: "Enterprise Strategy", oldValue: "Reviewing", newValue: "Pivoting" },
+                    { label: "CIO Sentiment", oldValue: "Loyal", newValue: "Questioning" },
+                    { label: "BYOD Trend", oldValue: "Emerging", newValue: "Accelerating" }
+                ]
+            }
+        },
+        {
+            prefixes: ['d3-i', 'd3i'],
+            messages: {
+                mainLabel: "Q4 2009 concluding...",
+                indicators: [
+                    { label: "Partnership Talks", oldValue: "Ongoing", newValue: "Critical Phase" },
+                    { label: "Nokia Market Share", oldValue: "38%", newValue: "35%" },
+                    { label: "Strategic Options", oldValue: "Multiple", newValue: "Narrowing" }
+                ]
+            }
+        },
+        {
+            prefixes: ['d3-a', 'd3a'],
+            messages: {
+                mainLabel: "Q4 2009 concluding...",
+                indicators: [
+                    { label: "Android Ecosystem", oldValue: "Growing", newValue: "Exploding" },
+                    { label: "OEM Defections", oldValue: "2 major", newValue: "4 major" },
+                    { label: "Fork Viability", oldValue: "Theoretical", newValue: "Possible" }
+                ]
+            }
+        },
+        {
+            prefixes: ['d4-'],
+            messages: {
+                mainLabel: "Q4 2010 concluding...",
+                indicators: [
+                    { label: "Your App Count", oldValue: "1,000", newValue: "18,000" },
+                    { label: "iOS App Count", oldValue: "225K", newValue: "425K" },
+                    { label: "Developer Momentum", oldValue: "Low", newValue: "Building" }
+                ]
+            }
+        },
+        {
+            prefixes: ['d5-'],
+            messages: {
+                mainLabel: "Q4 2012 concluding...",
+                indicators: [
+                    { label: "Market Position", oldValue: "Declining", newValue: "Stabilizing?" },
+                    { label: "Financial Burn", oldValue: "-$2.1B", newValue: "Continuing" },
+                    { label: "Board Patience", oldValue: "Thin", newValue: "Final Review" }
+                ]
+            }
+        }
+    ],
+
     // Get context-aware transition messages based on decision point
     getTransitionMessages(decisionPoint) {
-        // Default messages
-        const messages = {
-            mainLabel: "Analyzing market data...",
+        const id = decisionPoint.id;
+
+        // 1. Check for exact match in TRANSITION_MESSAGES
+        if (this.TRANSITION_MESSAGES[id]) {
+            return this.TRANSITION_MESSAGES[id];
+        }
+
+        // 2. Check for prefix match in TRANSITION_PREFIXES
+        for (const entry of this.TRANSITION_PREFIXES) {
+            for (const prefix of entry.prefixes) {
+                if (id.startsWith(prefix)) {
+                    return entry.messages;
+                }
+            }
+        }
+
+        // 3. Return default fallback
+        return {
+            mainLabel: "Quarter concluding...",
             indicators: [
                 { label: "iPhone Market Share", oldValue: "0%", newValue: "2%" },
                 { label: "Developer Sentiment", oldValue: "Skeptical", newValue: "Curious" },
                 { label: "Enterprise Demand", oldValue: "Stable", newValue: "Shifting" }
             ]
         };
-
-        // Customize based on decision point ID
-        switch(decisionPoint.id) {
-            case "d1-iphone-response":
-                messages.mainLabel = "Q1 2007 concluding...";
-                messages.indicators = [
-                    { label: "iPhone Pre-orders", oldValue: "—", newValue: "270K" },
-                    { label: "Media Coverage", oldValue: "Neutral", newValue: "Enthusiastic" },
-                    { label: "Carrier Interest", oldValue: "AT&T Exclusive", newValue: "Others Watching" }
-                ];
-                break;
-
-            case "d2-android-threat":
-                messages.mainLabel = "Q3 2009 concluding...";
-                messages.indicators = [
-                    { label: "Your Market Share", oldValue: "37%", newValue: "32%" },
-                    { label: "Android Growth", oldValue: "2.5%", newValue: "8%" },
-                    { label: "OEM Commitment", oldValue: "Weakening", newValue: "Critical Decision Point" }
-                ];
-                break;
-
-            case "d3-platform-rebuild":
-                messages.mainLabel = "Q4 2009 concluding...";
-                messages.indicators = [
-                    { label: "Your Market Share", oldValue: "32%", newValue: "29%" },
-                    { label: "Platform Status", oldValue: "WinMobile 6.5", newValue: "Planning WP7" },
-                    { label: "Competition", oldValue: "Android 24%, iOS 16%", newValue: "Growing Fast" }
-                ];
-                break;
-
-            case "d4-app-ecosystem":
-                messages.mainLabel = "Q4 2010 concluding...";
-                messages.indicators = [
-                    { label: "Windows Phone 7 Launch", oldValue: "In Development", newValue: "Live - 18K Apps" },
-                    { label: "Your Market Share", oldValue: "29%", newValue: "21%" },
-                    { label: "App Gap vs iOS", oldValue: "200K apps", newValue: "425K apps" }
-                ];
-                break;
-
-            case "d5-sustainability":
-                messages.mainLabel = "Q4 2012 concluding...";
-                messages.indicators = [
-                    { label: "Your Market Share", oldValue: "21%", newValue: "18%" },
-                    { label: "App Ecosystem", oldValue: "18K apps", newValue: "62K apps" },
-                    { label: "Financial Status", oldValue: "-$1.1B invested", newValue: "Path to Profit Visible" }
-                ];
-                break;
-
-            case "d6-long-term":
-                messages.mainLabel = "2013-2016 concluding...";
-                messages.indicators = [
-                    { label: "Your Market Share", oldValue: "18%", newValue: "15%" },
-                    { label: "Profitability", oldValue: "-$150M loss (2013)", newValue: "+$240M profit (2016)" },
-                    { label: "CEO Transition", oldValue: "Steve Ballmer", newValue: "Satya Nadella" }
-                ];
-                break;
-
-            default:
-                messages.mainLabel = "Quarter concluding...";
-        }
-
-        return messages;
     },
 
     // Show staggered consequence reveals
@@ -263,16 +576,16 @@ const Transitions = {
 
         if (consequences.cash !== 0) {
             changes.push({
-                label: 'Cash Position',
+                label: 'Investment',
                 value: `${consequences.cash > 0 ? '+' : ''}$${Math.abs(consequences.cash).toFixed(1)}B`,
                 positive: consequences.cash > 0
             });
         }
-        if (consequences.stock !== 0) {
+        if (consequences.marketCap !== 0) {
             changes.push({
-                label: 'Stock Price',
-                value: `${consequences.stock > 0 ? '+' : ''}$${Math.abs(consequences.stock).toFixed(2)}`,
-                positive: consequences.stock > 0
+                label: 'Market Cap',
+                value: `${consequences.marketCap > 0 ? '+' : ''}$${Math.abs(consequences.marketCap).toFixed(0)}B`,
+                positive: consequences.marketCap > 0
             });
         }
         if (consequences.marketShare !== 0) {
@@ -282,14 +595,7 @@ const Transitions = {
                 positive: consequences.marketShare > 0
             });
         }
-        if (consequences.morale) {
-            const moraleLabel = consequences.morale.charAt(0).toUpperCase() + consequences.morale.slice(1);
-            changes.push({
-                label: 'Team Morale',
-                value: moraleLabel,
-                positive: ['optimistic', 'hopeful', 'neutral'].includes(consequences.morale)
-            });
-        }
+        // Morale is shown only in profile section, not in key metrics
 
         return `
             <div class="impact-grid">

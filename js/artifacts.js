@@ -240,16 +240,15 @@ const ArtifactUI = {
     showNewArtifact(artifactId) {
         const artifact = gameState.getArtifact(artifactId);
 
-        // Create notification
+        // Create compact notification
         const notification = document.createElement('div');
         notification.className = 'artifact-notification';
         notification.innerHTML = `
             <div class="artifact-notification-content">
                 <div class="artifact-notification-icon">${artifact.model3D}</div>
                 <div class="artifact-notification-text">
-                    <div class="artifact-notification-title">Artifact Unlocked!</div>
-                    <div class="artifact-notification-name">${artifact.name}</div>
-                    <div class="artifact-card-rarity ${artifact.rarity.toLowerCase()}">${artifact.rarity}</div>
+                    <span class="artifact-notification-title">Unlocked:</span>
+                    <span class="artifact-notification-name">${artifact.name}</span>
                 </div>
             </div>
         `;

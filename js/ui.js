@@ -8,7 +8,7 @@ const UI = {
         const metrics = gameState.getFormattedMetrics();
 
         // Update metrics with arrows (only the ones still in the UI)
-        this.updateMetricWithArrow('stock-metric', metrics.stock, 'stock', showArrows);
+        this.updateMetricWithArrow('marketcap-metric', metrics.marketCap, 'marketCap', showArrows);
         this.updateMetricWithArrow('share-metric', metrics.marketShare, 'marketShare', showArrows);
 
         // Update date metric (no arrow)
@@ -16,7 +16,7 @@ const UI = {
 
         // Add animation class for changes
         if (showArrows) {
-            this.animateMetricChange('stock-metric');
+            this.animateMetricChange('marketcap-metric');
             this.animateMetricChange('share-metric');
         }
     },
@@ -58,6 +58,299 @@ const UI = {
         }, 1000);
     },
 
+    // Update progress indicator (both badge and bar)
+    updateProgressIndicator() {
+        const progress = gameState.getProgress();
+
+        // Update progress badge (Option 3: integrated with DATE)
+        const progressBadge = document.getElementById('progress-badge');
+        if (progressBadge) {
+            progressBadge.textContent = `${progress.completed}/${progress.total}`;
+        }
+
+        // Update progress bar (Option 1: thin bar below metrics)
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        if (progressBarFill) {
+            progressBarFill.style.width = `${progress.percentage}%`;
+        }
+    },
+
+    // Render journey modal content
+    renderJourneyModal() {
+        const progress = gameState.getProgress();
+        const journey = gameState.getJourneyData();
+        const modalBody = document.getElementById('journey-modal-body');
+
+        let html = `
+            <div class="journey-progress-header">
+                <div class="journey-percentage">${progress.percentage}%</div>
+                <div class="journey-subtitle">${progress.completed} of ${progress.total} decisions made</div>
+            </div>
+        `;
+
+        if (journey.length === 0) {
+            html += `<div class="journey-empty">Your journey has just begun. Make decisions to see your path unfold.</div>`;
+        } else {
+            html += `<div class="journey-timeline">`;
+
+            // Show completed decisions
+            journey.forEach((step) => {
+                html += `
+                    <div class="journey-step completed">
+                        <div class="journey-step-dot"></div>
+                        <div class="journey-step-time">${step.timeMarker}</div>
+                        <div class="journey-step-title">${step.title}</div>
+                        <div class="journey-step-choice">→ ${step.chosenOption}</div>
+                    </div>
+                `;
+            });
+
+            // Show current decision if not complete
+            if (!progress.isComplete) {
+                const currentDecision = gameState.getCurrentDecisionPoint();
+                if (currentDecision) {
+                    html += `
+                        <div class="journey-step current">
+                            <div class="journey-step-dot"></div>
+                            <div class="journey-step-time">${currentDecision.timeMarker}</div>
+                            <div class="journey-step-title">${currentDecision.title}</div>
+                        </div>
+                    `;
+                }
+            }
+
+            html += `</div>`;
+        }
+
+        modalBody.innerHTML = html;
+    },
+
+    // Show journey modal
+    showJourneyModal() {
+        this.renderJourneyModal();
+        document.getElementById('journey-modal').classList.remove('hidden');
+    },
+
+    // Hide journey modal
+    hideJourneyModal() {
+        document.getElementById('journey-modal').classList.add('hidden');
+    },
+
+    // Backstory chapters data
+    backstoryChapters: [
+        {
+            number: 1,
+            title: "The Gates of Mobile",
+            period: "1996-1998",
+            content: `
+                <div class="backstory-image">
+                    <img src="assets/images/Windows_CE.avif" alt="Windows CE">
+                </div>
+
+                <p><strong>November 1996, Las Vegas - COMDEX Trade Show</strong></p>
+                <p>Bill Gates stands backstage, adjusting his glasses, preparing to make an announcement that would set Microsoft on a collision course with destiny. Outside, 200,000 technology professionals fill the convention center, unaware they're about to witness the birth of Windows CE - Microsoft's first serious attempt at mobile computing.</p>
+                <p>"We believe the future of computing is not just on desks, but in pockets," Gates tells the crowd, holding up a prototype "Handheld PC" the size of a small paperback. The device runs a stripped-down version of Windows, complete with a tiny Start button. The audience applauds politely.</p>
+
+                <div class="backstory-inset">
+                    <p><strong>Key Moment:</strong> Palm Pilot Dominance</p>
+                    <p>By 1998, Palm owns 70% of the handheld market. Their philosophy? "Simple is better." Microsoft's response? "We need more Windows features."</p>
+                </div>
+            `
+        },
+        {
+            number: 2,
+            title: "The Pocket PC Strategy",
+            period: "1999-2000",
+            content: `
+                <div class="backstory-image">
+                    <img src="assets/images/Windows_CE_1999.jpg" alt="Bill Gates presenting Windows CE">
+                </div>
+
+                <p><strong>The Pocket PC Strategy (1999-2000)</strong></p>
+                <p>Microsoft rebrands, pivots, and pushes harder. Windows CE becomes "Pocket PC." The strategy is pure Microsoft: use the Windows ecosystem as leverage. Office compatibility. Outlook synchronization. ActiveSync for desktop connectivity. The pitch is compelling for enterprise IT departments who already live in the Windows world.</p>
+                <p>By 2000, Microsoft has captured 30% of the PDA market. Palm is still dominant, but nervous executives in San Jose start watching Redmond more closely.</p>
+            `
+        },
+        {
+            number: 3,
+            title: "The Phone Wars Begin",
+            period: "2001-2003",
+            content: `
+                <div class="backstory-image">
+                    <img src="assets/images/Pocket_PC.jpg" alt="Steve Ballmer presenting Pocket PC">
+                </div>
+
+                <p><strong>January 2001, Microsoft Campus - Building 17</strong></p>
+                <p>Steve Ballmer, now CEO for less than a year, reviews a prototype that will change the company's trajectory. It's a phone. A Windows phone. Microsoft is no longer just competing with Palm and Handspring - they're going after Nokia and Motorola.</p>
+                <p>"The convergence of PDA and phone is inevitable," reads the internal strategy memo. "We must own both sides of this equation."</p>
+
+                <p><strong>Windows Mobile is Born</strong></p>
+                <p>The "Smartphone" edition launches in 2002, followed by a unified "Windows Mobile" platform in 2003. The pitch to manufacturers is aggressive: license Windows Mobile, get the Microsoft ecosystem, compete with Symbian and Palm.</p>
+
+                <p>By 2003, Windows Mobile has attracted major hardware partners: HTC, HP, Samsung, Dell. The enterprise market is locked up tight. IT departments love the Active Directory integration and Exchange synchronization. Fortune 500 executives carry Windows Mobile phones as status symbols.</p>
+            `
+        },
+        {
+            number: 4,
+            title: "The Empire's Peak",
+            period: "2004-2006",
+            content: `
+                <p><strong>July 2004, Redmond - Windows Mobile Team Celebration</strong></p>
+                <p>The numbers are intoxicating. Windows Mobile has captured 23% of the smartphone market. Only Nokia's Symbian stands larger. Blackberry is growing but considered a "email-only" niche player. Palm is in disarray, losing engineers and market share monthly.</p>
+                <p>"We've won the enterprise," Ballmer declares at an internal meeting. "Now we go after consumers."</p>
+
+                <div class="backstory-inset">
+                    <p><strong>The HTC Alliance</strong></p>
+                    <p>Taiwan's HTC becomes Microsoft's secret weapon. They produce sleek, capable devices that blur the line between business tool and lifestyle gadget. The HTC Universal, HTC Wizard, and HTC TyTN series become the devices that define early smartphone aspiration.</p>
+                </div>
+
+                <p><strong>The Motorola Q and the Blackberry Killer Strategy (2006)</strong></p>
+                <p>Microsoft partners with Motorola to launch the "Q" - explicitly designed to destroy Blackberry. Thin, elegant, with a full keyboard, it's Microsoft's most consumer-friendly phone yet. Sales are strong. Blackberry market share dips for the first time.</p>
+                <p>In Redmond, champagne corks pop. Windows Mobile 5.0 is stable and feature-rich. Market share holds steady at 42%. Palm is effectively dead. Symbian is fracturing into incompatible versions. Blackberry is wounded.</p>
+                <p>"We're two years away from total market dominance," predicts an internal strategy document dated November 2006.</p>
+
+            
+            `
+        },
+        {
+            number: 5,
+            title: "Final Days of the Old World",
+            period: "December 2006",
+            content: `
+                <div class="backstory-image">
+                    <img src="assets/images/windows_6.0" alt="Windows Mobile 6.0">
+                </div>
+
+                <p><strong>December 2006 - Final Days of the Old World</strong></p>
+                <p>Windows Mobile 6.0 is feature-complete and ready for February launch. The team is confident. They've addressed touch screen issues, improved the browser, and added better multimedia support.</p>
+                <p>In an internal presentation, the Windows Mobile team projects 50% market share by 2009. Their biggest worry? "Battery life and enterprise integration." Consumer experience is mentioned once, on slide 47 of 52.</p>
+                <p>On December 27, 2006, a tech blog posts a blurry photo of Steve Jobs entering a building near Apple's campus. He's carrying something rectangular, about the size of a paperback book. The post title: "What is Apple hiding?"</p>
+            `
+        },
+        {
+            number: 6,
+            title: "The World Before January 9th",
+            period: "January 1, 2007",
+            content: `
+                <p><strong>The State of Play - January 8, 2007</strong></p>
+                <div class="backstory-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Microsoft's Position:</span>
+                        <span class="stat-value">42% smartphone market share (US)</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Key Partners:</span>
+                        <span class="stat-value">HTC, Motorola, Samsung, HP, Dell</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Enterprise Dominance:</span>
+                        <span class="stat-value">80% of Fortune 500 companies use Windows Mobile</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Cash Position:</span>
+                        <span class="stat-value">$34 billion in reserves</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Market Cap:</span>
+                        <span class="stat-value">$292 billion (2nd largest in the world)</span>
+                    </div>
+                </div>
+
+                <p><strong>The Competitive Landscape:</strong></p>
+                <ul>
+                    <li><strong>Nokia (Symbian):</strong> 48% global share, but fragmenting and slow to innovate</li>
+                    <li><strong>Blackberry:</strong> 11% share, dominant in email but limited in features</li>
+                    <li><strong>Palm:</strong> 5% share, dying slowly from strategic confusion</li>
+                    <li><strong>Apple:</strong> 0% share, no phone product announced</li>
+                    <li><strong>Google:</strong> 0% share, Android rumors unconfirmed</li>
+                </ul>
+            `,
+            isFinal: true
+        }
+    ],
+
+    // Current backstory chapter index
+    currentBackstoryChapter: 0,
+
+    // Render backstory chapter
+    renderBackstoryChapter(chapterIndex = 0) {
+        this.currentBackstoryChapter = chapterIndex;
+        const chapter = this.backstoryChapters[chapterIndex];
+        const totalChapters = this.backstoryChapters.length;
+        const mainContent = document.getElementById('main-content');
+
+        // Hide metrics bar during backstory
+        document.getElementById('metrics-bar').style.display = 'none';
+        document.getElementById('artifact-toggle-btn').style.display = 'none';
+
+        mainContent.innerHTML = `
+            <div class="backstory-page">
+                <div class="backstory-progress">
+                    <span class="backstory-progress-text">Chapter ${chapter.number} of ${totalChapters}</span>
+                    <div class="backstory-progress-bar">
+                        <div class="backstory-progress-fill" style="width: ${(chapter.number / totalChapters) * 100}%"></div>
+                    </div>
+                </div>
+
+                <div class="backstory-header">
+                    <span class="backstory-period">${chapter.period}</span>
+                    <h1 class="backstory-title">${chapter.title}</h1>
+                </div>
+
+                <div class="backstory-content">
+                    ${chapter.content}
+                </div>
+
+                <div class="backstory-actions">
+                    ${chapterIndex > 0 ? `
+                        <button class="backstory-back-btn" id="backstory-back-btn">
+                            ← Previous
+                        </button>
+                    ` : `
+                        <button class="backstory-back-btn" id="backstory-exit-btn">
+                            ← Back
+                        </button>
+                    `}
+                    <button class="backstory-continue-btn" id="backstory-continue-btn">
+                        ${chapter.isFinal ? 'Begin →' : 'Continue →'}
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Add event listeners
+        const continueBtn = document.getElementById('backstory-continue-btn');
+        continueBtn.addEventListener('click', () => {
+            if (chapter.isFinal) {
+                // Start the game
+                document.getElementById('metrics-bar').style.display = 'flex';
+                document.getElementById('artifact-toggle-btn').style.display = 'flex';
+                gameState.currentScreen = "story";
+                this.renderStoryPoint();
+            } else {
+                // Go to next chapter
+                this.renderBackstoryChapter(chapterIndex + 1);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        const backBtn = document.getElementById('backstory-back-btn');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                this.renderBackstoryChapter(chapterIndex - 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        const exitBtn = document.getElementById('backstory-exit-btn');
+        if (exitBtn) {
+            exitBtn.addEventListener('click', () => {
+                this.renderLandingScreen();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    },
+
     // Render landing screen
     renderLandingScreen() {
         const mainContent = document.getElementById('main-content');
@@ -68,27 +361,35 @@ const UI = {
 
         mainContent.innerHTML = `
             <div class="landing-screen">
-                <div class="landing-content">
-                    <h1 class="landing-title">the mobile<br>wars.</h1>
+                <div class="landing-layout">
+                    <div class="landing-content">
+                        <h1 class="landing-title">the mobile<br>wars.</h1>
 
-                    <div class="landing-info">
-                        <p class="landing-subtitle">redmond, 2007</p>
-                        <p class="landing-description">you are the ceo of the world's largest software company.</p>
-                        <p class="landing-description">the iphone has just launched. the board is skeptical.</p>
+                        <div class="landing-info">
+                            <p class="landing-subtitle">redmond, 2007</p>
+                            <p class="landing-description">you are the ceo of the world's largest software company.</p>
+                            <p class="landing-description">the iphone has just launched. the board is skeptical.</p>
+                        </div>
+
+                        <div class="landing-mission">
+                            <p>Lead Microsoft's mobile strategy from 2007-2017.</p>
+                            <p>Can you do better than history?</p>
+                        </div>
+
+                        <div class="landing-actions">
+                            <button class="landing-begin-btn" id="begin-btn">
+                                begin →
+                            </button>
+                            <button class="landing-manifesto-btn" id="manifesto-btn">
+                                the backstory
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="landing-challenge">
-                        <p>experience what it's like to lead at the highest level.</p>
-                        <p>can you save the company from missing the biggest platform shift in history?</p>
-                    </div>
-
-                    <div class="landing-actions">
-                        <button class="landing-begin-btn" id="begin-btn">
-                            begin →
-                        </button>
-                        <button class="landing-manifesto-btn" id="manifesto-btn">
-                            view manifesto
-                        </button>
+                    <div class="landing-video">
+                        <video autoplay loop muted playsinline>
+                            <source src="assets/images/Phone.mp4" type="video/mp4">
+                        </video>
                     </div>
                 </div>
             </div>
@@ -106,8 +407,9 @@ const UI = {
         });
 
         document.getElementById('manifesto-btn').addEventListener('click', () => {
-            // TODO: Implement manifesto modal or page
-            alert('Manifesto feature coming soon!');
+            this.currentBackstoryChapter = 0;
+            this.renderBackstoryChapter(0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     },
 
@@ -328,6 +630,9 @@ const UI = {
     confirmDecision() {
         const option = gameState.confirmDecision();
         if (option) {
+            // Update progress indicator immediately after decision is confirmed
+            this.updateProgressIndicator();
+
             // Show artifacts if any were unlocked (during consequence reveal)
             const consequences = option.consequences.immediate;
             if (consequences.unlockedArtifacts && consequences.unlockedArtifacts.length > 0) {
@@ -343,12 +648,14 @@ const UI = {
 
             // Use staggered consequence reveal system
             Transitions.showStaggeredConsequences(option, () => {
-                // After consequences are fully revealed, continue
-                if (consequences.delayed) {
-                    gameState.applyConsequences(consequences.delayed);
-                    this.updateMetricsBar(true);
-                }
+                // continueToNext() now handles applying delayed consequences
                 gameState.continueToNext();
+
+                // Update metrics bar after delayed consequences are applied
+                this.updateMetricsBar(true);
+
+                // Update progress indicator again after completion check
+                this.updateProgressIndicator();
 
                 if (gameState.currentScreen === "complete") {
                     this.renderComplete();
@@ -378,16 +685,16 @@ const UI = {
         const changes = [];
         if (consequences.cash !== 0) {
             changes.push({
-                label: 'Cash',
+                label: 'Investment',
                 value: `${consequences.cash > 0 ? '+' : ''}$${Math.abs(consequences.cash).toFixed(1)}B`,
                 positive: consequences.cash > 0
             });
         }
-        if (consequences.stock !== 0) {
+        if (consequences.marketCap !== 0) {
             changes.push({
-                label: 'Stock',
-                value: `${consequences.stock > 0 ? '+' : ''}$${Math.abs(consequences.stock).toFixed(2)}`,
-                positive: consequences.stock > 0
+                label: 'Market Cap',
+                value: `${consequences.marketCap > 0 ? '+' : ''}$${Math.abs(consequences.marketCap).toFixed(0)}B`,
+                positive: consequences.marketCap > 0
             });
         }
         if (consequences.marketShare !== 0) {
@@ -397,13 +704,7 @@ const UI = {
                 positive: consequences.marketShare > 0
             });
         }
-        if (consequences.morale) {
-            changes.push({
-                label: 'Morale',
-                value: consequences.morale.charAt(0).toUpperCase() + consequences.morale.slice(1),
-                positive: ['optimistic', 'hopeful', 'neutral'].includes(consequences.morale)
-            });
-        }
+        // Morale is shown only in profile section, not in key metrics
 
         mainContent.innerHTML = `
             <div class="consequence-reveal">
@@ -450,11 +751,11 @@ const UI = {
 
         // Add event listener to continue button
         document.getElementById('continue-btn').addEventListener('click', () => {
-            if (consequences.delayed) {
-                gameState.applyConsequences(consequences.delayed);
-                this.updateMetricsBar(true); // Show arrows for delayed changes
-            }
+            // continueToNext() now handles applying delayed consequences
             gameState.continueToNext();
+
+            // Update metrics bar after delayed consequences are applied
+            this.updateMetricsBar(true);
 
             if (gameState.currentScreen === "complete") {
                 this.renderComplete();
@@ -467,98 +768,157 @@ const UI = {
 
     // Render completion screen
     renderComplete() {
+        // Update metrics bar to show final state
+        this.updateMetricsBar();
+
         const mainContent = document.getElementById('main-content');
         const metrics = gameState.getFormattedMetrics();
+        const ending = gameState.getCurrentEnding();
+
+        // Build decision history for display
+        let decisionHistoryHTML = '';
+        gameState.decisions.forEach((decision) => {
+            const decisionPoint = gameState.getDecisionPointById(decision.decisionId);
+            if (decisionPoint) {
+                const option = decisionPoint.options.find(opt => opt.id === decision.optionId);
+                if (option) {
+                    decisionHistoryHTML += `<li>✓ <strong>${decisionPoint.title}:</strong> ${option.title}</li>`;
+                }
+            }
+        });
+
+        // Real Microsoft 2017 metrics for comparison
+        const actualMetrics = {
+            date: "JUL 2017",
+            cash: -7.6,  // Write-off amount in billions (negative)
+            marketCap: 540,  // July 2017 market cap in billions (~$72.50 × 7.5B shares)
+            marketShare: 0  // Windows Phone discontinued
+        };
+
+        // Calculate deltas (positive = better than reality)
+        const userCash = gameState.metrics.cash;
+        const userMarketCap = gameState.metrics.marketCap;
+        const userMarketShare = gameState.metrics.marketShare;
+
+        // For cash burn: compare absolute values (both are sunk costs)
+        // User's cash is negative (spent), reality's write-off is also a cost
+        const userCashAbs = Math.abs(userCash);  // How much user spent
+        const actualCashAbs = Math.abs(actualMetrics.cash);  // Reality's write-off ($7.6B)
+        const cashDelta = actualCashAbs - userCashAbs;  // Positive = spent less than reality (good)
+        const marketCapDelta = userMarketCap - actualMetrics.marketCap;
+        const marketShareDelta = userMarketShare - actualMetrics.marketShare;
+
+        // Format delta for cash burn (lower spending is better)
+        const formatCashBurnDelta = (delta) => {
+            if (delta > 0) {
+                // Spent less than reality = good (green)
+                return `<span style="color: #22c55e; font-size: 0.7rem; margin-left: 6px;">▲ -$${delta.toFixed(1)}B</span>`;
+            } else if (delta < 0) {
+                // Spent more than reality = bad (red)
+                return `<span style="color: #ef4444; font-size: 0.7rem; margin-left: 6px;">▼ +$${Math.abs(delta).toFixed(1)}B</span>`;
+            }
+            return `<span style="color: var(--text-tertiary); font-size: 0.7rem; margin-left: 6px;">= same</span>`;
+        };
+
+        const formatMarketCapDelta = (delta) => {
+            if (delta > 0) {
+                return `<span style="color: #22c55e; font-size: 0.7rem; margin-left: 6px;">▲ +$${delta.toFixed(0)}B</span>`;
+            } else if (delta < 0) {
+                return `<span style="color: #ef4444; font-size: 0.7rem; margin-left: 6px;">▼ -$${Math.abs(delta).toFixed(0)}B</span>`;
+            }
+            return `<span style="color: var(--text-tertiary); font-size: 0.7rem; margin-left: 6px;">= same</span>`;
+        };
+
+        const formatMarketShareDelta = (delta) => {
+            if (delta > 0) {
+                return `<span style="color: #22c55e; font-size: 0.7rem; margin-left: 6px;">▲ +${delta}%</span>`;
+            } else if (delta < 0) {
+                return `<span style="color: #ef4444; font-size: 0.7rem; margin-left: 6px;">▼ ${delta}%</span>`;
+            }
+            return `<span style="color: var(--text-tertiary); font-size: 0.7rem; margin-left: 6px;">= same</span>`;
+        };
 
         mainContent.innerHTML = `
             <div class="consequence-reveal ending-screen">
-                <h1 class="section-header" style="font-size: 1.8rem; margin: 40px 0; color: var(--accent-primary);">
-                    THE SUSTAINABLE THIRD
+                <p style="font-size: 0.75rem; color: var(--text-tertiary); text-align: center; margin-top: 30px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">
+                    Ending Unlocked
+                </p>
+                <h1 class="section-header" style="font-size: 1.8rem; margin: 0 0 15px 0; color: var(--accent-primary);">
+                    ${ending.title.toUpperCase()}
                 </h1>
 
-                <div class="ending-subtitle">
-                    <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 40px;">
-                        You found the narrow path to Windows Phone survival
+                <div class="ending-unlocked" style="margin-bottom: 30px; text-align: center;">
+                    <p style="font-size: 1rem; color: var(--text-secondary);">
+                        ${ending.summary}
                     </p>
                 </div>
 
                 <div class="ending-comparison">
                     <div class="comparison-section your-path">
-                        <h3 style="color: var(--accent-primary); margin-bottom: 20px;">YOUR PATH (2007-2024)</h3>
+                        <h3>YOUR FINAL STATE</h3>
                         <div class="comparison-stats">
                             <div class="stat-item">
-                                <span class="stat-label">Investment:</span>
-                                <span class="stat-value">$2.0B</span>
+                                <span class="stat-label">Date:</span>
+                                <span class="stat-value">${metrics.date}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Market Cap:</span>
+                                <span class="stat-value">${metrics.marketCap}${formatMarketCapDelta(marketCapDelta)}</span>
                             </div>
                             <div class="stat-item">
                                 <span class="stat-label">Market Share:</span>
-                                <span class="stat-value">12% (stable)</span>
+                                <span class="stat-value">${metrics.marketShare}${formatMarketShareDelta(marketShareDelta)}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Final Outcome:</span>
-                                <span class="stat-value positive">+$400M profit ✓</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">Active Users:</span>
-                                <span class="stat-value">180M worldwide</span>
+                                <span class="stat-label">Cash Burn:</span>
+                                <span class="stat-value">${metrics.cash}${formatCashBurnDelta(cashDelta)}</span>
                             </div>
                         </div>
                     </div>
-
-                    <div class="comparison-divider">VS</div>
-
-                    <div class="comparison-section actual-history">
-                        <h3 style="color: #ff6b6b; margin-bottom: 20px;">ACTUAL MICROSOFT (2007-2017)</h3>
+                    <div class="comparison-section actual-path">
+                        <h3>ACTUAL STATE (REALITY)</h3>
                         <div class="comparison-stats">
                             <div class="stat-item">
-                                <span class="stat-label">Investment:</span>
-                                <span class="stat-value">$18.7B</span>
+                                <span class="stat-label">Date:</span>
+                                <span class="stat-value">${actualMetrics.date}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Market Cap:</span>
+                                <span class="stat-value">$${actualMetrics.marketCap}B</span>
                             </div>
                             <div class="stat-item">
                                 <span class="stat-label">Market Share:</span>
-                                <span class="stat-value">0.1% (exited)</span>
+                                <span class="stat-value">${actualMetrics.marketShare}%</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Final Outcome:</span>
-                                <span class="stat-value negative">-$13.7B loss ✗</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">Status:</span>
-                                <span class="stat-value">Discontinued 2017</span>
+                                <span class="stat-label">Write-off:</span>
+                                <span class="stat-value">$${Math.abs(actualMetrics.cash).toFixed(1)}B</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="savings-banner">
-                    <h2 style="font-size: 2rem; color: var(--accent-primary); margin: 0;">
-                        YOU SAVED $14.1 BILLION
-                    </h2>
-                </div>
-
-                <div class="key-decisions-section">
-                    <h3 style="margin-bottom: 20px;">KEY DECISIONS</h3>
-                    <ul class="decision-list">
-                        <li>✓ <strong>Waited 18 months</strong> instead of rushing (avoided $500M mistakes, identified real threat)</li>
-                        <li>✓ <strong>Made OS free</strong> to compete with Android (kept OEMs, preserved market share)</li>
-                        <li>✓ <strong>Built WP7 12 months faster</strong> (launched at 21% share, not 7%)</li>
-                        <li>✓ <strong>Let apps grow organically</strong> at 21% share (avoided $500M fund waste)</li>
-                        <li>✓ <strong>Defended 18%</strong> instead of chasing #2 (avoided $7.2B Nokia disaster)</li>
-                        <li>✓ <strong>Maintained profitable niche</strong> (didn't exit, served 180M users profitably)</li>
+                <div class="key-decisions-section" style="margin-bottom: 20px;">
+                    <h3 style="margin-bottom: 15px; font-size: 0.9rem;">YOUR DECISIONS</h3>
+                    <ul class="decision-list" style="font-size: 0.85rem;">
+                        ${decisionHistoryHTML || '<li>No decisions recorded</li>'}
                     </ul>
                 </div>
 
-                <div class="achievement-badge">
-                    <div class="badge-icon"><i class="ph ph-trophy"></i></div>
-                    <div class="badge-text">
-                        <h3>ACHIEVEMENT UNLOCKED</h3>
-                        <p>"The Sustainable Third"</p>
-                    </div>
+                <div class="path-info" style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                    <h3 style="margin-bottom: 10px; font-size: 0.85rem;">PATH TAKEN</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">
+                        D1: ${gameState.pathState.d1Choice || 'N/A'} →
+                        D2: ${gameState.pathState.d2Branch || 'N/A'} →
+                        D3: ${gameState.pathState.d3Variant || 'N/A'} →
+                        D4: ${gameState.pathState.d4State || 'N/A'} →
+                        D5: ${gameState.pathState.d5State || 'N/A'}
+                    </p>
                 </div>
 
-                ${FeedbackSystem.renderFeedbackForm()}
+                ${typeof FeedbackSystem !== 'undefined' ? FeedbackSystem.renderFeedbackForm() : ''}
 
-                <button class="continue-btn" id="restart-btn" style="margin-top: 40px;">
+                <button class="continue-btn" id="restart-btn" style="margin-top: 30px;">
                     Try Different Path →
                 </button>
             </div>
@@ -569,13 +929,15 @@ const UI = {
             if (confirm('Start a new scenario? Your current progress will be lost.')) {
                 gameState.reset();
                 this.updateMetricsBar();
-                this.renderStoryPoint();
+                this.renderLandingScreen();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
 
         // Attach feedback form event listeners
-        FeedbackSystem.attachEventListeners();
+        if (typeof FeedbackSystem !== 'undefined') {
+            FeedbackSystem.attachEventListeners();
+        }
     },
 
     // Open info card modal
@@ -639,6 +1001,10 @@ const UI = {
             });
         });
 
+        // Reset scroll position before showing modal
+        modalBody.scrollTop = 0;
+        modal.querySelector('.modal-content').scrollTop = 0;
+
         modal.classList.remove('hidden');
     },
 
@@ -676,6 +1042,7 @@ const UI = {
     // Close modal
     closeModal() {
         document.getElementById('card-modal').classList.add('hidden');
+        this.hideJourneyModal();
     },
 
     // Open profile modal
@@ -691,31 +1058,35 @@ const UI = {
         } else {
             pastDecisionsHTML = '<ul class="past-decisions-list">';
             gameState.decisions.forEach(decision => {
-                const decisionPoint = scenarioData.decisionPoints.find(dp => dp.id === decision.decisionId);
-                const option = decisionPoint.options.find(opt => opt.id === decision.optionId);
-
-                pastDecisionsHTML += `
-                    <li class="past-decision-item">
-                        <div class="past-decision-title">${decisionPoint.title}</div>
-                        <div class="past-decision-choice">
-                            <strong>${option.title}</strong>
-                        </div>
-                    </li>
-                `;
+                const decisionPoint = gameState.getDecisionPointById(decision.decisionId);
+                if (decisionPoint) {
+                    const option = decisionPoint.options.find(opt => opt.id === decision.optionId);
+                    if (option) {
+                        pastDecisionsHTML += `
+                            <li class="past-decision-item">
+                                <div class="past-decision-title">${decisionPoint.title}</div>
+                                <div class="past-decision-choice">
+                                    <strong>${option.title}</strong>
+                                </div>
+                            </li>
+                        `;
+                    }
+                }
             });
             pastDecisionsHTML += '</ul>';
         }
 
         // Get board sentiment based on metrics
         let boardSentiment = 'Neutral';
-        const stock = gameState.metrics.stock;
+        const marketCap = gameState.metrics.marketCap;
         const marketShare = gameState.metrics.marketShare;
 
-        if (stock > 32 && marketShare > 35) {
+        // Market cap thresholds: Starting ~$250B, good if above ~$260B, concerning below ~$200B
+        if (marketCap > 260 && marketShare > 35) {
             boardSentiment = '<i class="ph-fill ph-circle" style="color: #22c55e;"></i> Confident';
-        } else if (stock > 28 && marketShare > 25) {
+        } else if (marketCap > 230 && marketShare > 25) {
             boardSentiment = '<i class="ph-fill ph-circle" style="color: #eab308;"></i> Cautious';
-        } else if (stock < 25 || marketShare < 20) {
+        } else if (marketCap < 200 || marketShare < 20) {
             boardSentiment = '<i class="ph-fill ph-circle" style="color: #ef4444;"></i> Concerned';
         } else {
             boardSentiment = '<i class="ph-fill ph-circle" style="color: #eab308;"></i> Monitoring';
@@ -784,8 +1155,38 @@ const UI = {
         // Initialize artifact system
         ArtifactUI.init();
 
+        // Progress trigger click handler (DATE metric with badge)
+        const progressTrigger = document.getElementById('progress-trigger');
+        if (progressTrigger) {
+            progressTrigger.addEventListener('click', () => {
+                this.showJourneyModal();
+            });
+            // Also handle keyboard accessibility
+            progressTrigger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.showJourneyModal();
+                }
+            });
+        }
+
+        // Journey modal close handlers
+        document.getElementById('journey-modal-close').addEventListener('click', () => {
+            this.hideJourneyModal();
+        });
+
+        // Close journey modal on outside click
+        document.getElementById('journey-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'journey-modal') {
+                this.hideJourneyModal();
+            }
+        });
+
         // Update metrics bar
         this.updateMetricsBar();
+
+        // Update progress indicator
+        this.updateProgressIndicator();
 
         // Render initial screen
         if (gameState.currentScreen === "landing") {

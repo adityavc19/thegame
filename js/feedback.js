@@ -33,130 +33,114 @@ const FeedbackSystem = {
         }
 
         return `
-            <div class="feedback-section" id="feedback-section">
-                <div class="section-divider" style="margin: 60px 0 40px 0;">
-                    <span>HELP US IMPROVE</span>
-                </div>
-
-                <div class="feedback-intro">
-                    <p style="color: var(--text-secondary); margin-bottom: 30px; text-align: center;">
-                        Your feedback shapes future scenarios. Take 2 minutes to share your thoughts.
+            <div class="feedback-section" id="feedback-section" style="margin: 30px auto 20px; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid var(--border-default);">
+                <div class="feedback-header" style="text-align: center; margin-bottom: 20px;">
+                    <h3 style="font-size: 0.9rem; color: var(--accent-primary); margin-bottom: 8px;">HELP US IMPROVE</h3>
+                    <p style="color: var(--text-tertiary); font-size: 0.8rem;">
+                        Your feedback shapes future scenarios
                     </p>
                 </div>
 
-                <form id="feedback-form" class="feedback-form">
-                    <!-- Question 1: Rating -->
-                    <div class="feedback-question">
-                        <label class="feedback-label">How would you rate this experience?</label>
-                        <div class="rating-options">
-                            <label class="rating-option">
-                                <input type="radio" name="rating" value="Excellent" required>
-                                <span class="rating-text">Excellent</span>
-                            </label>
-                            <label class="rating-option">
-                                <input type="radio" name="rating" value="Good">
-                                <span class="rating-text">Good</span>
-                            </label>
-                            <label class="rating-option">
-                                <input type="radio" name="rating" value="Fair">
-                                <span class="rating-text">Fair</span>
-                            </label>
-                            <label class="rating-option">
-                                <input type="radio" name="rating" value="Poor">
-                                <span class="rating-text">Poor</span>
-                            </label>
+                <form id="feedback-form" class="feedback-form" style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- Row 1: Rating and Enjoyed side by side -->
+                    <div class="feedback-row" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <div class="feedback-question" style="flex: 1; min-width: 200px;">
+                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 8px; display: block;">Rate this experience</label>
+                            <div class="rating-options" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <label class="rating-option" style="font-size: 0.75rem;">
+                                    <input type="radio" name="rating" value="Excellent" required>
+                                    <span class="rating-text">Excellent</span>
+                                </label>
+                                <label class="rating-option" style="font-size: 0.75rem;">
+                                    <input type="radio" name="rating" value="Good">
+                                    <span class="rating-text">Good</span>
+                                </label>
+                                <label class="rating-option" style="font-size: 0.75rem;">
+                                    <input type="radio" name="rating" value="Fair">
+                                    <span class="rating-text">Fair</span>
+                                </label>
+                                <label class="rating-option" style="font-size: 0.75rem;">
+                                    <input type="radio" name="rating" value="Poor">
+                                    <span class="rating-text">Poor</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="feedback-question" style="flex: 1; min-width: 200px;">
+                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 8px; display: block;">What did you enjoy? <span style="color: var(--accent-primary);">*</span></label>
+                            <div class="checkbox-options" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
+                                    <input type="checkbox" name="enjoyed" value="Decision-making" style="margin-right: 4px;">
+                                    <span>Decisions</span>
+                                </label>
+                                <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
+                                    <input type="checkbox" name="enjoyed" value="Historical context" style="margin-right: 4px;">
+                                    <span>History</span>
+                                </label>
+                                <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
+                                    <input type="checkbox" name="enjoyed" value="Information sources" style="margin-right: 4px;">
+                                    <span>Info</span>
+                                </label>
+                                <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
+                                    <input type="checkbox" name="enjoyed" value="Artifacts" style="margin-right: 4px;">
+                                    <span>Artifacts</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Question 2: What they enjoyed -->
-                    <div class="feedback-question">
-                        <label class="feedback-label">What did you enjoy most? <span style="color: var(--accent-primary);">*</span> (select at least one)</label>
-                        <div class="checkbox-options">
-                            <label class="checkbox-option">
-                                <input type="checkbox" name="enjoyed" value="Decision-making process">
-                                <span class="checkbox-text">Decision-making process</span>
-                            </label>
-                            <label class="checkbox-option">
-                                <input type="checkbox" name="enjoyed" value="Historical context">
-                                <span class="checkbox-text">Historical context</span>
-                            </label>
-                            <label class="checkbox-option">
-                                <input type="checkbox" name="enjoyed" value="Information sources">
-                                <span class="checkbox-text">Information sources</span>
-                            </label>
-                            <label class="checkbox-option">
-                                <input type="checkbox" name="enjoyed" value="Outcome comparison">
-                                <span class="checkbox-text">Outcome comparison</span>
-                            </label>
-                            <label class="checkbox-option">
-                                <input type="checkbox" name="enjoyed" value="Artifact collection">
-                                <span class="checkbox-text">Artifact collection</span>
-                            </label>
+                    <!-- Row 2: Textareas side by side -->
+                    <div class="feedback-row" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <div class="feedback-question" style="flex: 1; min-width: 200px;">
+                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 6px; display: block;">What could be better?</label>
+                            <textarea
+                                name="improvements"
+                                class="feedback-textarea"
+                                placeholder="Your suggestions..."
+                                maxlength="300"
+                                rows="2"
+                                style="font-size: 0.8rem; padding: 8px; resize: none;"
+                            ></textarea>
+                        </div>
+
+                        <div class="feedback-question" style="flex: 1; min-width: 200px;">
+                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 6px; display: block;">Other scenarios you'd like?</label>
+                            <textarea
+                                name="playAgain"
+                                class="feedback-textarea"
+                                placeholder="E.g., Netflix vs Blockbuster..."
+                                maxlength="300"
+                                rows="2"
+                                style="font-size: 0.8rem; padding: 8px; resize: none;"
+                            ></textarea>
                         </div>
                     </div>
 
-                    <!-- Question 3: Improvements -->
-                    <div class="feedback-question">
-                        <label class="feedback-label">What could be better?</label>
-                        <textarea
-                            name="improvements"
-                            class="feedback-textarea"
-                            placeholder="Share your suggestions..."
-                            maxlength="500"
-                            rows="4"
-                        ></textarea>
-                        <div class="char-count" id="improvements-count">0/500</div>
+                    <!-- Row 3: Email and Submit -->
+                    <div class="feedback-row" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                        <div class="feedback-question" style="flex: 1; min-width: 200px;">
+                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 6px; display: block;">Get notified of new scenarios (optional)</label>
+                            <input
+                                type="email"
+                                name="email"
+                                class="feedback-email-input"
+                                placeholder="your@email.com"
+                                style="font-size: 0.8rem; padding: 8px;"
+                            >
+                        </div>
+
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button
+                                type="submit"
+                                class="feedback-submit-btn"
+                                id="feedback-submit-btn"
+                                style="padding: 10px 20px; font-size: 0.8rem;"
+                            >
+                                <span id="submit-btn-text">Submit</span>
+                                <span id="submit-btn-loading" class="hidden">...</span>
+                            </button>
+                        </div>
                     </div>
-
-                    <!-- Question 4: Other scenarios interest -->
-                    <div class="feedback-question">
-                        <label class="feedback-label">What other scenarios or stories would you want to experience in an interactive format?</label>
-                        <textarea
-                            name="playAgain"
-                            class="feedback-textarea"
-                            placeholder="E.g., Netflix vs Blockbuster, Tesla's rise, COVID-19 response decisions..."
-                            maxlength="500"
-                            rows="4"
-                        ></textarea>
-                        <div class="char-count" id="scenarios-count">0/500</div>
-                        <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 8px;">
-                            Help us understand what decisions interest you most
-                        </p>
-                    </div>
-
-                    <!-- Email signup -->
-                    <div class="section-divider" style="margin: 40px 0 30px 0;">
-                        <span>STAY UPDATED</span>
-                    </div>
-
-                    <div class="feedback-question">
-                        <label class="feedback-label">Get notified when we launch new scenarios</label>
-                        <input
-                            type="email"
-                            name="email"
-                            class="feedback-email-input"
-                            placeholder="your@email.com"
-                        >
-                        <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 8px;">
-                            Optional. We'll only email you about new scenarios. No spam.
-                        </p>
-                    </div>
-
-                    <!-- Submit button -->
-                    <button
-                        type="submit"
-                        class="feedback-submit-btn"
-                        id="feedback-submit-btn"
-                    >
-                        <span id="submit-btn-text">Submit Feedback</span>
-                        <span id="submit-btn-loading" class="hidden">Submitting...</span>
-                    </button>
-
-                    <p class="feedback-skip" id="skip-feedback" style="text-align: center; margin-top: 16px;">
-                        <a href="#" style="color: var(--text-tertiary); text-decoration: underline; font-size: 0.875rem;">
-                            Skip for now
-                        </a>
-                    </p>
                 </form>
             </div>
         `;
@@ -165,21 +149,17 @@ const FeedbackSystem = {
     // Render thank you message after submission
     renderThankYou() {
         return `
-            <div class="feedback-section feedback-thank-you">
-                <div class="section-divider" style="margin: 60px 0 40px 0;">
-                    <span>THANK YOU</span>
-                </div>
-
-                <div class="thank-you-content">
-                    <div class="thank-you-icon">
-                        <i class="ph ph-check-circle" style="font-size: 4rem; color: var(--accent-primary);"></i>
+            <div class="feedback-section feedback-thank-you" style="margin: 30px auto 20px; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid var(--border-default); text-align: center;">
+                <div class="thank-you-content" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                    <i class="ph ph-check-circle" style="font-size: 2rem; color: var(--accent-primary);"></i>
+                    <div>
+                        <h3 style="color: var(--accent-primary); font-size: 0.9rem; margin-bottom: 4px;">
+                            Thank you!
+                        </h3>
+                        <p style="color: var(--text-secondary); font-size: 0.8rem;">
+                            Your feedback helps us improve.
+                        </p>
                     </div>
-                    <h3 style="color: var(--accent-primary); margin: 20px 0;">
-                        Feedback Submitted
-                    </h3>
-                    <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto;">
-                        Your insights help us create better scenarios. We'll use your feedback to improve future experiences.
-                    </p>
                 </div>
             </div>
         `;
