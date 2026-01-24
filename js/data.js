@@ -3710,7 +3710,7 @@ The app gap is killing you. Instagram finally arrived last month—two years lat
 
 Your board meeting this morning was brutal. ValueAct's Mason Morfit asked the question directly: "How much longer do we subsidize this?" Nokia is burning $400 million a quarter. Your platform support payments are keeping them alive. At this rate, you've spent $3 billion on Nokia—and you don't even own them.
 
-The strategic options are clarifying. You can double down—acquire Nokia outright, own the whole stack, bet everything on the Microsoft phone vision. Or you can accept what you've become: a profitable niche player, third place forever, the BlackBerry of 2020.
+The strategic options are clarifying. You can double down—acquire Nokia outright, own the whole stack, bet everything on the Microsoft phone vision. Or you can accept what you've become: a profitable niche player, third place forever.
 
 The board wants an answer. The market wants an answer. Your own team wants an answer.
 

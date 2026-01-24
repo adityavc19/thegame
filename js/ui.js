@@ -734,11 +734,11 @@ const UI = {
                     `).join('')}
                 </div>
 
-                ${consequences.delayed ? `
+                ${option.consequences.delayed ? `
                     <div class="impact-section">
                         <h3>Emerging Challenges</h3>
                         <p style="font-size: 0.875rem; line-height: 1.6; margin: 0;">
-                            ${consequences.delayed.narrative}
+                            ${option.consequences.delayed.narrative}
                         </p>
                     </div>
                 ` : ''}

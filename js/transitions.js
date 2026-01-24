@@ -521,12 +521,12 @@ const Transitions = {
         ];
 
         // If there are delayed consequences, add them
-        if (consequences.delayed) {
+        if (option.consequences.delayed) {
             revealSequence.push({
                 delay: 2000,
                 type: 'delayed',
                 title: 'EMERGING CONCERNS',
-                content: `<div class="delayed-warning">${consequences.delayed.narrative}</div>`
+                content: `<div class="delayed-warning">${option.consequences.delayed.narrative}</div>`
             });
         }
 
