@@ -108,18 +108,18 @@ const Analytics = {
     // Send data to webhook
     async sendToWebhook(payload) {
         try {
+            // Use URL parameters for Google Apps Script compatibility
+            const params = new URLSearchParams();
+            params.append('data', JSON.stringify(payload));
+
+            const url = `${this.WEBHOOK_URL}?${params.toString()}`;
+
             // Use sendBeacon for reliability (works even on page unload)
             if (navigator.sendBeacon) {
-                const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-                navigator.sendBeacon(this.WEBHOOK_URL, blob);
+                navigator.sendBeacon(url);
             } else {
-                // Fallback to fetch
-                fetch(this.WEBHOOK_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', // Required for cross-origin Apps Script
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                // Fallback to fetch with GET (Apps Script handles both)
+                fetch(url, { mode: 'no-cors' });
             }
         } catch (error) {
             console.error('[Analytics] Failed to send event:', error);
