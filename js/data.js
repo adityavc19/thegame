@@ -4271,7 +4271,7 @@ Or you could take the money and run. The mobile division, profitable and stable,
 
 What do you want your mobile legacy to be?`,
                     objective: "Your niche is profitable. Defend it or sell it?",
-                    availableInfo: ["d5-info-nadella-era", "d5-info-market-final", "d5-info-nokia-integration"],
+                    availableInfo: ["d5-info-nadella-era", "d5-info-market-final"],
 
                     options: [
                         {
@@ -4376,7 +4376,7 @@ You can sustain your position—invest carefully, grow slowly, build the third e
 
 You've climbed the mountain. Do you plant your flag here, or keep climbing?`,
                     objective: "You've achieved viability at 12% share. Sustain it or push for more?",
-                    availableInfo: ["d5-info-nadella-era", "d5-info-market-final", "d5-info-nokia-integration"],
+                    availableInfo: ["d5-info-nadella-era", "d5-info-market-final"],
 
                     options: [
                         {

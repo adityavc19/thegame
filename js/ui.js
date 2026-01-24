@@ -796,26 +796,37 @@ const UI = {
         };
 
         // Calculate deltas (positive = better than reality)
-        const userCash = gameState.metrics.cash;
         const userMarketCap = gameState.metrics.marketCap;
         const userMarketShare = gameState.metrics.marketShare;
 
-        // For cash burn: compare absolute values (both are sunk costs)
-        // User's cash is negative (spent), reality's write-off is also a cost
-        const userCashAbs = Math.abs(userCash);  // How much user spent
-        const actualCashAbs = Math.abs(actualMetrics.cash);  // Reality's write-off ($7.6B)
-        const cashDelta = actualCashAbs - userCashAbs;  // Positive = spent less than reality (good)
+        // Calculate net cash change from initial position
+        // Initial cash was $34B, so net change = current - initial
+        const initialCash = 34.0;  // scenarioData.initialMetrics.cash
+        const userCashChange = gameState.metrics.cash - initialCash;  // Negative = spent, Positive = profit
+
+        // Reality's metric is the write-off amount (-$7.6B loss)
+        // Compare: did user spend more or less than reality's losses?
+        const cashDelta = actualMetrics.cash - userCashChange;  // Positive = user did better (spent less or made more)
         const marketCapDelta = userMarketCap - actualMetrics.marketCap;
         const marketShareDelta = userMarketShare - actualMetrics.marketShare;
 
-        // Format delta for cash burn (lower spending is better)
-        const formatCashBurnDelta = (delta) => {
+        // Format cash change (negative = investment/burn, positive = profit)
+        const formatCashChange = (change) => {
+            if (change >= 0) {
+                return `+$${change.toFixed(1)}B`;  // Profit
+            } else {
+                return `-$${Math.abs(change).toFixed(1)}B`;  // Investment/Burn
+            }
+        };
+
+        // Format delta for cash (higher is better - either less spending or more profit)
+        const formatCashDelta = (delta) => {
             if (delta > 0) {
-                // Spent less than reality = good (green)
-                return `<span style="color: #22c55e; font-size: 0.7rem; margin-left: 6px;">▲ -$${delta.toFixed(1)}B</span>`;
+                // User did better than reality (spent less or made more)
+                return `<span style="color: #22c55e; font-size: 0.7rem; margin-left: 6px;">▲ +$${delta.toFixed(1)}B better</span>`;
             } else if (delta < 0) {
-                // Spent more than reality = bad (red)
-                return `<span style="color: #ef4444; font-size: 0.7rem; margin-left: 6px;">▼ +$${Math.abs(delta).toFixed(1)}B</span>`;
+                // User did worse than reality (spent more or made less)
+                return `<span style="color: #ef4444; font-size: 0.7rem; margin-left: 6px;">▼ $${Math.abs(delta).toFixed(1)}B worse</span>`;
             }
             return `<span style="color: var(--text-tertiary); font-size: 0.7rem; margin-left: 6px;">= same</span>`;
         };
@@ -870,8 +881,8 @@ const UI = {
                                 <span class="stat-value">${metrics.marketShare}${formatMarketShareDelta(marketShareDelta)}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Cash Burn:</span>
-                                <span class="stat-value">${metrics.cash}${formatCashBurnDelta(cashDelta)}</span>
+                                <span class="stat-label">Net Investment:</span>
+                                <span class="stat-value">${formatCashChange(userCashChange)}${formatCashDelta(cashDelta)}</span>
                             </div>
                         </div>
                     </div>
