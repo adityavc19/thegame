@@ -114,13 +114,11 @@ const Analytics = {
 
             const url = `${this.WEBHOOK_URL}?${params.toString()}`;
 
-            // Use sendBeacon for reliability (works even on page unload)
-            if (navigator.sendBeacon) {
-                navigator.sendBeacon(url);
-            } else {
-                // Fallback to fetch with GET (Apps Script handles both)
-                fetch(url, { mode: 'no-cors' });
-            }
+            // Use fetch - it handles redirects properly (unlike sendBeacon)
+            fetch(url, {
+                method: 'GET',
+                mode: 'no-cors'
+            }).catch(() => {}); // Silently ignore errors
         } catch (error) {
             console.error('[Analytics] Failed to send event:', error);
         }
