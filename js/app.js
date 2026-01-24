@@ -47,23 +47,7 @@ if ('serviceWorker' in navigator) {
     // navigator.serviceWorker.register('/sw.js');
 }
 
-// Analytics placeholder (future enhancement)
-const Analytics = {
-    trackDecision(decisionId, optionId) {
-        console.log(`Decision tracked: ${decisionId} -> ${optionId}`);
-        // Send to analytics service
-    },
-
-    trackInfoCardView(cardId) {
-        console.log(`Info card viewed: ${cardId}`);
-        // Send to analytics service
-    },
-
-    trackCompletion(finalMetrics) {
-        console.log('Scenario completed:', finalMetrics);
-        // Send to analytics service
-    }
-};
+// Analytics is now in analytics.js
 
 // Share functionality placeholder
 const Share = {
@@ -89,5 +73,4 @@ const Share = {
 // Export for console access
 window.gameState = gameState;
 window.UI = UI;
-window.Analytics = Analytics;
 window.Share = Share;

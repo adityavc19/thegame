@@ -505,6 +505,9 @@ class GameState {
 
     // Reset game
     reset() {
+        // Track reset before clearing state
+        if (window.Analytics) Analytics.trackGameReset();
+
         localStorage.removeItem('auroraLabsState');
         this.startNewGame();
     }

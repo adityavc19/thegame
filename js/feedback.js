@@ -245,9 +245,9 @@ const FeedbackSystem = {
                 );
             }
 
-            // Analytics tracking (if implemented)
+            // Analytics tracking
             if (window.Analytics) {
-                Analytics.trackFeedbackSubmission(formData);
+                Analytics.trackFeedbackSubmit(formData.rating, formData.enjoyed);
             }
 
         } catch (error) {

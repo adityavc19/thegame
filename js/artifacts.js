@@ -47,6 +47,12 @@ const ArtifactUI = {
     openArtifactViewer(artifactId) {
         const artifact = gameState.getArtifact(artifactId);
         if (!artifact) return; // Skip if artifact doesn't exist
+
+        // Track artifact view
+        if (window.Analytics) {
+            Analytics.trackArtifactView(artifactId, artifact.name);
+        }
+
         const modal = document.getElementById('artifact-modal');
         const viewer = document.getElementById('artifact-viewer');
 
@@ -239,6 +245,11 @@ const ArtifactUI = {
     // Show new artifact notification
     showNewArtifact(artifactId) {
         const artifact = gameState.getArtifact(artifactId);
+
+        // Track artifact unlock
+        if (window.Analytics && artifact) {
+            Analytics.trackArtifactUnlock(artifactId, artifact.name);
+        }
 
         // Create compact notification
         const notification = document.createElement('div');

@@ -127,6 +127,9 @@ const UI = {
 
     // Show journey modal
     showJourneyModal() {
+        // Track journey view
+        if (window.Analytics) Analytics.trackJourneyView();
+
         this.renderJourneyModal();
         document.getElementById('journey-modal').classList.remove('hidden');
     },
@@ -318,10 +321,18 @@ const UI = {
             </div>
         `;
 
+        // Track backstory progress
+        if (window.Analytics) Analytics.trackBackstoryProgress(chapter.number, totalChapters);
+
         // Add event listeners
         const continueBtn = document.getElementById('backstory-continue-btn');
         continueBtn.addEventListener('click', () => {
             if (chapter.isFinal) {
+                // Track backstory completion and game start
+                if (window.Analytics) {
+                    Analytics.trackBackstoryComplete();
+                    Analytics.trackGameStart();
+                }
                 // Start the game
                 document.getElementById('metrics-bar').style.display = 'flex';
                 document.getElementById('artifact-toggle-btn').style.display = 'flex';
@@ -397,6 +408,9 @@ const UI = {
 
         // Add event listeners
         document.getElementById('begin-btn').addEventListener('click', () => {
+            // Track game start
+            if (window.Analytics) Analytics.trackGameStart();
+
             // Show metrics bar when game starts
             document.getElementById('metrics-bar').style.display = 'flex';
             document.getElementById('artifact-toggle-btn').style.display = 'flex';
@@ -407,6 +421,9 @@ const UI = {
         });
 
         document.getElementById('manifesto-btn').addEventListener('click', () => {
+            // Track backstory started
+            if (window.Analytics) Analytics.trackEvent('backstory_started', {});
+
             this.currentBackstoryChapter = 0;
             this.renderBackstoryChapter(0);
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -630,6 +647,17 @@ const UI = {
     confirmDecision() {
         const option = gameState.confirmDecision();
         if (option) {
+            // Track decision made
+            const decisionPoint = gameState.getCurrentDecisionPoint();
+            if (window.Analytics && decisionPoint) {
+                Analytics.trackDecision(
+                    gameState.currentDecisionStage,
+                    decisionPoint.title,
+                    option.id,
+                    option.title
+                );
+            }
+
             // Update progress indicator immediately after decision is confirmed
             this.updateProgressIndicator();
 
@@ -774,6 +802,15 @@ const UI = {
         const mainContent = document.getElementById('main-content');
         const metrics = gameState.getFormattedMetrics();
         const ending = gameState.getCurrentEnding();
+
+        // Track game completion
+        if (window.Analytics && ending) {
+            Analytics.trackGameComplete(
+                gameState.pathState.endingType || 'unknown',
+                ending.title,
+                gameState.metrics
+            );
+        }
 
         // Build decision history for display
         let decisionHistoryHTML = '';
@@ -957,6 +994,11 @@ const UI = {
         const modal = document.getElementById('card-modal');
         const modalBody = document.getElementById('modal-body');
 
+        // Track info card view
+        if (window.Analytics && card) {
+            Analytics.trackInfoCardView(cardId, card.title);
+        }
+
         modalBody.innerHTML = `
             <h2 class="modal-title">${card.title}</h2>
 
@@ -1058,6 +1100,9 @@ const UI = {
 
     // Open profile modal
     openProfileModal() {
+        // Track profile view
+        if (window.Analytics) Analytics.trackProfileView();
+
         const modal = document.getElementById('profile-modal');
         const modalBody = document.getElementById('profile-modal-body');
         const metrics = gameState.getFormattedMetrics();
