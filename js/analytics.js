@@ -5,7 +5,7 @@
 
 const Analytics = {
     // Configuration - UPDATE THIS with your Google Apps Script URL
-    WEBHOOK_URL: 'https://script.google.com/macros/s/AKfycbxaN6reTr-VqDphBQPGGqbMVsw6482PT_vsRI3MOR84vJVm8D3JXOUUCz0YsYKoJoK8vw/exec', // e.g., 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'
+    WEBHOOK_URL: 'https://script.google.com/macros/s/AKfycbw9fV3O6IaS5Z-K1m8UimkXfH4SQbUj_n3akXR5Z0xRCQ1nz8JF8T-7J6g1GwmERu7csw/exec', // e.g., 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'
 
     // Session tracking
     sessionId: null,
