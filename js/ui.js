@@ -7,8 +7,8 @@ const UI = {
     updateMetricsBar(showArrows = false) {
         const metrics = gameState.getFormattedMetrics();
 
-        // Update metrics with arrows (only the ones still in the UI)
-        this.updateMetricWithArrow('marketcap-metric', metrics.marketCap, 'marketCap', showArrows);
+        // Update P&L metric (replaced marketCap)
+        this.updatePLMetric(metrics, showArrows);
         this.updateMetricWithArrow('share-metric', metrics.marketShare, 'marketShare', showArrows);
 
         // Update date metric (no arrow)
@@ -16,8 +16,36 @@ const UI = {
 
         // Add animation class for changes
         if (showArrows) {
-            this.animateMetricChange('marketcap-metric');
+            this.animateMetricChange('pl-metric');
             this.animateMetricChange('share-metric');
+        }
+    },
+
+    // Update P&L metric and breakdown popup
+    updatePLMetric(metrics, showArrow) {
+        const plElement = document.getElementById('pl-metric');
+        const revenueElement = document.getElementById('pl-revenue');
+        const costsElement = document.getElementById('pl-costs');
+
+        if (plElement) {
+            // Update main P&L value
+            plElement.textContent = metrics.mobilePL;
+
+            // Add color class based on P&L
+            plElement.classList.remove('positive', 'negative');
+            if (metrics.mobilePLRaw > 0) {
+                plElement.classList.add('positive');
+            } else if (metrics.mobilePLRaw < 0) {
+                plElement.classList.add('negative');
+            }
+        }
+
+        // Update breakdown popup values
+        if (revenueElement) {
+            revenueElement.textContent = metrics.mobileRevenue;
+        }
+        if (costsElement) {
+            costsElement.textContent = metrics.mobileCosts;
         }
     },
 
@@ -430,10 +458,25 @@ const UI = {
         });
     },
 
+    // Interpolate dynamic metrics into text
+    interpolateMetrics(text) {
+        const marketShare = gameState.metrics.marketShare;
+
+        // Replace hardcoded percentages with actual market share
+        // Pattern: "X% market share" or "X% share" where X is a number
+        return text
+            .replace(/\b\d{1,2}% market share\b/gi, `${marketShare}% market share`)
+            .replace(/\b\d{1,2}% share\b/gi, `${marketShare}% share`)
+            .replace(/at \d{1,2}%\./gi, `at ${marketShare}%.`);
+    },
+
     // Render story point screen
     renderStoryPoint() {
         const decisionPoint = gameState.getCurrentDecisionPoint();
         const mainContent = document.getElementById('main-content');
+
+        // Interpolate actual metrics into story text
+        const storyText = this.interpolateMetrics(decisionPoint.storyText);
 
         mainContent.innerHTML = `
             <div class="story-point">
@@ -447,7 +490,7 @@ const UI = {
                 </div>
 
                 <div class="story-text">
-                    ${decisionPoint.storyText.split('\n\n').map(para =>
+                    ${storyText.split('\n\n').map(para =>
                         `<p>${para.trim()}</p>`
                     ).join('')}
                 </div>
@@ -486,10 +529,13 @@ const UI = {
         const mainContent = document.getElementById('main-content');
         console.log('Main content element:', mainContent);
 
+        // Interpolate actual metrics into objective
+        const objective = this.interpolateMetrics(decisionPoint.objective);
+
         mainContent.innerHTML = `
             <div class="decision-point">
                 <h2 class="section-header">OBJECTIVE</h2>
-                <div class="objective">${decisionPoint.objective}</div>
+                <div class="objective">${objective}</div>
 
                 <h2 class="section-header">INFORMATION SOURCES</h2>
                 <div class="info-carousel" id="info-carousel">
@@ -606,12 +652,14 @@ const UI = {
     renderDecisionOption(option) {
         const isSelected = gameState.selectedOption === option.id;
         const isDisabled = option.disabled === true;
+        // Interpolate actual metrics into option text
+        const description = this.interpolateMetrics(option.description);
         return `
             <div class="decision-option ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" data-option-id="${option.id}" ${isDisabled ? 'data-disabled="true"' : ''}>
                 <div class="decision-option-title">${option.title}</div>
                 ${option.cost ? `<div class="decision-option-cost">${option.cost}</div>` : ''}
                 ${isDisabled ? `<div class="decision-option-disabled-reason">${option.disabledReason || 'Not available'}</div>` : ''}
-                <div class="decision-option-description">${option.description}</div>
+                <div class="decision-option-description">${description}</div>
                 <div class="decision-option-details">
                     <div class="decision-detail">
                         <div class="decision-detail-label">RISK</div>
@@ -657,6 +705,9 @@ const UI = {
                     option.title
                 );
             }
+
+            // Update metrics bar immediately after decision consequences are applied
+            this.updateMetricsBar(true);
 
             // Update progress indicator immediately after decision is confirmed
             this.updateProgressIndicator();
@@ -833,49 +884,7 @@ const UI = {
         };
 
         // Calculate deltas (positive = better than reality)
-        const userMarketCap = gameState.metrics.marketCap;
-        const userMarketShare = gameState.metrics.marketShare;
-
-        // Calculate net cash change from initial position
-        // Initial cash was $34B, so net change = current - initial
-        const initialCash = 34.0;  // scenarioData.initialMetrics.cash
-        const userCashChange = gameState.metrics.cash - initialCash;  // Negative = spent, Positive = profit
-
-        // Reality's metric is the write-off amount (-$7.6B loss)
-        // Compare: did user spend more or less than reality's losses?
-        const cashDelta = actualMetrics.cash - userCashChange;  // Positive = user did better (spent less or made more)
-        const marketCapDelta = userMarketCap - actualMetrics.marketCap;
-        const marketShareDelta = userMarketShare - actualMetrics.marketShare;
-
-        // Format cash change (negative = investment/burn, positive = profit)
-        const formatCashChange = (change) => {
-            if (change >= 0) {
-                return `+$${change.toFixed(1)}B`;  // Profit
-            } else {
-                return `-$${Math.abs(change).toFixed(1)}B`;  // Investment/Burn
-            }
-        };
-
-        // Format delta for cash (higher is better - either less spending or more profit)
-        const formatCashDelta = (delta) => {
-            if (delta > 0) {
-                // User did better than reality (spent less or made more)
-                return `<span style="color: #22c55e; font-size: 0.7rem; margin-left: 6px;">▲ +$${delta.toFixed(1)}B better</span>`;
-            } else if (delta < 0) {
-                // User did worse than reality (spent more or made less)
-                return `<span style="color: #ef4444; font-size: 0.7rem; margin-left: 6px;">▼ $${Math.abs(delta).toFixed(1)}B worse</span>`;
-            }
-            return `<span style="color: var(--text-tertiary); font-size: 0.7rem; margin-left: 6px;">= same</span>`;
-        };
-
-        const formatMarketCapDelta = (delta) => {
-            if (delta > 0) {
-                return `<span style="color: #22c55e; font-size: 0.7rem; margin-left: 6px;">▲ +$${delta.toFixed(0)}B</span>`;
-            } else if (delta < 0) {
-                return `<span style="color: #ef4444; font-size: 0.7rem; margin-left: 6px;">▼ -$${Math.abs(delta).toFixed(0)}B</span>`;
-            }
-            return `<span style="color: var(--text-tertiary); font-size: 0.7rem; margin-left: 6px;">= same</span>`;
-        };
+        const marketShareDelta = gameState.metrics.marketShare - actualMetrics.marketShare;
 
         const formatMarketShareDelta = (delta) => {
             if (delta > 0) {
@@ -903,44 +912,52 @@ const UI = {
 
                 <div class="ending-comparison">
                     <div class="comparison-section your-path">
-                        <h3>YOUR FINAL STATE</h3>
+                        <h3>YOUR FINAL STATE (2007-2017)</h3>
                         <div class="comparison-stats">
                             <div class="stat-item">
-                                <span class="stat-label">Date:</span>
-                                <span class="stat-value">${metrics.date}</span>
+                                <span class="stat-label">Final Status:</span>
+                                <span class="stat-value" style="color: ${metrics.mobilePLRaw >= 0 ? 'var(--metric-positive)' : 'var(--metric-negative)'};">${metrics.mobilePLRaw >= 0 ? 'Profitable' : 'Unprofitable'}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Market Cap:</span>
-                                <span class="stat-value">${metrics.marketCap}${formatMarketCapDelta(marketCapDelta)}</span>
+                                <span class="stat-label">Total Revenue:</span>
+                                <span class="stat-value" style="color: var(--metric-positive);">${metrics.mobileRevenue}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Market Share:</span>
-                                <span class="stat-value">${metrics.marketShare}${formatMarketShareDelta(marketShareDelta)}</span>
+                                <span class="stat-label">Total Costs:</span>
+                                <span class="stat-value" style="color: var(--metric-negative);">${metrics.mobileCosts}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Net Investment:</span>
-                                <span class="stat-value">${formatCashChange(userCashChange)}${formatCashDelta(cashDelta)}</span>
+                                <span class="stat-label">Net P&L:</span>
+                                <span class="stat-value" style="color: ${metrics.mobilePLRaw >= 0 ? 'var(--metric-positive)' : 'var(--metric-negative)'};">${metrics.mobilePL}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Final Market Share:</span>
+                                <span class="stat-value">${metrics.marketShare}%${formatMarketShareDelta(marketShareDelta)}</span>
                             </div>
                         </div>
                     </div>
                     <div class="comparison-section actual-path">
-                        <h3>ACTUAL STATE (REALITY)</h3>
+                        <h3>ACTUAL HISTORY (2007-2017)</h3>
                         <div class="comparison-stats">
                             <div class="stat-item">
-                                <span class="stat-label">Date:</span>
-                                <span class="stat-value">${actualMetrics.date}</span>
+                                <span class="stat-label">Final Status:</span>
+                                <span class="stat-value" style="color: var(--metric-negative);">Discontinued</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Market Cap:</span>
-                                <span class="stat-value">$${actualMetrics.marketCap}B</span>
+                                <span class="stat-label">Total Revenue:</span>
+                                <span class="stat-value" style="color: var(--metric-positive);">~$8B</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Market Share:</span>
+                                <span class="stat-label">Total Costs:</span>
+                                <span class="stat-value" style="color: var(--metric-negative);">~$15.6B</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Net P&L:</span>
+                                <span class="stat-value" style="color: var(--metric-negative);">-$7.6B</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Final Market Share:</span>
                                 <span class="stat-value">${actualMetrics.marketShare}%</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">Write-off:</span>
-                                <span class="stat-value">$${Math.abs(actualMetrics.cash).toFixed(1)}B</span>
                             </div>
                         </div>
                     </div>
@@ -1061,35 +1078,46 @@ const UI = {
         modal.classList.remove('hidden');
     },
 
-    // Show artifact unlock notification
+    // Show artifact unlock notification (uses same minimal style as ArtifactSystem)
     showArtifactUnlockNotification(artifactId) {
         const artifact = gameState.getArtifact(artifactId);
         if (!artifact) return;
 
-        // Create notification element
+        // Use the same minimal notification style as ArtifactSystem.showNewArtifact()
         const notification = document.createElement('div');
-        notification.className = 'artifact-unlock-notification';
+        notification.className = 'artifact-notification';
         notification.innerHTML = `
-            <div class="artifact-unlock-icon"><i class="ph ph-trophy"></i></div>
-            <div class="artifact-unlock-text">
-                <div class="artifact-unlock-title">Artifact Unlocked!</div>
-                <div class="artifact-unlock-name">${artifact.name}</div>
+            <div class="artifact-notification-content">
+                <div class="artifact-notification-icon">${artifact.model3D || '<i class="ph ph-device-mobile"></i>'}</div>
+                <div class="artifact-notification-text">
+                    <span class="artifact-notification-title">Unlocked:</span>
+                    <span class="artifact-notification-name">${artifact.name}</span>
+                </div>
             </div>
         `;
 
         document.body.appendChild(notification);
 
         // Animate in
-        setTimeout(() => notification.classList.add('show'), 10);
+        setTimeout(() => notification.classList.add('show'), 100);
 
-        // Remove after 3 seconds
+        // Remove after 4 seconds
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 300);
-        }, 3000);
+        }, 4000);
 
         // Update artifact counter and collection
         ArtifactUI.updateArtifactBar();
+
+        // Animate the artifact button
+        const button = document.getElementById('artifact-toggle-btn');
+        if (button) {
+            button.style.animation = 'artifactUnlock 0.8s ease-out';
+            setTimeout(() => {
+                button.style.animation = '';
+            }, 800);
+        }
     },
 
     // Close modal
@@ -1222,6 +1250,30 @@ const UI = {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     this.showJourneyModal();
+                }
+            });
+        }
+
+        // P&L breakdown popup click handler (works for mobile tap and desktop click)
+        const plTrigger = document.getElementById('pl-trigger');
+        const plPopup = document.getElementById('pl-breakdown-popup');
+        if (plTrigger && plPopup) {
+            plTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Toggle open state - keeps popup visible after click/tap
+                plPopup.classList.toggle('open');
+            });
+            // Keyboard accessibility
+            plTrigger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    plPopup.classList.toggle('open');
+                }
+            });
+            // Close popup when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!plTrigger.contains(e.target)) {
+                    plPopup.classList.remove('open');
                 }
             });
         }
