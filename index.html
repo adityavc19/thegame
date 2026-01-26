@@ -18,9 +18,21 @@
                 <span class="progress-badge" id="progress-badge" title="Decisions made - Click to view journey">0/6</span>
             </span>
         </div>
-        <div class="metric-detail">
-            <span class="metric-label">MARKET CAP</span>
-            <span class="metric-value" id="marketcap-metric">$250B</span>
+        <div class="metric-detail clickable" id="pl-trigger" role="button" tabindex="0" aria-label="View P&L breakdown">
+            <span class="metric-label">MOBILE P&L <i class="ph ph-info" style="font-size: 0.7rem; opacity: 0.6;"></i></span>
+            <span class="metric-value" id="pl-metric">+$400M</span>
+            <!-- P&L Breakdown Popup -->
+            <div class="pl-breakdown-popup" id="pl-breakdown-popup">
+                <div class="pl-breakdown-item">
+                    <span class="pl-label">Revenue</span>
+                    <span class="pl-value positive" id="pl-revenue">$800M</span>
+                </div>
+                <div class="pl-breakdown-divider"></div>
+                <div class="pl-breakdown-item">
+                    <span class="pl-label">Costs</span>
+                    <span class="pl-value negative" id="pl-costs">$400M</span>
+                </div>
+            </div>
         </div>
         <div class="metric-detail">
             <span class="metric-label">MARKET SHARE</span>

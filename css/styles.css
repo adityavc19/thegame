@@ -252,13 +252,13 @@ a:hover {
     cursor: pointer;
 }
 
-/* Custom tooltip for progress badge */
+/* Custom tooltip for progress badge - positioned to the right */
 .progress-badge::after {
     content: "Decisions made";
     position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    left: calc(100% + 10px);
+    transform: translateY(-50%);
     background: var(--bg-elevated);
     color: var(--text-secondary);
     padding: 6px 10px;
@@ -275,11 +275,11 @@ a:hover {
 .progress-badge::before {
     content: "";
     position: absolute;
-    bottom: calc(100% + 2px);
-    left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    left: calc(100% + 4px);
+    transform: translateY(-50%);
     border: 6px solid transparent;
-    border-top-color: var(--bg-elevated);
+    border-right-color: var(--bg-elevated);
     opacity: 0;
     visibility: hidden;
     transition: opacity var(--transition-fast), visibility var(--transition-fast);
@@ -308,6 +308,109 @@ a:hover {
     background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
     transition: width 0.5s ease-out;
     border-radius: 0 2px 2px 0;
+}
+
+/* ━━━━━━━━━━ P&L BREAKDOWN POPUP ━━━━━━━━━━ */
+
+#pl-trigger {
+    position: relative;
+}
+
+.pl-breakdown-popup {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    padding: var(--spacing-md);
+    min-width: 160px;
+    box-shadow: var(--shadow-card);
+    z-index: 1001;
+    display: none;
+}
+
+/* Show popup on hover (desktop) OR when open (clicked/tapped for mobile) */
+#pl-trigger:hover .pl-breakdown-popup,
+.pl-breakdown-popup.open {
+    display: block;
+    animation: popupFadeIn 0.2s ease-out;
+}
+
+.pl-breakdown-popup::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-bottom-color: var(--border-default);
+}
+
+.pl-breakdown-popup::after {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: var(--bg-elevated);
+}
+
+.pl-breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+}
+
+.pl-breakdown-divider {
+    height: 1px;
+    background: var(--border-default);
+    margin: var(--spacing-xs) 0;
+}
+
+.pl-label {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pl-value {
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.pl-value.positive {
+    color: var(--metric-positive);
+}
+
+.pl-value.negative {
+    color: var(--metric-negative);
+}
+
+/* P&L metric value colors */
+#pl-metric.positive {
+    color: var(--metric-positive);
+}
+
+#pl-metric.negative {
+    color: var(--metric-negative);
+}
+
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
 }
 
 /* ━━━━━━━━━━ JOURNEY MODAL ━━━━━━━━━━ */

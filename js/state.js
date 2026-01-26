@@ -218,6 +218,12 @@ class GameState {
         if (consequences.marketCap !== undefined) {
             this.metrics.marketCap += consequences.marketCap;
         }
+        if (consequences.mobileRevenue !== undefined) {
+            this.metrics.mobileRevenue += consequences.mobileRevenue;
+        }
+        if (consequences.mobileCosts !== undefined) {
+            this.metrics.mobileCosts += consequences.mobileCosts;
+        }
         if (consequences.marketShare !== undefined) {
             this.metrics.marketShare += consequences.marketShare;
             // Ensure market share doesn't go below 0
@@ -438,6 +444,26 @@ class GameState {
         };
 
 
+        // Calculate P&L
+        const mobileRevenue = this.metrics.mobileRevenue || 0;
+        const mobileCosts = this.metrics.mobileCosts || 0;
+        const mobilePL = mobileRevenue - mobileCosts;
+
+        // Format P&L with sign
+        const formatPL = (value) => {
+            const absValue = Math.abs(value);
+            const formatted = absValue >= 1 ? `$${absValue.toFixed(1)}B` : `$${(absValue * 1000).toFixed(0)}M`;
+            if (value > 0) return `+${formatted}`;
+            if (value < 0) return `-${formatted}`;
+            return formatted;
+        };
+
+        // Format revenue/costs (always positive display)
+        const formatMoney = (value) => {
+            if (value >= 1) return `$${value.toFixed(1)}B`;
+            return `$${(value * 1000).toFixed(0)}M`;
+        };
+
         return {
             date: this.metrics.date,
             ceo: this.metrics.ceo,
@@ -445,7 +471,14 @@ class GameState {
             marketCap: `$${this.metrics.marketCap.toFixed(0)}B`,
             marketShare: `${this.metrics.marketShare}%`,
             morale: moralEmoji[this.metrics.morale] || '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
-            moraleText: this.metrics.morale.charAt(0).toUpperCase() + this.metrics.morale.slice(1)
+            moraleText: this.metrics.morale.charAt(0).toUpperCase() + this.metrics.morale.slice(1),
+            // P&L metrics
+            mobilePL: formatPL(mobilePL),
+            mobilePLRaw: mobilePL,
+            mobileRevenue: formatMoney(mobileRevenue),
+            mobileRevenueRaw: mobileRevenue,
+            mobileCosts: formatMoney(mobileCosts),
+            mobileCostsRaw: mobileCosts
         };
     }
 
@@ -498,6 +531,17 @@ class GameState {
             if (this.previousMetrics.stock !== undefined && this.previousMetrics.marketCap === undefined) {
                 this.previousMetrics.marketCap = Math.round(this.previousMetrics.stock * 8);
                 delete this.previousMetrics.stock;
+            }
+
+            // Migration: Add P&L metrics if not present
+            if (this.metrics.mobileRevenue === undefined) {
+                this.metrics.mobileRevenue = scenarioData.initialMetrics.mobileRevenue;
+                this.metrics.mobileCosts = scenarioData.initialMetrics.mobileCosts;
+                this.saveState();
+            }
+            if (this.previousMetrics.mobileRevenue === undefined) {
+                this.previousMetrics.mobileRevenue = scenarioData.initialMetrics.mobileRevenue;
+                this.previousMetrics.mobileCosts = scenarioData.initialMetrics.mobileCosts;
             }
         }
     }
