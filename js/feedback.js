@@ -8,13 +8,11 @@ const FeedbackSystem = {
 
     // Form field IDs (these correspond to Google Forms entry IDs)
     FIELD_IDS: {
-        rating: 'entry.1011962974',        // Overall rating
-        enjoyed: 'entry.1333243759',       // What they enjoyed (checkboxes)
-        improvements: 'entry.1755580600',  // Improvement suggestions (text)
-        playAgain: 'entry.1364191561',     // What other scenarios would you like
-        email: 'entry.2010499039',         // Email for updates
-        scenarioId: 'entry.1755580600',    // Using improvements field for tracking
-        completionTime: 'entry.1755580600' // Using improvements field for tracking
+        rating: 'entry.1364191561',        // Overall rating
+        enjoyed: 'entry.2010499039',       // What they enjoyed (checkboxes)
+        improvements: 'entry.1011962974',  // Improvement suggestions (text)
+        playAgain: 'entry.1333243759',     // What other scenarios would you like
+        email: 'entry.1755580600',         // Email for updates
     },
 
     // State
@@ -70,7 +68,7 @@ const FeedbackSystem = {
                             <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 8px; display: block;">What did you enjoy? <span style="color: var(--accent-primary);">*</span></label>
                             <div class="checkbox-options" style="display: flex; gap: 6px; flex-wrap: wrap;">
                                 <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
-                                    <input type="checkbox" name="enjoyed" value="Decision-making" style="margin-right: 4px;">
+                                    <input type="checkbox" name="enjoyed" value="Decision-making process" style="margin-right: 4px;">
                                     <span>Decisions</span>
                                 </label>
                                 <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
@@ -78,11 +76,11 @@ const FeedbackSystem = {
                                     <span>History</span>
                                 </label>
                                 <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
-                                    <input type="checkbox" name="enjoyed" value="Information sources" style="margin-right: 4px;">
-                                    <span>Info</span>
+                                    <input type="checkbox" name="enjoyed" value="Learning new facts / trivia" style="margin-right: 4px;">
+                                    <span>Trivia</span>
                                 </label>
                                 <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
-                                    <input type="checkbox" name="enjoyed" value="Artifacts" style="margin-right: 4px;">
+                                    <input type="checkbox" name="enjoyed" value="Artifact" style="margin-right: 4px;">
                                     <span>Artifacts</span>
                                 </label>
                             </div>
