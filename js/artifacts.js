@@ -34,11 +34,19 @@ const ArtifactUI = {
 
     // Render single artifact card
     renderArtifactCard(artifact) {
+        const year = artifact.timelineMarkers && artifact.timelineMarkers[0]
+            ? artifact.timelineMarkers[0].value.match(/\d{4}/)?.[0] || ''
+            : '';
+        const subtitle = artifact.forensicTitle || '';
+
         return `
             <div class="artifact-card" data-artifact-id="${artifact.id}">
-                <div class="artifact-card-icon">${artifact.model3D}</div>
-                <div class="artifact-card-name">${artifact.name}</div>
-                <div class="artifact-card-rarity ${artifact.rarity.toLowerCase()}">${artifact.rarity}</div>
+                <div class="artifact-card-thumb">${artifact.model3D}</div>
+                <div class="artifact-card-info">
+                    <div class="artifact-card-name">${artifact.name}</div>
+                    <div class="artifact-card-subtitle">${subtitle}${subtitle && year ? ' · ' : ''}${year}</div>
+                    <div class="artifact-card-rarity ${artifact.rarity.toLowerCase()}">${artifact.rarity}</div>
+                </div>
             </div>
         `;
     },
@@ -72,15 +80,29 @@ const ArtifactUI = {
 
             <!-- 3D Model Container with Hotspots -->
             <div class="artifact-3d-container">
-                <div class="artifact-3d-model" id="artifact-3d-model" data-rotation="0">${artifact.model3D}</div>
-                ${artifact.hotspots ? artifact.hotspots.map((hotspot, index) => `
-                    <div class="artifact-hotspot"
-                         data-hotspot-id="${index}"
-                         style="top: ${hotspot.y}%; left: ${hotspot.x}%;"
-                         title="${hotspot.title}">
-                    </div>
-                `).join('') : ''}
+                <div class="artifact-3d-container-inner">
+                    <div class="artifact-3d-model" id="artifact-3d-model" data-rotation="0">${artifact.model3D}</div>
+                    ${artifact.hotspots ? artifact.hotspots.map((hotspot, index) => `
+                        <div class="artifact-hotspot"
+                             data-hotspot-id="${index}"
+                             style="top: ${hotspot.y}%; left: ${hotspot.x}%;"
+                             title="${hotspot.title}">
+                        </div>
+                    `).join('') : ''}
+                </div>
             </div>
+
+            <!-- Evidence Cards (mobile) -->
+            ${artifact.hotspots && artifact.hotspots.length > 0 ? `
+            <div class="artifact-evidence-cards">
+                ${artifact.hotspots.map(hotspot => `
+                    <div class="artifact-evidence-card">
+                        <div class="artifact-evidence-title">${hotspot.title}</div>
+                        <div class="artifact-evidence-desc">${hotspot.description}</div>
+                    </div>
+                `).join('')}
+            </div>
+            ` : ''}
 
             <!-- Timeline Bar -->
             <div class="artifact-timeline">
@@ -104,11 +126,6 @@ const ArtifactUI = {
                 <div class="artifact-info-section">
                     <h3>Overview</h3>
                     <p>${artifact.description}</p>
-                    ${artifact.failureTags ? `
-                        <div class="artifact-failure-tags">
-                            ${artifact.failureTags.map(tag => `<span class="artifact-failure-tag">${tag}</span>`).join('')}
-                        </div>
-                    ` : ''}
                 </div>
 
                 <!-- Specifications Section -->
@@ -256,26 +273,35 @@ const ArtifactUI = {
         notification.className = 'artifact-notification';
         notification.innerHTML = `
             <div class="artifact-notification-content">
-                <div class="artifact-notification-icon">${artifact.model3D}</div>
+                <div class="artifact-notification-icon"><i class="ph ph-device-mobile"></i></div>
                 <div class="artifact-notification-text">
                     <span class="artifact-notification-title">Unlocked:</span>
                     <span class="artifact-notification-name">${artifact.name}</span>
                 </div>
+                <button class="artifact-notification-view">View</button>
             </div>
         `;
 
         document.body.appendChild(notification);
+
+        // View button opens artifact viewer
+        const viewBtn = notification.querySelector('.artifact-notification-view');
+        viewBtn.addEventListener('click', () => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+            this.openArtifactViewer(artifactId);
+        });
 
         // Animate in
         setTimeout(() => {
             notification.classList.add('show');
         }, 100);
 
-        // Remove after 4 seconds
+        // Remove after 6 seconds
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 300);
-        }, 4000);
+        }, 6000);
 
         // Update artifact count
         this.updateArtifactBar();

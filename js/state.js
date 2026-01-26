@@ -74,8 +74,30 @@ class GameState {
                 const variant = decisionData.variants[variantKey];
 
                 // Handle path-specific framing
-                if (variant.framingByPath && this.pathState.d2Choice) {
-                    const pathFraming = variant.framingByPath[this.pathState.d2Choice];
+                if (variant.framingByPath) {
+                    let lookupKey = null;
+                    let pathFraming = null;
+
+                    if (stage === "d3") {
+                        // D3 uses d2Choice as lookup key
+                        lookupKey = this.pathState.d2Choice;
+                    } else if (stage === "d4" || stage === "d5") {
+                        // D4/D5: try composite key (d3Variant:d3OptionId) first, then d3Variant
+                        const d3Decision = this.decisions.find(d => d.stage === "d3");
+                        if (d3Decision) {
+                            const compositeKey = this.pathState.d3Variant + ":" + d3Decision.optionId;
+                            if (variant.framingByPath[compositeKey]) {
+                                lookupKey = compositeKey;
+                            } else {
+                                lookupKey = this.pathState.d3Variant;
+                            }
+                        }
+                    }
+
+                    if (lookupKey) {
+                        pathFraming = variant.framingByPath[lookupKey];
+                    }
+
                     if (pathFraming && pathFraming.storyText) {
                         // Return variant with path-specific story text
                         return {
@@ -224,12 +246,13 @@ class GameState {
         if (consequences.mobileCosts !== undefined) {
             this.metrics.mobileCosts += consequences.mobileCosts;
         }
-        if (consequences.marketShare !== undefined) {
+        if (consequences.marketShareOverride !== undefined) {
+            this.metrics.marketShare = consequences.marketShareOverride;
+        } else if (consequences.marketShare !== undefined) {
             this.metrics.marketShare += consequences.marketShare;
-            // Ensure market share doesn't go below 0
-            if (this.metrics.marketShare < 0) {
-                this.metrics.marketShare = 0;
-            }
+        }
+        if (this.metrics.marketShare < 0) {
+            this.metrics.marketShare = 0;
         }
         if (consequences.morale) {
             this.metrics.morale = consequences.morale;

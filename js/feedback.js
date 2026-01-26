@@ -45,7 +45,7 @@ const FeedbackSystem = {
                     <!-- Row 1: Rating and Enjoyed side by side -->
                     <div class="feedback-row" style="display: flex; gap: 15px; flex-wrap: wrap;">
                         <div class="feedback-question" style="flex: 1; min-width: 200px;">
-                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 8px; display: block;">Rate this experience</label>
+                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 8px; display: block;">Rate this experience <span style="color: var(--accent-primary);">*</span></label>
                             <div class="rating-options" style="display: flex; gap: 8px; flex-wrap: wrap;">
                                 <label class="rating-option" style="font-size: 0.75rem;">
                                     <input type="radio" name="rating" value="Excellent" required>
@@ -289,77 +289,42 @@ const FeedbackSystem = {
             return;
         }
 
-        // Use hidden iframe submission to avoid CORS issues
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = this.FORM_ACTION_URL;
-        form.target = 'aurora_feedback_iframe';
-        form.style.display = 'none';
+        // Build URL-encoded form body for Google Forms
+        const formBody = new URLSearchParams();
 
-        // Add rating (required) - use type="text" to match Google Forms expectations
         if (data.rating) {
-            const ratingInput = document.createElement('input');
-            ratingInput.type = 'text';
-            ratingInput.name = this.FIELD_IDS.rating;
-            ratingInput.value = data.rating;
-            form.appendChild(ratingInput);
+            formBody.append(this.FIELD_IDS.rating, data.rating);
         }
 
-        // Add enjoyed items (required, checkboxes - need multiple entries)
         if (data.enjoyed) {
-            const enjoyedItems = data.enjoyed.split(', ');
-            enjoyedItems.forEach(item => {
+            data.enjoyed.split(', ').forEach(item => {
                 if (item.trim()) {
-                    const enjoyedInput = document.createElement('input');
-                    enjoyedInput.type = 'text';
-                    enjoyedInput.name = this.FIELD_IDS.enjoyed;
-                    enjoyedInput.value = item.trim();
-                    form.appendChild(enjoyedInput);
+                    formBody.append(this.FIELD_IDS.enjoyed, item.trim());
                 }
             });
         }
 
-        // Add improvements (optional)
         if (data.improvements && data.improvements.trim()) {
-            const improvementsInput = document.createElement('input');
-            improvementsInput.type = 'text';
-            improvementsInput.name = this.FIELD_IDS.improvements;
-            improvementsInput.value = data.improvements;
-            form.appendChild(improvementsInput);
+            formBody.append(this.FIELD_IDS.improvements, data.improvements);
         }
 
-        // Add scenario ideas (optional)
         if (data.playAgain && data.playAgain.trim()) {
-            const playAgainInput = document.createElement('input');
-            playAgainInput.type = 'text';
-            playAgainInput.name = this.FIELD_IDS.playAgain;
-            playAgainInput.value = data.playAgain;
-            form.appendChild(playAgainInput);
+            formBody.append(this.FIELD_IDS.playAgain, data.playAgain);
         }
 
-        // Add email (optional) - use type="text" instead of type="email" to match Google Forms
         if (data.email && data.email.trim()) {
-            const emailInput = document.createElement('input');
-            emailInput.type = 'text';
-            emailInput.name = this.FIELD_IDS.email;
-            emailInput.value = data.email;
-            form.appendChild(emailInput);
+            formBody.append(this.FIELD_IDS.email, data.email);
         }
 
-        // Create hidden iframe if doesn't exist
-        let iframe = document.getElementById('aurora_feedback_iframe');
-        if (!iframe) {
-            iframe = document.createElement('iframe');
-            iframe.name = 'aurora_feedback_iframe';
-            iframe.id = 'aurora_feedback_iframe';
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-        }
-
-        // Submit form
-        document.body.appendChild(form);
-        form.submit();
-        document.body.removeChild(form);
+        // Submit via fetch with no-cors (fire-and-forget, avoids CSP/iframe issues)
+        await fetch(this.FORM_ACTION_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formBody.toString()
+        });
 
         // Also save locally as backup
         this.saveToLocalStorage(data);

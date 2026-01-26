@@ -458,25 +458,10 @@ const UI = {
         });
     },
 
-    // Interpolate dynamic metrics into text
-    interpolateMetrics(text) {
-        const marketShare = gameState.metrics.marketShare;
-
-        // Replace hardcoded percentages with actual market share
-        // Pattern: "X% market share" or "X% share" where X is a number
-        return text
-            .replace(/\b\d{1,2}% market share\b/gi, `${marketShare}% market share`)
-            .replace(/\b\d{1,2}% share\b/gi, `${marketShare}% share`)
-            .replace(/at \d{1,2}%\./gi, `at ${marketShare}%.`);
-    },
-
     // Render story point screen
     renderStoryPoint() {
         const decisionPoint = gameState.getCurrentDecisionPoint();
         const mainContent = document.getElementById('main-content');
-
-        // Interpolate actual metrics into story text
-        const storyText = this.interpolateMetrics(decisionPoint.storyText);
 
         mainContent.innerHTML = `
             <div class="story-point">
@@ -490,7 +475,7 @@ const UI = {
                 </div>
 
                 <div class="story-text">
-                    ${storyText.split('\n\n').map(para =>
+                    ${decisionPoint.storyText.split('\n\n').map(para =>
                         `<p>${para.trim()}</p>`
                     ).join('')}
                 </div>
@@ -529,13 +514,10 @@ const UI = {
         const mainContent = document.getElementById('main-content');
         console.log('Main content element:', mainContent);
 
-        // Interpolate actual metrics into objective
-        const objective = this.interpolateMetrics(decisionPoint.objective);
-
         mainContent.innerHTML = `
             <div class="decision-point">
                 <h2 class="section-header">OBJECTIVE</h2>
-                <div class="objective">${objective}</div>
+                <div class="objective">${decisionPoint.objective}</div>
 
                 <h2 class="section-header">INFORMATION SOURCES</h2>
                 <div class="info-carousel" id="info-carousel">
@@ -652,14 +634,12 @@ const UI = {
     renderDecisionOption(option) {
         const isSelected = gameState.selectedOption === option.id;
         const isDisabled = option.disabled === true;
-        // Interpolate actual metrics into option text
-        const description = this.interpolateMetrics(option.description);
         return `
             <div class="decision-option ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" data-option-id="${option.id}" ${isDisabled ? 'data-disabled="true"' : ''}>
                 <div class="decision-option-title">${option.title}</div>
                 ${option.cost ? `<div class="decision-option-cost">${option.cost}</div>` : ''}
                 ${isDisabled ? `<div class="decision-option-disabled-reason">${option.disabledReason || 'Not available'}</div>` : ''}
-                <div class="decision-option-description">${description}</div>
+                <div class="decision-option-description">${option.description}</div>
                 <div class="decision-option-details">
                     <div class="decision-detail">
                         <div class="decision-detail-label">RISK</div>
@@ -1053,21 +1033,18 @@ const UI = {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
 
-                // Unlock the artifact if not already unlocked
-                if (!gameState.unlockedArtifacts.includes(artifactId)) {
-                    gameState.unlockArtifact(artifactId);
-
-                    // Show notification
-                    this.showArtifactUnlockNotification(artifactId);
-                }
-
                 // Close the info modal
                 this.closeModal();
 
-                // Open artifact viewer after a brief delay
-                setTimeout(() => {
+                // Unlock the artifact if not already unlocked
+                if (!gameState.unlockedArtifacts.includes(artifactId)) {
+                    gameState.unlockArtifact(artifactId);
+                    // Show unlock notification with View CTA
+                    this.showArtifactUnlockNotification(artifactId);
+                } else {
+                    // Already unlocked — open viewer directly
                     ArtifactUI.openArtifactViewer(artifactId);
-                }, 300);
+                }
             });
         });
 
@@ -1088,24 +1065,33 @@ const UI = {
         notification.className = 'artifact-notification';
         notification.innerHTML = `
             <div class="artifact-notification-content">
-                <div class="artifact-notification-icon">${artifact.model3D || '<i class="ph ph-device-mobile"></i>'}</div>
+                <div class="artifact-notification-icon"><i class="ph ph-device-mobile"></i></div>
                 <div class="artifact-notification-text">
                     <span class="artifact-notification-title">Unlocked:</span>
                     <span class="artifact-notification-name">${artifact.name}</span>
                 </div>
+                <button class="artifact-notification-view">View</button>
             </div>
         `;
 
         document.body.appendChild(notification);
 
+        // View button opens artifact viewer
+        const viewBtn = notification.querySelector('.artifact-notification-view');
+        viewBtn.addEventListener('click', () => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+            ArtifactUI.openArtifactViewer(artifactId);
+        });
+
         // Animate in
         setTimeout(() => notification.classList.add('show'), 100);
 
-        // Remove after 4 seconds
+        // Remove after 6 seconds
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 300);
-        }, 4000);
+        }, 6000);
 
         // Update artifact counter and collection
         ArtifactUI.updateArtifactBar();

@@ -1895,9 +1895,9 @@ a:hover {
 
 .artifact-collection-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: var(--spacing-lg);
-    padding: var(--spacing-xl);
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
     overflow-y: auto;
 }
 
@@ -1914,21 +1914,23 @@ a:hover {
     border-radius: 4px;
 }
 
+/* Compact horizontal card */
 .artifact-card {
-    flex: 0 0 150px;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
     background: var(--bg-secondary);
-    border: 2px solid var(--border-default);
+    border: 1px solid var(--border-default);
     border-radius: 8px;
-    padding: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
     cursor: pointer;
     transition: all var(--transition-fast);
-    text-align: center;
     position: relative;
 }
 
 .artifact-card:hover {
     border-color: var(--accent-primary);
-    transform: translateY(-4px);
+    background: rgba(212, 117, 109, 0.05);
     box-shadow: var(--shadow-card);
 }
 
@@ -1936,35 +1938,68 @@ a:hover {
     animation: artifactUnlock 0.8s ease-out;
 }
 
-.artifact-card-icon {
-    font-size: 2.5rem;
-    margin-bottom: var(--spacing-xs);
+/* Thumbnail — small square */
+.artifact-card-thumb {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 1.5rem;
 }
 
-.artifact-card-icon img {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    border-radius: 4px;
+.artifact-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+/* Override any inline font-size from model3D icons */
+.artifact-card-thumb i {
+    font-size: 1.5rem !important;
+}
+
+/* Text info block */
+.artifact-card-info {
+    flex: 1;
+    min-width: 0;
 }
 
 .artifact-card-name {
     font-family: var(--font-heading);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: var(--spacing-xs);
     line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.artifact-card-subtitle {
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    color: var(--text-tertiary);
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .artifact-card-rarity {
     font-family: var(--font-ui);
-    font-size: 0.625rem;
+    font-size: 0.55rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 2px 6px;
+    letter-spacing: 0.8px;
+    padding: 1px 5px;
     border-radius: 3px;
     display: inline-block;
+    margin-top: 3px;
 }
 
 .artifact-card-rarity.legendary {
@@ -1987,6 +2022,13 @@ a:hover {
     color: var(--text-secondary);
 }
 
+/* 2-column grid on wider screens */
+@media (min-width: 500px) {
+    .artifact-collection-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 /* ━━━━━━━━━━ ARTIFACT VIEWER MODAL - MUSEUM FORENSIC STYLE ━━━━━━━━━━ */
 
 .artifact-modal {
@@ -2000,7 +2042,8 @@ a:hover {
     max-height: 100vh;
     width: 100%;
     height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     box-shadow: none;
     position: relative;
     display: flex;
@@ -2008,11 +2051,13 @@ a:hover {
 }
 
 .artifact-modal-content .modal-close {
-    position: absolute;
+    position: fixed;
     top: var(--spacing-md);
     right: var(--spacing-md);
     z-index: 100;
-    background: rgba(232, 180, 160, 0.1);
+    background: rgba(30, 30, 30, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--accent-primary);
     border-radius: 50%;
     width: 44px;
@@ -2028,24 +2073,26 @@ a:hover {
     color: var(--bg-primary);
 }
 
+/* Mobile-first: single column, scrollable */
 .artifact-viewer {
-    display: grid;
-    grid-template-columns: 1fr 400px;
-    grid-template-rows: auto 1fr auto;
-    height: 100%;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
     position: relative;
 }
 
 /* Forensic Header */
 .artifact-forensic-header {
-    grid-column: 1 / -1;
     background: rgba(0, 0, 0, 0.5);
     border-bottom: 2px solid var(--accent-primary);
-    padding: var(--spacing-lg) var(--spacing-xl);
+    padding: var(--spacing-md) var(--spacing-lg);
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    gap: var(--spacing-sm);
 }
 
 .artifact-case-number {
@@ -2072,7 +2119,7 @@ a:hover {
 .artifact-status {
     font-family: var(--font-ui);
     font-size: 0.75rem;
-    color: var(--accent-alert);
+    color: var(--text-tertiary);
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: var(--spacing-xs);
@@ -2082,16 +2129,28 @@ a:hover {
     font-family: var(--font-ui);
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--accent-alert);
+    color: var(--accent-primary);
 }
 
 /* 3D Model Container */
 .artifact-3d-container {
-    grid-column: 1;
-    grid-row: 2;
     width: 100%;
-    height: 100%;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: var(--spacing-lg);
+}
+
+.artifact-3d-container-inner {
+    width: 70%;
+    max-width: 420px;
+    aspect-ratio: 1;
     background: radial-gradient(circle at center, #2a2a2a 0%, #1a1a1a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2100,9 +2159,9 @@ a:hover {
 }
 
 .artifact-3d-model {
-    font-size: 12rem;
+    font-size: 8rem;
     transition: transform 0.05s linear;
-    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+    filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.5));
     cursor: grab;
     user-select: none;
 }
@@ -2117,8 +2176,8 @@ a:hover {
 }
 
 .artifact-3d-model img {
-    max-width: 400px;
-    max-height: 500px;
+    max-width: 280px;
+    max-height: 340px;
     width: auto;
     height: auto;
     object-fit: contain;
@@ -2169,12 +2228,9 @@ a:hover {
 
 /* Info Panel (Right Side) */
 .artifact-info-panel {
-    grid-column: 2;
-    grid-row: 2 / 4;
     background: rgba(35, 35, 35, 0.95);
-    border-left: 2px solid var(--accent-primary);
-    overflow-y: auto;
-    padding: var(--spacing-xl);
+    border-top: 2px solid var(--accent-primary);
+    padding: var(--spacing-lg);
 }
 
 .artifact-info-panel::-webkit-scrollbar {
@@ -2212,32 +2268,38 @@ a:hover {
     margin-bottom: var(--spacing-md);
 }
 
-/* Specifications Grid */
+/* Specifications List */
 .artifact-specs-grid {
-    display: grid;
-    gap: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
 }
 
 .artifact-spec-item {
-    background: rgba(0, 0, 0, 0.3);
-    border-left: 2px solid var(--accent-secondary);
-    padding: var(--spacing-sm) var(--spacing-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.artifact-spec-item:last-child {
+    border-bottom: none;
 }
 
 .artifact-spec-label {
     font-family: var(--font-ui);
-    font-size: 0.625rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     color: var(--text-tertiary);
-    margin-bottom: var(--spacing-xs);
 }
 
 .artifact-spec-value {
     font-family: var(--font-heading);
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-primary);
+    text-align: right;
 }
 
 /* Hotspot Detail (Slides in from bottom) */
@@ -2291,16 +2353,45 @@ a:hover {
     color: var(--accent-primary);
 }
 
+/* Evidence Cards (mobile-only, replaces hotspot dots) */
+.artifact-evidence-cards {
+    display: none;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.artifact-evidence-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    padding: var(--spacing-md);
+}
+
+.artifact-evidence-title {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.artifact-evidence-desc {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
 /* Timeline Bar */
 .artifact-timeline {
-    grid-column: 1;
-    grid-row: 3;
     background: rgba(0, 0, 0, 0.6);
     border-top: 1px solid var(--border-default);
-    padding: var(--spacing-md) var(--spacing-xl);
+    padding: var(--spacing-md) var(--spacing-lg);
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-sm) var(--spacing-lg);
 }
 
 .artifact-timeline-label {
@@ -2434,6 +2525,27 @@ a:hover {
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-primary);
+}
+
+.artifact-notification-view {
+    flex-shrink: 0;
+    margin-left: var(--spacing-sm);
+    padding: 4px 12px;
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--bg-primary);
+    background: var(--accent-primary);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity var(--transition-fast);
+}
+
+.artifact-notification-view:hover {
+    opacity: 0.85;
 }
 
 /* ━━━━━━━━━━ ANIMATIONS ━━━━━━━━━━ */
@@ -2832,47 +2944,81 @@ a:hover {
         margin-top: 0;
     }
 
-    /* Artifact Viewer Mobile */
-    .artifact-viewer {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr auto;
+    .artifact-3d-model {
+        font-size: 5rem;
     }
 
+    .artifact-3d-container-inner {
+        width: 80%;
+        max-width: 300px;
+    }
+
+    /* Artifact header: stack vertically on mobile */
     .artifact-forensic-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--spacing-md);
+        padding: var(--spacing-md);
     }
 
     .artifact-forensic-meta {
         text-align: left;
     }
 
-    .artifact-info-panel {
+    .artifact-forensic-title {
+        font-size: 1.4rem;
+    }
+
+    /* Show evidence cards, hide hotspot dots on mobile */
+    .artifact-evidence-cards {
+        display: flex;
+    }
+
+    .artifact-hotspot {
         display: none;
     }
 
     .artifact-hotspot-detail {
-        right: 0;
-        max-height: 50vh;
+        display: none;
+    }
+}
+
+/* Desktop artifact viewer: 2-column layout */
+@media (min-width: 900px) {
+    .artifact-modal-content {
+        overflow: hidden;
     }
 
-    .artifact-hotspot-detail.show {
-        bottom: 0;
+    .artifact-viewer {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        grid-template-rows: auto 1fr auto;
+        height: 100%;
+        overflow: hidden;
     }
 
-    .artifact-3d-model {
-        font-size: 8rem;
+    .artifact-forensic-header {
+        grid-column: 1 / -1;
+    }
+
+    .artifact-3d-container {
+        grid-column: 1;
+        grid-row: 2;
+        height: 100%;
+        min-height: unset;
     }
 
     .artifact-timeline {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-sm);
+        grid-column: 1;
+        grid-row: 3;
     }
 
-    .artifact-timeline-bar {
-        width: 100%;
+    .artifact-info-panel {
+        grid-column: 2;
+        grid-row: 2 / 4;
+        border-top: none;
+        border-left: 2px solid var(--accent-primary);
+        overflow-y: auto;
+        padding: var(--spacing-xl);
     }
 }
 
