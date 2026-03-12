@@ -18,9 +18,10 @@
     <meta name="twitter:description" content="It's 2007. The iPhone just launched. $18 billion on the line. Can you save Microsoft from missing mobile?">
     <meta name="twitter:image" content="assets/images/iphone-2007.jpg">
 
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231a1a2e'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='%23E8B4A0'%3E📱%3C/text%3E%3C/svg%3E">
-    <link rel="stylesheet" href="css/styles.css?v=1769249921">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23F5F1EA'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='%23C05028'%3E📱%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="css/styles.css?v=120580837">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 </head>
 <body>
     <!-- Metrics Bar -->
@@ -32,10 +33,10 @@
                 <span class="progress-badge" id="progress-badge" title="Decisions made - Click to view journey">0/6</span>
             </span>
         </div>
-        <div class="metric-detail clickable" id="pl-trigger" role="button" tabindex="0" aria-label="View P&L breakdown">
-            <span class="metric-label">MOBILE P&L <i class="ph ph-info" style="font-size: 0.7rem; opacity: 0.6;"></i></span>
-            <span class="metric-value" id="pl-metric">+$400M</span>
-            <!-- P&L Breakdown Popup -->
+        <div class="metric-detail clickable" id="pl-trigger" role="button" tabindex="0" aria-label="View revenue breakdown">
+            <span class="metric-label">REVENUE <i class="ph ph-info" style="font-size: 0.7rem; opacity: 0.6;"></i></span>
+            <span class="metric-value" id="pl-metric">$800M</span>
+            <!-- Revenue Breakdown Popup -->
             <div class="pl-breakdown-popup" id="pl-breakdown-popup">
                 <div class="pl-breakdown-item">
                     <span class="pl-label">Revenue</span>
@@ -46,20 +47,18 @@
                     <span class="pl-label">Costs</span>
                     <span class="pl-value negative" id="pl-costs">$400M</span>
                 </div>
+                <div class="pl-breakdown-divider"></div>
+                <div class="pl-breakdown-item">
+                    <span class="pl-label">Net P&L</span>
+                    <span class="pl-value" id="pl-net">+$400M</span>
+                </div>
             </div>
         </div>
         <div class="metric-detail">
-            <span class="metric-label">MARKET SHARE</span>
-            <span class="metric-value" id="share-metric">42%</span>
+            <span class="metric-label">OS MARKET SHARE</span>
+            <span class="metric-value" id="share-metric">42% <span class="metric-trend declining" id="share-trend"><i class="ph ph-trend-down"></i></span></span>
+            <span class="metric-competitors" id="competitor-shares"></span>
         </div>
-
-        <!-- Profile Icon -->
-        <button id="profile-icon-btn" class="profile-icon-btn" aria-label="View Profile">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
-                <path d="M5 20c0-4 3-7 7-7s7 3 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-        </button>
 
         <!-- Progress Bar (thin line at bottom of metrics bar) -->
         <div class="progress-bar-container" id="progress-bar-container">
@@ -76,6 +75,15 @@
     <button id="artifact-toggle-btn" class="artifact-toggle-btn">
         <div class="artifact-icon"><i class="ph ph-device-mobile"></i></div>
         <div class="artifact-count-badge" id="artifact-count">0</div>
+    </button>
+
+    <!-- Utility Buttons (Bottom Right Corner) -->
+    <button id="mute-btn" class="mute-btn" aria-label="Toggle sound">
+        <i class="ph ph-speaker-simple-high" id="mute-icon"></i>
+    </button>
+    <button id="profile-icon-btn" class="profile-icon-btn" aria-label="View Profile">
+        <i class="ph ph-user"></i>
+        <div class="profile-notify-dot hidden" id="profile-notify-dot"></div>
     </button>
 
     <!-- Artifact Collection Modal -->
@@ -98,7 +106,7 @@
         <button id="share-btn" class="action-btn">Share</button>
     </div>
 
-    <!-- Modal for Information Cards -->
+    <!-- Modal for Information Cards (legacy) -->
     <div id="card-modal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
@@ -107,6 +115,14 @@
             <div id="modal-body" class="modal-body">
                 <!-- Card content will be inserted here -->
             </div>
+        </div>
+    </div>
+
+    <!-- Intel Card Popup Overlay (persistent — content swapped, never destroyed) -->
+    <div id="intel-popup-overlay" class="intel-popup-overlay hidden">
+        <div class="intel-popup-backdrop"></div>
+        <div class="intel-popup-container" id="intel-popup-container">
+            <!-- Popup content rendered here by renderCardPopup() -->
         </div>
     </div>
 
@@ -130,10 +146,7 @@
     <!-- Profile Modal -->
     <div id="profile-modal" class="modal profile-modal hidden">
         <div class="profile-modal-content">
-            <div class="profile-modal-header">
-                <h2>Leadership Profile</h2>
-                <button class="modal-close" id="profile-modal-close">✕</button>
-            </div>
+            <button class="sitrep-close" id="profile-modal-close"><i class="ph ph-x"></i></button>
             <div class="profile-modal-body" id="profile-modal-body">
                 <!-- Profile content will be inserted here -->
             </div>
@@ -153,13 +166,15 @@
         </div>
     </div>
 
-    <script src="js/data.js?v=1769249921"></script>
-    <script src="js/state.js?v=1769249921"></script>
-    <script src="js/artifacts.js?v=1769249921"></script>
-    <script src="js/transitions.js?v=1769249921"></script>
-    <script src="js/feedback.js?v=1769249921"></script>
-    <script src="js/analytics.js?v=1769249921"></script>
-    <script src="js/ui.js?v=1769249921"></script>
-    <script src="js/app.js?v=1769249921"></script>
+    <script src="js/audio.js?v=120580837"></script>
+    <script src="js/narration.js?v=120580837"></script>
+    <script src="js/data.js?v=120580837"></script>
+    <script src="js/state.js?v=120580837"></script>
+    <script src="js/artifacts.js?v=120580837"></script>
+    <script src="js/transitions.js?v=120580837"></script>
+    <script src="js/feedback.js?v=120580837"></script>
+    <script src="js/analytics.js?v=120580837"></script>
+    <script src="js/ui.js?v=120580837"></script>
+    <script src="js/app.js?v=120580837"></script>
 </body>
 </html>

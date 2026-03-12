@@ -81,8 +81,8 @@ class GameState {
                     if (stage === "d3") {
                         // D3 uses d2Choice as lookup key
                         lookupKey = this.pathState.d2Choice;
-                    } else if (stage === "d4" || stage === "d5") {
-                        // D4/D5: try composite key (d3Variant:d3OptionId) first, then d3Variant
+                    } else if (stage === "d4") {
+                        // D4: try composite key (d3Variant:d3OptionId) first, then d3Variant
                         const d3Decision = this.decisions.find(d => d.stage === "d3");
                         if (d3Decision) {
                             const compositeKey = this.pathState.d3Variant + ":" + d3Decision.optionId;
@@ -91,6 +91,11 @@ class GameState {
                             } else {
                                 lookupKey = this.pathState.d3Variant;
                             }
+                        }
+                    } else if (stage === "d5") {
+                        // D5: use d4State as primary key (determines Nokia context)
+                        if (this.pathState.d4State && variant.framingByPath[this.pathState.d4State]) {
+                            lookupKey = this.pathState.d4State;
                         }
                     }
 
@@ -135,6 +140,7 @@ class GameState {
                 const d4StateMap = {
                     "still-fighting": "d4-still-fighting",
                     "crisis-mode": "d4-crisis-mode",
+                    "crisis-mode-nokia-owned": "d4-crisis-mode-nokia-owned",
                     "differentiated": "d4-differentiated"
                 };
                 return d4StateMap[this.pathState.d4State];
@@ -260,6 +266,13 @@ class GameState {
         if (consequences.date) {
             this.metrics.date = consequences.date;
         }
+        // Competitor shares
+        ['appleShare', 'googleShare', 'nokiaShare', 'bbShare'].forEach(key => {
+            if (consequences[key] !== undefined) {
+                this.metrics[key] = (this.metrics[key] || 0) + consequences[key];
+                if (this.metrics[key] < 0) this.metrics[key] = 0;
+            }
+        });
 
 
         // Unlock artifacts
@@ -438,32 +451,32 @@ class GameState {
     // Get formatted metrics for display
     getFormattedMetrics() {
         const moralEmoji = {
-            'high': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
-            'optimistic': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
-            'neutral': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'high': '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
+            'optimistic': '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
+            'neutral': '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
             'concerned': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
             'mixed': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
-            'frustrated': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
+            'frustrated': '<i class="ph-fill ph-circle" style="color: #C43E3E;"></i>',
             'stressed': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
-            'hopeful': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'hopeful': '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
             'uncertain': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
-            'shocked': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
+            'shocked': '<i class="ph-fill ph-circle" style="color: #C43E3E;"></i>',
             'urgent': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
-            'cautious': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'cautious': '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
             'defensive': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
-            'alarmed': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
-            'cautiously optimistic': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
-            'excited': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
-            'desperate': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
-            'disillusioned': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
-            'satisfied': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
-            'relieved': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'alarmed': '<i class="ph-fill ph-circle" style="color: #C43E3E;"></i>',
+            'cautiously optimistic': '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
+            'excited': '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
+            'desperate': '<i class="ph-fill ph-circle" style="color: #C43E3E;"></i>',
+            'disillusioned': '<i class="ph-fill ph-circle" style="color: #C43E3E;"></i>',
+            'satisfied': '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
+            'relieved': '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
             'all-in': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
-            'defeated': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>',
-            'focused': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
-            'proud': '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            'defeated': '<i class="ph-fill ph-circle" style="color: #C43E3E;"></i>',
+            'focused': '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
+            'proud': '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
             'resigned': '<i class="ph-fill ph-circle" style="color: #eab308;"></i>',
-            'low': '<i class="ph-fill ph-circle" style="color: #ef4444;"></i>'
+            'low': '<i class="ph-fill ph-circle" style="color: #C43E3E;"></i>'
         };
 
 
@@ -493,7 +506,7 @@ class GameState {
             cash: `$${this.metrics.cash.toFixed(1)}B`,
             marketCap: `$${this.metrics.marketCap.toFixed(0)}B`,
             marketShare: `${this.metrics.marketShare}%`,
-            morale: moralEmoji[this.metrics.morale] || '<i class="ph-fill ph-circle" style="color: #22c55e;"></i>',
+            morale: moralEmoji[this.metrics.morale] || '<i class="ph-fill ph-circle" style="color: #2D7A4F;"></i>',
             moraleText: this.metrics.morale.charAt(0).toUpperCase() + this.metrics.morale.slice(1),
             // P&L metrics
             mobilePL: formatPL(mobilePL),
@@ -501,7 +514,12 @@ class GameState {
             mobileRevenue: formatMoney(mobileRevenue),
             mobileRevenueRaw: mobileRevenue,
             mobileCosts: formatMoney(mobileCosts),
-            mobileCostsRaw: mobileCosts
+            mobileCostsRaw: mobileCosts,
+            // Competitor shares
+            appleShare: this.metrics.appleShare || 0,
+            googleShare: this.metrics.googleShare || 0,
+            nokiaShare: this.metrics.nokiaShare || 0,
+            bbShare: this.metrics.bbShare || 0
         };
     }
 
@@ -588,7 +606,7 @@ class GameState {
 
     // Get progress information
     getProgress() {
-        const totalDecisions = 6; // Maximum decisions in longest path
+        const totalDecisions = 5; // D1 through D5
         const completedDecisions = this.decisions.length;
         const currentStageNum = parseInt(this.currentDecisionStage.replace('d', ''));
         const isComplete = this.currentScreen === "complete";

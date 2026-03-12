@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Log welcome message
-    console.log('%cAurora Labs', 'font-size: 24px; font-weight: bold; color: #E8B4A0;');
+    console.log('%cAurora Labs', 'font-size: 24px; font-weight: bold; color: #C05028;');
     console.log('%cInteractive Business Intelligence Platform', 'font-size: 14px; color: #B8A896;');
     console.log('%cVersion 1.0 | January 2026', 'font-size: 12px; color: #8A7A6A;');
     console.log('\nDebug commands:');

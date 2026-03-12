@@ -470,6 +470,7 @@ const Transitions = {
 
         // Initial screen with decision recap
         mainContent.innerHTML = `
+            <div class="csq-stepper-bg csq-stepper-bg--verdict-neutral" id="csq-legacy-bg"></div>
             <div class="consequence-reveal">
                 <div class="decision-recap">
                     You chose: <strong>${option.title}</strong>
@@ -562,6 +563,8 @@ const Transitions = {
 
                         // Add event listener
                         document.getElementById('continue-after-consequence').addEventListener('click', () => {
+                            const legacyBg = document.getElementById('csq-legacy-bg');
+                            if (legacyBg) legacyBg.remove();
                             onComplete();
                         });
                     }, 1000);
@@ -607,6 +610,352 @@ const Transitions = {
                         </div>
                     </div>
                 `).join('')}
+            </div>
+        `;
+    },
+
+    // ========================================
+    // PHASE 4 — CHAPTER INTRO + TIME PASSAGE
+    // ========================================
+
+    // Slugify title to match generated image filenames
+    _slugify(text) {
+        return text.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '')
+            .substring(0, 50);
+    },
+
+    showChapterIntro(callback) {
+        const mainContent = document.getElementById('main-content');
+        const decisionPoint = gameState.getCurrentDecisionPoint();
+        const chapter = decisionPoint?.chapter;
+
+        if (!chapter) {
+            // No chapter data — fall back to legacy transition
+            this.showPreDecisionTransition(callback);
+            return;
+        }
+
+        const imageSlug = this._slugify(chapter.title);
+        const imagePath = `assets/images/chapters/chapter-${imageSlug}.png`;
+
+        mainContent.innerHTML = `
+            <div class="ch-intro">
+                <div class="ch-intro-bg" style="background-image: url('${imagePath}')"></div>
+                <div class="ch-intro-overlay"></div>
+                <div class="ch-intro-inner">
+                    <div class="ch-chapter-block">
+                        <div class="ch-number">Chapter ${chapter.number}</div>
+                        <h1 class="ch-title">${chapter.title}</h1>
+                        <p class="ch-teaser">${chapter.teaser}</p>
+                    </div>
+
+                    <button class="ch-enter-btn" id="ch-enter-btn">
+                        <span>ENTER BRIEFING</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // User-driven: click to proceed
+        document.getElementById('ch-enter-btn').addEventListener('click', () => {
+            callback();
+        });
+    },
+
+    // Show metrics delta loader between story brief and decision screen
+    showMetricsLoader(callback) {
+        const mainContent = document.getElementById('main-content');
+        const decisionPoint = gameState.getCurrentDecisionPoint();
+        const transitionMessages = this.getTransitionMessages(decisionPoint);
+
+        mainContent.innerHTML = `
+            <div class="metrics-loader">
+                <div class="metrics-loader-inner">
+                    <div class="metrics-loader-header">
+                        <div class="metrics-loader-spinner"></div>
+                        <span class="metrics-loader-label">Updating situation...</span>
+                    </div>
+                    <div class="metrics-loader-indicators">
+                        ${transitionMessages.indicators.map((ind, i) => `
+                            <div class="metrics-loader-ind" style="animation-delay: ${0.3 + i * 0.35}s">
+                                <span class="ml-ind-label">${ind.label}</span>
+                                <span class="ml-ind-values">
+                                    <span class="ml-ind-old">${ind.oldValue}</span>
+                                    <span class="ml-ind-arrow"><i class="ph ph-arrow-right"></i></span>
+                                    <span class="ml-ind-new">${ind.newValue}</span>
+                                </span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Auto-advance after indicators animate in
+        const totalDelay = 0.3 + transitionMessages.indicators.length * 0.35 + 1.2;
+        setTimeout(() => {
+            // Fade out
+            const loader = mainContent.querySelector('.metrics-loader');
+            if (loader) loader.style.opacity = '0';
+            setTimeout(() => callback(), 400);
+        }, totalDelay * 1000);
+    },
+
+    // ========================================
+    // PHASE 3 — CONSEQUENCE STEPPER
+    // User-paced moment-by-moment consequence reveal
+    // ========================================
+
+    showConsequenceStepper(option, onComplete) {
+        const rawMoments = option.consequences.moments;
+        if (!rawMoments || rawMoments.length === 0) {
+            // Fallback to legacy if no moments data
+            this.showStaggeredConsequences(option, onComplete);
+            return;
+        }
+
+        // Auto-inject market share chart after metrics moment (or after verdict)
+        const moments = [];
+        let chartInserted = false;
+        for (const m of rawMoments) {
+            moments.push(m);
+            if (!chartInserted && (m.type === 'metrics' || m.type === 'verdict')) {
+                moments.push({ type: 'marketChart' });
+                chartInserted = true;
+            }
+        }
+        // If no metrics/verdict, add chart at the end
+        if (!chartInserted) {
+            moments.push({ type: 'marketChart' });
+        }
+
+        const mainContent = document.getElementById('main-content');
+        let currentStep = 0;
+
+        // Render shell
+        mainContent.innerHTML = `
+            <div class="csq-stepper-bg" id="csq-stepper-bg"></div>
+            <div class="csq-stepper">
+                <div class="csq-recap">
+                    <span class="csq-recap-label">YOUR CALL</span>
+                    <span class="csq-recap-title">${option.title}</span>
+                </div>
+                <div class="csq-stage" id="csq-stage">
+                    <!-- Current moment rendered here -->
+                </div>
+                <button class="csq-next-btn" id="csq-next-btn">
+                    <span id="csq-next-label">SEE WHAT HAPPENS</span>
+                    <i class="ph ph-arrow-right"></i>
+                </button>
+                <div class="csq-pips" id="csq-pips">
+                    ${moments.map((_, i) => `<div class="csq-pip ${i === 0 ? 'csq-pip--active' : ''}" data-step="${i}"></div>`).join('')}
+                </div>
+            </div>
+        `;
+
+        const stageEl = document.getElementById('csq-stage');
+        const nextBtn = document.getElementById('csq-next-btn');
+        const nextLabel = document.getElementById('csq-next-label');
+        const pipsEl = document.getElementById('csq-pips');
+        const bgEl = document.getElementById('csq-stepper-bg');
+
+        // Map moment to background class
+        const getBgClass = (moment) => {
+            if (moment.type === 'verdict') return `csq-stepper-bg--verdict-${moment.sentiment || 'neutral'}`;
+            return `csq-stepper-bg--${moment.type}`;
+        };
+
+        // Render a moment into the stage
+        const renderMoment = (index) => {
+            const moment = moments[index];
+            stageEl.classList.remove('csq-stage--visible');
+
+            // Swap background
+            bgEl.className = 'csq-stepper-bg ' + getBgClass(moment);
+
+            setTimeout(() => {
+                stageEl.innerHTML = this._renderMoment(moment);
+                // Force reflow then animate in
+                void stageEl.offsetHeight;
+                stageEl.classList.add('csq-stage--visible');
+
+                // Update pips
+                pipsEl.querySelectorAll('.csq-pip').forEach((pip, i) => {
+                    pip.classList.toggle('csq-pip--done', i < index);
+                    pip.classList.toggle('csq-pip--active', i === index);
+                });
+
+                // Update button label
+                if (index === moments.length - 1) {
+                    nextLabel.textContent = 'CONTINUE';
+                    nextBtn.querySelector('i').className = 'ph ph-arrow-right';
+                } else {
+                    const nextMoment = moments[index + 1];
+                    const labels = {
+                        verdict: 'THE VERDICT',
+                        metrics: 'IMPACT',
+                        marketChart: 'MARKET LANDSCAPE',
+                        timeline: 'WHAT HAPPENS NEXT',
+                        emerging: 'BUT THEN...'
+                    };
+                    nextLabel.textContent = labels[nextMoment.type] || 'NEXT';
+                }
+
+                // Update metrics bar on metrics moment
+                if (moment.type === 'metrics') {
+                    UI.updateMetricsBar(true);
+                }
+
+                // Scroll to top so content is visible from the start
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 250);
+        };
+
+        // Show first moment immediately
+        renderMoment(0);
+
+        // Next button handler
+        nextBtn.addEventListener('click', () => {
+            currentStep++;
+            if (currentStep < moments.length) {
+                renderMoment(currentStep);
+            } else {
+                // Clean up background, then fire completion
+                bgEl.remove();
+                onComplete();
+            }
+        });
+    },
+
+    // Render a single moment by type
+    _renderMoment(moment) {
+        switch (moment.type) {
+            case 'verdict':   return this._renderVerdict(moment);
+            case 'metrics':   return this._renderMetrics(moment);
+            case 'timeline':  return this._renderTimeline(moment);
+            case 'emerging':  return this._renderEmerging(moment);
+            case 'marketChart': return this._renderMarketChart(moment);
+            default:          return `<p>${JSON.stringify(moment)}</p>`;
+        }
+    },
+
+    _renderVerdict(m) {
+        const sentimentClass = {
+            positive: 'csq-verdict--positive',
+            negative: 'csq-verdict--negative',
+            neutral:  'csq-verdict--neutral',
+            mixed:    'csq-verdict--mixed'
+        }[m.sentiment] || 'csq-verdict--neutral';
+
+        return `
+            <div class="csq-verdict ${sentimentClass}">
+                <div class="csq-verdict-icon">
+                    ${m.sentiment === 'positive' ? '<i class="ph ph-check-circle"></i>' :
+                      m.sentiment === 'negative' ? '<i class="ph ph-warning-circle"></i>' :
+                      '<i class="ph ph-minus-circle"></i>'}
+                </div>
+                <h2 class="csq-verdict-headline">${m.headline}</h2>
+                ${m.subline ? `<p class="csq-verdict-subline">${m.subline}</p>` : ''}
+            </div>
+        `;
+    },
+
+    _renderMetrics(m) {
+        return `
+            <div class="csq-metrics">
+                <div class="csq-metrics-label"><i class="ph ph-chart-line-up"></i> KEY IMPACTS</div>
+                <div class="csq-metrics-grid">
+                    ${m.changes.map(c => `
+                        <div class="csq-metric-item csq-metric--${c.direction}">
+                            <span class="csq-metric-name">${c.metric}</span>
+                            <span class="csq-metric-change">
+                                ${c.direction === 'up' ? '<i class="ph ph-arrow-up"></i>' :
+                                  c.direction === 'down' ? '<i class="ph ph-arrow-down"></i>' :
+                                  '<i class="ph ph-arrows-horizontal"></i>'}
+                                ${c.change}
+                            </span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    },
+
+    _renderTimeline(m) {
+        return `
+            <div class="csq-timeline">
+                <div class="csq-timeline-label"><i class="ph ph-clock-countdown"></i> TIMELINE</div>
+                <div class="csq-timeline-events">
+                    ${m.events.map((ev, i) => `
+                        <div class="csq-timeline-event csq-event--${ev.mood}" style="animation-delay: ${i * 0.15}s">
+                            <span class="csq-event-date">${ev.date}</span>
+                            <span class="csq-event-text">${ev.text}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    },
+
+    _renderEmerging(m) {
+        return `
+            <div class="csq-emerging">
+                <div class="csq-emerging-icon"><i class="ph ph-${m.icon || 'lightning'}"></i></div>
+                <h2 class="csq-emerging-headline">${m.headline}</h2>
+                <p class="csq-emerging-body">${m.body}</p>
+                ${m.closing ? `<p class="csq-emerging-closing">${m.closing}</p>` : ''}
+            </div>
+        `;
+    },
+
+    // ── Market Share Chart (animated horizontal bars) ──────────────────────
+    _renderMarketChart(m) {
+        // Pull live metrics from gameState + previous snapshot
+        const metrics = typeof gameState !== 'undefined' ? gameState.metrics : {};
+        const prev = typeof gameState !== 'undefined' ? gameState.previousMetrics : {};
+
+        const players = [
+            { label: 'Windows Mobile', share: metrics.marketShare || 0, prev: prev.marketShare || 0, color: '#D4A08C', you: true },
+            { label: 'Nokia / Symbian', share: metrics.nokiaShare || 0, prev: prev.nokiaShare || 0, color: '#5B8DEF' },
+            { label: 'Apple iOS', share: metrics.appleShare || 0, prev: prev.appleShare || 0, color: '#A0A0A0' },
+            { label: 'Android', share: metrics.googleShare || 0, prev: prev.googleShare || 0, color: '#7BC67E' },
+            { label: 'BlackBerry', share: metrics.bbShare || 0, prev: prev.bbShare || 0, color: '#888' },
+        ].filter(p => p.share > 0 || p.you);
+
+        // Sort by share descending, but keep "you" visually prominent
+        players.sort((a, b) => b.share - a.share);
+
+        const maxShare = Math.max(...players.map(p => Math.max(p.share, p.prev)), 1);
+
+        return `
+            <div class="csq-market-chart">
+                <div class="csq-chart-label"><i class="ph ph-chart-bar-horizontal"></i> MARKET SHARE</div>
+                <div class="csq-chart-date">${metrics.date || ''}</div>
+                <div class="csq-chart-bars">
+                    ${players.map((p, i) => {
+                        const delta = p.share - p.prev;
+                        const deltaStr = delta > 0 ? `+${delta}%` : delta < 0 ? `${delta}%` : '—';
+                        const deltaClass = delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
+                        const barWidth = Math.max((p.share / maxShare) * 100, 2);
+                        const prevWidth = Math.max((p.prev / maxShare) * 100, 2);
+                        return `
+                            <div class="csq-chart-row ${p.you ? 'csq-chart-row--you' : ''}" style="animation-delay: ${i * 0.12}s">
+                                <div class="csq-chart-row-header">
+                                    <span class="csq-chart-player">${p.label}${p.you ? ' <span class="csq-you-tag">YOU</span>' : ''}</span>
+                                    <span class="csq-chart-share">${p.share}%</span>
+                                </div>
+                                <div class="csq-chart-track">
+                                    <div class="csq-chart-bar-ghost" style="width: ${prevWidth}%"></div>
+                                    <div class="csq-chart-bar" style="--bar-target: ${barWidth}%; --bar-color: ${p.color}; animation-delay: ${0.3 + i * 0.12}s"></div>
+                                </div>
+                                <div class="csq-chart-delta csq-delta--${deltaClass}">${deltaStr}</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
             </div>
         `;
     }
