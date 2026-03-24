@@ -1,0 +1,376 @@
+# Mobile Wars — UI Redesign Plan of Action
+
+## Context
+
+Mobile Wars is an interactive business simulation where users play as Steve Ballmer navigating Microsoft's mobile strategy (2007–2017). Users make 5 decisions across the game, each with intel briefing cards, choice options, and narrative consequences.
+
+**The problem:** User feedback indicates the game is too text-heavy and people aren't finishing. The reading-to-acting ratio is ~80/20. All content types (narrative, intel, consequence) share the same visual treatment, so users experience the game as "reading a long article with choices" rather than "living through a series of moments."
+
+**The solution:** Redesign the UI to change the *rhythm*, not the content. Same information, different containers and pacing.
+
+---
+
+## Reference Files
+
+Two reference files have been created and are available in the project:
+
+1. **d1-data-template.js** — The complete data structure template for Decision 1, showing the new three-type card taxonomy (entity, memo, briefing), restructured options, and consequence moments format. This is the canonical reference for how data.js should be restructured.
+
+2. **mobile-wars-v3.jsx** — A working React prototype showing the complete Decision 1 flow with all new UI patterns. This is the visual reference for what the final implementation should look and feel like. Run it to understand the interactions.
+
+---
+
+## Architecture Overview
+
+The codebase has clear file separation:
+
+| File | Owns | Redesign Impact |
+|------|------|-----------------|
+| data.js | All game content — decisions, options, info cards, consequences, branching | **HEAVY** — content restructuring |
+| state.js | Game state machine — pathState, metrics, consequence application | **LIGHT** — add consequenceStep tracking |
+| ui.js | All rendering + event wiring | **HEAVY** — near-full rewrite of rendering functions |
+| transitions.js | Animated interstitials between story and decision | **MEDIUM** — add time passage screen |
+| audio.js | Tone.js BGM engine | **NONE** |
+| artifacts.js | Device museum | **NONE** (separate task later) |
+| analytics.js | Session/event tracking | **NONE** |
+| feedback.js | Post-game survey | **NONE** |
+| app.js | Bootstrap | **NONE** |
+
+---
+
+## Execution Phases
+
+### Phase 0: Data Restructuring (data.js)
+
+**Priority: Do this first. Everything else depends on it.**
+
+**Objective:** Restructure all info cards into the three-type taxonomy, and restructure all consequences into the stepped moments format. Keep old fields alongside new ones during migration so the existing UI doesn't break.
+
+**The three card types:**
+
+**ENTITY** — For content primarily about a specific company or competitor. Has front/back data (front = overview stats, back = intel briefing). Used for: Apple, Nokia, BlackBerry, Google, HTC, Samsung, Motorola, etc.
+
+**MEMO** — For internal Microsoft communications. Has FROM/RE header, classification badge, structured sections. Used for: Pieter Knook's strategic position memo, Andy Lees's WM7 delay, Robbie Bach's Project Pink, WP7 launch assessment, Surface post-mortem, board pressure reports.
+
+**BRIEFING** — For market data and thematic analysis. Has hero stat at top, structured data sections. Used for: iPhone launch analysis, BYOD trends, app gap analysis, developer sentiment, market share reports, financial analyses.
+
+**Classification logic for each existing card:**
+- Does the card have a FROM: line or read like an internal Microsoft document? → MEMO
+- Is the card primarily about a single named company's position/strategy? → ENTITY
+- Is the card about market trends, data, projections, or ecosystem analysis? → BRIEFING
+- Some cards bundle multiple companies (e.g., "Nokia & RIM Response" in D1, "OEM Partner Defections" in D2b). These should either be split into individual entity cards OR kept as a single BRIEFING with a "Competitor Landscape" framing — use judgment based on how many cards the decision already has. Cap at 5-6 cards per decision.
+
+**For each decision point, restructure info cards from the current format:**
+
+```javascript
+// CURRENT
+"d1-info-market": {
+    id: "d1-info-market",
+    type: "Market Report",
+    title: "iPhone Launch Analysis",
+    visual: '<i class="ph ph-chart-line" ...></i>',
+    summary: "...",
+    content: `<p>Long HTML blob...</p>`,
+    source: "...",
+    date: "...",
+    quality: "high"
+}
+```
+
+**Into the new format (see d1-data-template.js for complete example):**
+
+```javascript
+// NEW — BRIEFING type
+{
+    id: "d1-intel-iphone-market",
+    type: "briefing",
+    thumb: {
+        icon: "📊",
+        label: "MARKET REPORT",
+        title: "iPhone Launch Analysis",
+        subtitle: "$499 · AT&T · No apps",
+        accent: "#7ab88e"
+    },
+    popup: {
+        title: "...",
+        source: "...",
+        date: "...",
+        reliability: "HIGH",
+        heroStat: { value: "1%", label: "...", attribution: "..." },
+        sections: [
+            { heading: "...", content: "..." },
+            { heading: "...", type: "stats", items: [...] },
+            { heading: "...", type: "list", items: [...] },
+        ],
+        footnote: "..."
+    }
+}
+```
+
+**For consequences, restructure from:**
+
+```javascript
+// CURRENT
+consequence: {
+    immediate: "<p>Wall Street approves...</p><p>The iPhone launches...</p>",
+    delayed: "<p>Android announced...</p>",
+    metrics: { cash: +1000, marketShare: -5 }
+}
+```
+
+**Into:**
+
+```javascript
+// NEW
+consequence: {
+    moments: [
+        { type: "verdict", headline: "...", subline: "...", sentiment: "positive" },
+        { type: "metrics", changes: [
+            { metric: "Market Cap", change: "+$1B", direction: "up" },
+            ...
+        ]},
+        { type: "timeline", events: [
+            { date: "JUN 29", text: "...", mood: "neutral" },
+            ...
+        ]},
+        { type: "emerging", icon: "⚡", headline: "...", body: "...", closing: "..." }
+    ],
+    metricDeltas: {
+        immediate: { cash: 0, marketCap: 1000, ... },
+        delayed: { marketShare: -15, ... }
+    },
+    pathState: { d1Choice: "wait", d2Branch: "d2a" }
+}
+```
+
+**Important:** Keep the existing `metricDeltas` and `pathState` structures unchanged — these feed into state.js which must not break. The `moments` array is purely for UI rendering.
+
+**Approach:**
+1. Start with D1 using the template as the exact reference. Get D1 perfect.
+2. Then systematically convert D2a, D2b, D3, D4, D5.
+3. For each, read the existing HTML content carefully and extract into the structured format. Don't lose information — restructure it.
+4. Each decision's info cards will have different numbers and types. The card taxonomy per decision should be roughly:
+
+| Decision | Cards | Likely Types |
+|----------|-------|-------------|
+| D1 | 5 | 1 briefing, 1 memo, 3 entities |
+| D2a | 3 | 1 briefing (BYOD), 1 memo (WM7), 1 entity (Google) |
+| D2b | 3-5 | 1 memo (Pink), 1 briefing (Android), 1 briefing or 3 entities (OEMs) |
+| D3 | 5-6 | 2 briefings (market, BYOD/dev), 1 memo (WP7 launch), 2-3 entities (Nokia, iPad) |
+| D4 | 5 | 2 briefings (app gap, market), 1 entity (Nokia financial), 2 memos (Surface, board) |
+| D5 | TBD | Follow pattern |
+
+5. For the consequence moments, not every consequence needs all 4 moment types. The "verdict" and "metrics" moments are universal. "timeline" works when there's a multi-month progression to show. "emerging" works as a bridge to the next decision. Use judgment.
+
+
+### Phase 1: Card Popup System (ui.js)
+
+**Objective:** Build three popup components and a thumbnail grid system.
+
+**What to build:**
+
+1. `renderCardPopup(cardData)` — A router function that checks `cardData.type` and dispatches to the correct popup renderer.
+
+2. `renderEntityPopup(cardData)` — Modal overlay with front/back flip animation. Front: icon, name, quickStats grid, sentiment badge, "Flip for intel" button. Back: key signal quote, detail rows, analysis note, "Flip back" button.
+
+3. `renderMemoPopup(cardData)` — Modal overlay, single-sided. FROM/RE header block, classification stamp (e.g., "INTERNAL"), structured sections that support prose, highlighted prose (with left border accent), and bullet lists.
+
+4. `renderBriefingPopup(cardData)` — Modal overlay, single-sided. Hero stat displayed large at top. Title. Structured sections supporting prose, stats grids, and lists. Footnote at bottom.
+
+5. `renderCardThumbnail(cardData, onClick)` — Type-aware compact card for the grid. Each type has a visually distinct header strip and label color:
+   - Entity: gradient header, coral "COMPETITOR" label, sentiment tag
+   - Memo: muted warm header, gold "INTERNAL MEMO" label, FROM name
+   - Briefing: muted green header, green "MARKET REPORT" label, key number
+
+6. `renderIntelGrid(cards)` — Renders the 2x2 (or wider) grid of thumbnails. Layout logic:
+   - 4 or fewer cards: 2x2 grid, equal size
+   - 5 cards: 2x2 for primary 4 + 1 full-width row for secondary card below
+   - 6+ cards: 2x2 for top 4 + "More Intel" expand button revealing the rest
+
+**Shared popup infrastructure:**
+- All three popups share the same overlay (fixed position, blurred backdrop, click-outside-to-close)
+- All have a source/reliability footer bar
+- All have a close (×) button
+- All should disable body scroll when open and restore scroll position on close
+
+**Visual reference:** See the prototype (mobile-wars-v3.jsx) for exact rendering of all three types. Match the color system, typography, and spacing.
+
+
+### Phase 2: Unified Briefing + Choice Page (ui.js)
+
+**Objective:** Merge the info briefing and decision choice into a single scrollable page.
+
+**Currently:** `renderDecisionPoint()` shows objective + info cards + options all inline. The transition between briefing info and choice happens within this function.
+
+**New behavior:** `renderDecisionPoint()` should render a single continuous page:
+
+```
+[Objective: "How should Microsoft respond..."]
+[Intel Briefing label]
+[Card thumbnail grid — 2x2 or wider]
+["Tap any card for full briefing" hint]
+[Your Position — Microsoft card]
+— divider —
+[Your Call label]
+[Option 1 — collapsed: title + investment]
+[Option 2 — collapsed: title + investment]
+[Option 3 — collapsed: title + investment]
+[Option 4 — collapsed: title + investment]
+[Confirm button — appears after selection]
+```
+
+**Key interaction:** Options are accordion-style. Only title + investment visible when collapsed. Tap to expand — reveals description, risk, upside, and "Choose This Path" CTA. Only one option expanded at a time. After selection, unselected options dim to 30% opacity, confirm button appears.
+
+**Why this matters:** User can scroll up to re-check intel cards, tap one for detail, close popup, scroll back down to options. Zero friction between information gathering and decision making.
+
+
+### Phase 3: Consequence Stepper (ui.js + state.js)
+
+**Objective:** Replace the single-screen consequence dump with a stepped moment-by-moment reveal.
+
+**state.js changes:**
+
+Add consequence step tracking:
+
+```javascript
+// Add to state
+consequenceStep: 0,
+
+// Add methods
+advanceConsequenceStep() {
+    this.consequenceStep++;
+},
+
+resetConsequenceStep() {
+    this.consequenceStep = 0;
+}
+```
+
+Call `resetConsequenceStep()` when entering the consequence phase. Call `advanceConsequenceStep()` on each "Next" click. Only call `continueToNext()` on the final step.
+
+**ui.js changes:**
+
+Rewrite `renderConsequence()` to read `gameState.consequenceStep` and render the corresponding moment from the `moments` array.
+
+Each moment type has a distinct renderer:
+
+- **verdict** — Large headline text, subline in italic, sentiment indicator (📈/📉/⚖️). Single screen, centered.
+- **metrics** — 2x2 grid of metric change cards with animated numbers. Color-coded by direction (green up, red down, gold neutral).
+- **timeline** — Vertical timeline with date markers, event descriptions, and mood-colored dots (green = positive, gold = warning, neutral = dim). Events stagger in with slight delay.
+- **emerging** — Icon, bold headline in red, body text, closing line in italic with border-top separator. This is the dramatic bridge to the next decision.
+
+**Progress indicator:** Horizontal dots at the top showing current step and total steps. Active dot is wider (24px vs 6px), coral colored.
+
+**Navigation:** "Next →" button (outline style) for steps 1-3. "Continue →" button (filled coral) for the final step, which triggers `continueToNext()`.
+
+**Choice recap:** Small banner at the top of the consequence phase showing "You chose: [option name]" with a coral left border.
+
+**DO NOT CHANGE:** The branching logic, pathState system, or how `confirmDecision()` and `continueToNext()` chain stages. The stepper is purely a rendering change — the same game logic fires, just at the end of the stepped sequence instead of immediately.
+
+
+### Phase 4: Time Passage & Chapter Intros (ui.js + transitions.js)
+
+**Objective:** Add a richer time passage screen between decisions and a chapter intro for each new decision.
+
+**Time passage screen:**
+
+After the final consequence moment and before the next decision's story point, show a time passage interstitial:
+
+```
+[Date label — e.g., "SEP 2009"]
+[Spinning ring animation]
+["32 months pass..."]
+[Metric shift cards — animated in sequence]
+  Windows Mobile Share: 42% → 20% (red)
+  Market Clarity: Uncertain → iPhone + Android win (gold)
+  Strategic Options: Many → Fewer (red)
+[Next Decision → button]
+```
+
+The metric shifts should animate in with staggered delays (not all at once). Each card slides in from the left with a colored left border matching its sentiment.
+
+This could be implemented as:
+- A new function `renderTimePassage(fromMetrics, toMetrics, onComplete)` in ui.js
+- OR an extension of the existing `Transitions.showPreDecisionTransition()` in transitions.js
+- Recommend: new function in ui.js. Cleaner separation from the 3-second interstitial which serves a different purpose.
+
+**Chapter intro screen:**
+
+When transitioning to a new decision, show a brief chapter intro before the narrative:
+
+```
+[Circle with decision number]
+[Decision label — "Decision Two"]
+[Title — "The Android Threat"]
+[1-2 line teaser text connecting to previous choice]
+```
+
+This data should live in data.js as part of each decision's config:
+
+```javascript
+chapter: {
+    number: 2,
+    label: "Decision Two",
+    title: "The Android Threat",
+    teaser: "Android is exploding. Your 'wait and watch' strategy gave you perfect clarity — on exactly how far behind you've fallen."
+}
+```
+
+The teaser text can be path-sensitive (using `framingByPath` logic that already exists in the codebase).
+
+---
+
+## Execution Order
+
+1. **Phase 0** — Data restructuring. Do D1 first using the template exactly. Then D2–D5. This can be done with Sonnet on Claude Code.
+
+2. **Phase 1 + 2 together** — Card popup system + unified briefing/choice page. These both modify `renderDecisionPoint()` and should ship as one change. Use Sonnet for implementation.
+
+3. **Phase 3** — Consequence stepper. This is the highest-risk change because it touches state.js. Use Opus for planning the state.js integration, then Sonnet for rendering implementation.
+
+4. **Phase 4** — Time passage + chapter intros. Polish and flow work. Sonnet is fine.
+
+## What NOT to Change
+
+- state.js branching logic and pathState system — this is the most complex and fragile piece
+- analytics.js — tracking should still work
+- audio.js — BGM engine is independent
+- artifacts.js — separate redesign task (parked for later)
+- app.js bootstrap — no changes needed
+- The narrative/story text in renderStoryPoint() — the cinematic prose stays as-is
+
+## Testing Checkpoints
+
+After each phase, verify:
+
+1. **Phase 0:** Old UI still works with new data format (if old fields preserved alongside new ones). All decision paths are accessible.
+2. **Phase 1+2:** Can tap all card types, popups open/close correctly, scroll position preserved after popup close, can make decisions, confirm triggers correctly.
+3. **Phase 3:** Consequence moments step through correctly, final step triggers `continueToNext()`, pathState routes to correct next decision, metrics apply correctly at the right time.
+4. **Phase 4:** Time passage shows between decisions, chapter intros display with correct path-sensitive text, full game completable end-to-end.
+
+## Color System Reference
+
+```
+Background:        #141110
+Card background:   #1e1a17
+Cream (primary):   #e8dcc8
+Cream (muted):     #a89a85
+Cream (dim):       #6b6054
+Coral (accent):    #d4856a
+Green (positive):  #7ab88e
+Red (negative):    #c45c4d
+Gold (warning):    #c4a35a
+Border:            #2a2420
+Border (light):    #3a332c
+
+Type-specific accents:
+  Entity cards:    #d4856a (coral)
+  Memo cards:      #c4a35a (gold)
+  Briefing cards:  #7ab88e (green)
+```
+
+## Typography
+
+- Body/narrative: Libre Baskerville (serif)
+- UI/labels/data: DM Sans (sans-serif)
+- All uppercase labels: DM Sans with letter-spacing 0.1–0.2em

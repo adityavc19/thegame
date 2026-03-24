@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Market Share — Consequence</title>
+<style>
+  :root {
+    --bg: #F5F2EE;
+    --ink: #1A1718;
+    --ink-mid: rgba(26, 23, 24, 0.4);
+    --ink-dim: rgba(26, 23, 24, 0.12);
+    --ink-ghost: rgba(26, 23, 24, 0.06);
+    --coral: #E8856C;
+    --coral-mid: rgba(232, 133, 108, 0.5);
+    --coral-dim: rgba(232, 133, 108, 0.15);
+    --coral-glow: rgba(232, 133, 108, 0.3);
+    --nokia: #3A6B8C;
+    --nokia-dim: rgba(58, 107, 140, 0.12);
+    --bb: #5A5856;
+    --bb-dim: rgba(90, 88, 86, 0.08);
+    --apple: #4A8C6F;
+    --apple-dim: rgba(74, 140, 111, 0.10);
+    --android: #8B9A3A;
+    --android-dim: rgba(139, 154, 58, 0.10);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .screen {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    padding: 0 20px;
+    overflow: hidden;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+    opacity: 0;
+  }
+  .header.active { animation: fadeUp 0.4s ease-out forwards; }
+  .header-label {
+    font-size: 8.5px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+  }
+  .header-date {
+    font-size: 10px;
+    color: var(--ink-mid);
+    letter-spacing: 1px;
+  }
+
+  /* ─── CHART CONTAINER ─── */
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 0.82;
+    margin: 8px 0 0;
+  }
+  .chart-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .chart-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* ─── DECISION MARKER ─── */
+  .decision-line {
+    stroke: var(--coral);
+    stroke-width: 1;
+    stroke-dasharray: 3, 3;
+    opacity: 0;
+  }
+  .decision-line.active {
+    animation: decisionLineIn 0.5s ease-out forwards;
+  }
+  @keyframes decisionLineIn {
+    0% { opacity: 0; stroke-dashoffset: 20; }
+    100% { opacity: 0.5; stroke-dashoffset: 0; }
+  }
+  .decision-tag {
+    font-size: 7px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    fill: var(--coral);
+    opacity: 0;
+  }
+  .decision-tag.active {
+    animation: tagIn 0.35s ease-out 0.15s forwards;
+  }
+  @keyframes tagIn {
+    0% { opacity: 0; }
+    100% { opacity: 0.65; }
+  }
+
+  /* ─── SIGNAL FRAGMENTS ─── */
+  .sig-diamond {
+    fill: none; stroke: var(--coral); stroke-width: 0.8; opacity: 0;
+  }
+  .sig-diamond.active { animation: sigCoral 0.4s ease-out forwards; }
+  .sig-cross line {
+    stroke: var(--ink); stroke-width: 0.6; opacity: 0;
+  }
+  .sig-cross.active line { animation: sigInk 0.35s ease-out forwards; }
+  .sig-tick line {
+    stroke: var(--ink-mid); stroke-width: 0.5; opacity: 0;
+  }
+  .sig-tick.active line { animation: sigInk 0.3s ease-out forwards; }
+  .sig-dots circle {
+    fill: var(--coral); opacity: 0;
+  }
+  .sig-dots.active circle { animation: sigCoral 0.35s ease-out forwards; }
+  .sig-arc {
+    stroke: var(--coral-mid); stroke-width: 0.6; fill: none; opacity: 0;
+  }
+  .sig-arc.active { animation: sigCoral 0.4s ease-out forwards; }
+  .micro-glyph {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 6.5px; letter-spacing: 1px; opacity: 0;
+  }
+  .mg-ink { fill: var(--ink); }
+  .mg-coral { fill: var(--coral); }
+  .micro-glyph.active { animation: glyphIn 0.5s ease-out forwards; }
+
+  @keyframes sigCoral {
+    0% { opacity: 0; } 25% { opacity: 0.7; } 100% { opacity: 0.1; }
+  }
+  @keyframes sigInk {
+    0% { opacity: 0; } 25% { opacity: 0.4; } 100% { opacity: 0.06; }
+  }
+  @keyframes glyphIn {
+    0% { opacity: 0; } 20% { opacity: 0.45; } 100% { opacity: 0.05; }
+  }
+
+  /* ─── ENDPOINT LABELS ─── */
+  .endpoint-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .endpoint-label.active { opacity: 1; }
+  .endpoint-you {
+    font-size: 5.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .endpoint-you.active { opacity: 0.7; }
+
+  /* ─── DELTA CARDS ─── */
+  .deltas {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    margin-top: 16px;
+  }
+  .delta-card {
+    text-align: center;
+    padding: 10px 2px 8px;
+    border-radius: 6px;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .delta-card.active {
+    animation: deltaIn 0.5s ease-out forwards;
+  }
+  .delta-val {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
+  .delta-name {
+    font-size: 6.5px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+    margin-top: 3px;
+  }
+  .delta-change {
+    font-size: 9px;
+    font-weight: 600;
+    margin-top: 3px;
+    letter-spacing: 0.3px;
+  }
+  .delta-up { color: var(--apple); }
+  .delta-down { color: #C45B4A; }
+  .delta-flat { color: var(--ink-dim); }
+
+  .dc-nokia { background: var(--nokia-dim); }
+  .dc-nokia .delta-val { color: var(--nokia); }
+  .dc-msft { background: var(--coral-dim); }
+  .dc-msft .delta-val { color: var(--coral); }
+  .dc-bb { background: var(--bb-dim); }
+  .dc-bb .delta-val { color: var(--bb); }
+  .dc-apple { background: var(--apple-dim); }
+  .dc-apple .delta-val { color: var(--apple); }
+  .dc-android { background: var(--android-dim); }
+  .dc-android .delta-val { color: var(--android); }
+
+  @keyframes deltaIn {
+    0% { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(4px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── LEGEND ─── */
+  .legend {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    opacity: 0;
+  }
+  .legend.active { animation: fadeUp 0.4s ease-out forwards; }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 8px;
+    letter-spacing: 0.8px;
+    color: var(--ink-mid);
+  }
+  .legend-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 1.5px;
+  }
+  .you-badge {
+    font-size: 6px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: var(--coral-dim);
+    color: var(--coral);
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+
+  /* ─── REPLAY ─── */
+  .replay-btn {
+    display: block;
+    margin: 24px auto 0;
+    background: none;
+    border: 1px solid var(--ink-dim);
+    color: var(--ink-mid);
+    font-family: inherit;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 28px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .replay-btn:hover { border-color: var(--coral); color: var(--coral); }
+</style>
+</head>
+<body>
+
+<div class="screen" id="screen">
+
+  <div class="header" id="header">
+    <span class="header-label">Market share</span>
+    <span class="header-date" id="headerDate">Q4 2006</span>
+  </div>
+
+  <div class="legend" id="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--nokia);"></div>Nokia
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--coral);"></div>Microsoft
+      <span class="you-badge">You</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--bb);"></div>BlackBerry
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--apple);"></div>Apple
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--android);"></div>Android
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <canvas class="chart-canvas" id="chartCanvas"></canvas>
+    <svg class="chart-svg" id="chartSvg" viewBox="0 0 380 312" preserveAspectRatio="xMidYMid meet">
+
+      <line class="decision-line" id="decisionLine" x1="0" y1="20" x2="0" y2="292" />
+      <text class="decision-tag" id="decisionTag" x="0" y="14" text-anchor="middle">Your call</text>
+
+      <polygon class="sig-diamond sd" points="30,40 33,35 36,40 33,45" />
+      <polygon class="sig-diamond sd" points="350,55 353,50 356,55 353,60" />
+      <polygon class="sig-diamond sd" points="45,260 48,255 51,260 48,265" />
+
+      <g class="sig-cross sd" transform="translate(360,250)">
+        <line x1="-3" y1="0" x2="3" y2="0" />
+        <line x1="0" y1="-3" x2="0" y2="3" />
+      </g>
+      <g class="sig-cross sd" transform="translate(20,140)">
+        <line x1="-3" y1="0" x2="3" y2="0" />
+        <line x1="0" y1="-3" x2="0" y2="3" />
+      </g>
+
+      <g class="sig-tick sd" transform="translate(355,145)">
+        <line x1="0" y1="-3" x2="0" y2="3" />
+        <line x1="3" y1="-2" x2="3" y2="2" />
+        <line x1="6" y1="-3" x2="6" y2="3" />
+      </g>
+      <g class="sig-tick sd" transform="translate(15,200)">
+        <line x1="0" y1="-3" x2="0" y2="3" />
+        <line x1="3" y1="-2" x2="3" y2="2" />
+        <line x1="6" y1="-3" x2="6" y2="3" />
+      </g>
+
+      <g class="sig-dots sd" transform="translate(340,195)">
+        <circle cx="0" cy="0" r="1" />
+        <circle cx="4" cy="-1" r="0.7" />
+        <circle cx="2" cy="3" r="0.9" />
+      </g>
+
+      <path class="sig-arc sd" d="M25,85 Q32,78 38,84" />
+      <path class="sig-arc sd" d="M345,88 Q352,82 358,87" />
+
+      <text class="micro-glyph mg-coral sd" x="32" y="68">$900M</text>
+      <text class="micro-glyph mg-ink sd" x="340" y="72">REV</text>
+      <text class="micro-glyph mg-ink sd" x="20" y="235">QTR</text>
+      <text class="micro-glyph mg-coral sd" x="345" y="230">MKT</text>
+      <text class="micro-glyph mg-ink sd" x="30" y="280">△</text>
+      <text class="micro-glyph mg-coral sd" x="355" y="278">▽</text>
+
+      <text class="endpoint-label" id="lbl-nokia" fill="var(--nokia)"></text>
+      <text class="endpoint-label" id="lbl-msft" fill="var(--coral)"></text>
+      <text class="endpoint-you" id="lbl-you" fill="var(--coral)">You</text>
+      <text class="endpoint-label" id="lbl-bb" fill="var(--bb)"></text>
+      <text class="endpoint-label" id="lbl-apple" fill="var(--apple)"></text>
+      <text class="endpoint-label" id="lbl-android" fill="var(--android)"></text>
+    </svg>
+  </div>
+
+  <div class="deltas" id="deltas">
+    <div class="delta-card dc-nokia">
+      <div class="delta-val">47%</div>
+      <div class="delta-name">Nokia</div>
+      <div class="delta-change delta-down">-2</div>
+    </div>
+    <div class="delta-card dc-msft">
+      <div class="delta-val">42%</div>
+      <div class="delta-name">MSFT</div>
+      <div class="delta-change delta-down">-2</div>
+    </div>
+    <div class="delta-card dc-bb">
+      <div class="delta-val">11%</div>
+      <div class="delta-name">BB</div>
+      <div class="delta-change delta-up">+2</div>
+    </div>
+    <div class="delta-card dc-apple">
+      <div class="delta-val">3%</div>
+      <div class="delta-name">Apple</div>
+      <div class="delta-change delta-up">+3</div>
+    </div>
+    <div class="delta-card dc-android">
+      <div class="delta-val">0%</div>
+      <div class="delta-name">Android</div>
+      <div class="delta-change delta-flat">—</div>
+    </div>
+  </div>
+
+  <button class="replay-btn" id="replayBtn">Replay</button>
+</div>
+
+<script>
+(function() {
+  const labels = ['Q1 05','Q2 05','Q3 05','Q4 05','Q1 06','Q2 06','Q3 06','Q4 06','Q1 07','Q2 07'];
+  const data = {
+    nokia:   [52, 51, 51, 50, 50, 49, 49, 49, 48, 47],
+    msft:    [37, 38, 38, 39, 40, 41, 42, 44, 43, 42],
+    bb:      [ 8,  8,  8,  9,  9,  9,  9,  9, 10, 11],
+    apple:   [ 0,  0,  0,  0,  0,  0,  0,  0,  1,  3],
+    android: [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
+  };
+  const decisionIdx = 7;
+  const colors = {
+    nokia:   { line: '#3A6B8C', fill: 'rgba(58,107,140,0.08)' },
+    msft:    { line: '#E8856C', fill: 'rgba(232,133,108,0.12)' },
+    bb:      { line: '#5A5856', fill: 'rgba(90,88,86,0.06)' },
+    apple:   { line: '#4A8C6F', fill: 'rgba(74,140,111,0.08)' },
+    android: { line: '#8B9A3A', fill: 'rgba(139,154,58,0.08)' }
+  };
+  const order = ['nokia','msft','bb','apple','android'];
+
+  const canvas = document.getElementById('chartCanvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 2;
+
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const pad = { top: 28, right: 50, bottom: 28, left: 36 };
+  function chartW() { return canvas.width / dpr - pad.left - pad.right; }
+  function chartH() { return canvas.height / dpr - pad.top - pad.bottom; }
+  function xPos(i) { return pad.left + (i / (labels.length - 1)) * chartW(); }
+  function yPos(v) { return pad.top + (1 - v / 60) * chartH(); }
+
+  function drawGrid(alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = 'rgba(26,23,24,0.06)';
+    ctx.lineWidth = 0.5;
+    for (let v = 0; v <= 60; v += 15) {
+      const y = yPos(v);
+      ctx.beginPath();
+      ctx.moveTo(pad.left, y);
+      ctx.lineTo(pad.left + chartW(), y);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(26,23,24,0.25)';
+      ctx.font = '9px "SF Mono", "Fira Code", monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(v + '%', pad.left - 8, y + 3);
+    }
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(26,23,24,0.25)';
+    for (let i = 0; i < labels.length; i++) {
+      if (i % 2 === 0 || i >= decisionIdx) {
+        ctx.fillText(labels[i], xPos(i), pad.top + chartH() + 18);
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawArea(key, upToFloat) {
+    const d = data[key];
+    const c = colors[key];
+    const maxI = Math.min(Math.floor(upToFloat), d.length - 1);
+    const frac = upToFloat - Math.floor(upToFloat);
+    if (maxI < 0) return;
+
+    let allZero = true;
+    for (let i = 0; i <= maxI; i++) { if (d[i] > 0) { allZero = false; break; } }
+    if (allZero && (maxI >= d.length - 1 || frac === 0 || d[maxI + 1] === 0)) return;
+
+    const interpVal = maxI < d.length - 1 && frac > 0 ? d[maxI] + (d[maxI + 1] - d[maxI]) * frac : d[maxI];
+    const lastX = maxI < d.length - 1 && frac > 0 ? xPos(maxI + frac) : xPos(maxI);
+    const lastY = yPos(interpVal);
+
+    ctx.save();
+    const areaPath = new Path2D();
+    areaPath.moveTo(xPos(0), yPos(d[0]));
+    for (let i = 1; i <= maxI; i++) areaPath.lineTo(xPos(i), yPos(d[i]));
+    if (maxI < d.length - 1 && frac > 0) areaPath.lineTo(lastX, lastY);
+    areaPath.lineTo(lastX, yPos(0));
+    areaPath.lineTo(xPos(0), yPos(0));
+    areaPath.closePath();
+    ctx.fillStyle = c.fill;
+    ctx.fill(areaPath);
+    ctx.restore();
+
+    ctx.beginPath();
+    ctx.moveTo(xPos(0), yPos(d[0]));
+    for (let i = 1; i <= maxI; i++) ctx.lineTo(xPos(i), yPos(d[i]));
+    if (maxI < d.length - 1 && frac > 0) ctx.lineTo(lastX, lastY);
+    ctx.strokeStyle = c.line;
+    ctx.lineWidth = key === 'msft' ? 2.5 : 1.5;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    if (interpVal > 0) {
+      ctx.beginPath();
+      ctx.arc(lastX, lastY, key === 'msft' ? 4 : 3, 0, Math.PI * 2);
+      ctx.fillStyle = c.line;
+      ctx.fill();
+    }
+  }
+
+  const svgVB = { w: 380, h: 312 };
+  function toSvgX(cx) { return (cx / (canvas.width / dpr)) * svgVB.w; }
+  function toSvgY(cy) { return (cy / (canvas.height / dpr)) * svgVB.h; }
+
+  function updateDecisionLine() {
+    const cx = xPos(decisionIdx);
+    const sx = toSvgX(cx);
+    document.getElementById('decisionLine').setAttribute('x1', sx);
+    document.getElementById('decisionLine').setAttribute('x2', sx);
+    document.getElementById('decisionTag').setAttribute('x', sx);
+  }
+
+  function updateEndpointLabels(progress) {
+    const series = [
+      { key: 'nokia',   lbl: 'lbl-nokia',   offset: -4 },
+      { key: 'msft',    lbl: 'lbl-msft',    offset: 0 },
+      { key: 'bb',      lbl: 'lbl-bb',      offset: 2 },
+      { key: 'apple',   lbl: 'lbl-apple',   offset: 4 },
+      { key: 'android', lbl: 'lbl-android', offset: 6 }
+    ];
+    const maxI = Math.min(Math.floor(progress), labels.length - 1);
+    const frac = progress - Math.floor(progress);
+
+    series.forEach(s => {
+      const d = data[s.key];
+      let val, cx, cy;
+      if (maxI < d.length - 1 && frac > 0) {
+        val = d[maxI] + (d[maxI + 1] - d[maxI]) * frac;
+        cx = xPos(maxI + frac);
+        cy = yPos(val);
+      } else {
+        val = d[Math.min(maxI, d.length - 1)];
+        cx = xPos(Math.min(maxI, d.length - 1));
+        cy = yPos(val);
+      }
+      const el = document.getElementById(s.lbl);
+      if (Math.round(val) === 0) {
+        el.setAttribute('opacity', '0');
+      } else {
+        el.removeAttribute('opacity');
+        el.setAttribute('x', toSvgX(cx) + 14);
+        el.setAttribute('y', toSvgY(cy) + 3 + s.offset);
+        el.textContent = Math.round(val) + '%';
+      }
+    });
+
+    const msD = data.msft;
+    let wVal, wX, wY;
+    if (maxI < msD.length - 1 && frac > 0) {
+      wVal = msD[maxI] + (msD[maxI + 1] - msD[maxI]) * frac;
+      wX = xPos(maxI + frac); wY = yPos(wVal);
+    } else {
+      wVal = msD[Math.min(maxI, msD.length - 1)];
+      wX = xPos(Math.min(maxI, msD.length - 1)); wY = yPos(wVal);
+    }
+    const youEl = document.getElementById('lbl-you');
+    youEl.setAttribute('x', toSvgX(wX) + 14);
+    youEl.setAttribute('y', toSvgY(wY) + 13);
+  }
+
+  let animFrame;
+  const phases = {
+    gridFade:    { start: 0,    end: 400 },
+    drawHist:    { start: 300,  end: 1400 },
+    decisionIn:  { start: 1200, end: 1600 },
+    signalFlash: { start: 1300, end: 1700 },
+    drawNew:     { start: 2000, end: 3200 },
+    labelsIn:    { start: 2800, end: 3400 },
+    deltasIn:    { start: 3400, end: 4000 }
+  };
+
+  let startTime = 0;
+  let signalsActivated = false;
+  let decisionActivated = false;
+  let labelsActivated = false;
+  let deltasActivated = false;
+  let headerShown = false;
+  let legendShown = false;
+
+  function ease(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+  function animate(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+
+    if (!headerShown && elapsed > 100) {
+      headerShown = true;
+      document.getElementById('header').classList.add('active');
+    }
+    if (!legendShown && elapsed > 200) {
+      legendShown = true;
+      document.getElementById('legend').classList.add('active');
+    }
+
+    const gridT = ease(Math.max(0, Math.min(1, (elapsed - phases.gridFade.start) / (phases.gridFade.end - phases.gridFade.start))));
+    drawGrid(gridT);
+
+    const histT = ease(Math.max(0, Math.min(1, (elapsed - phases.drawHist.start) / (phases.drawHist.end - phases.drawHist.start))));
+    const histProgress = histT * decisionIdx;
+    order.forEach(key => drawArea(key, histProgress));
+
+    if (!decisionActivated && elapsed > phases.decisionIn.start) {
+      decisionActivated = true;
+      updateDecisionLine();
+      document.getElementById('decisionLine').classList.add('active');
+      document.getElementById('decisionTag').classList.add('active');
+    }
+
+    if (!signalsActivated && elapsed > phases.signalFlash.start) {
+      signalsActivated = true;
+      document.querySelectorAll('.sd').forEach((el, i) => {
+        el.style.animationDelay = (0.05 * i) + 's';
+        el.classList.add('active');
+      });
+    }
+
+    if (elapsed > phases.drawNew.start) {
+      const newT = ease(Math.max(0, Math.min(1, (elapsed - phases.drawNew.start) / (phases.drawNew.end - phases.drawNew.start))));
+      const totalProgress = decisionIdx + newT * (labels.length - 1 - decisionIdx);
+      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+      drawGrid(1);
+      order.forEach(key => drawArea(key, totalProgress));
+      updateEndpointLabels(totalProgress);
+      const currentIdx = Math.min(Math.floor(totalProgress), labels.length - 1);
+      document.getElementById('headerDate').textContent = labels[currentIdx];
+    } else {
+      updateEndpointLabels(histProgress);
+    }
+
+    if (!labelsActivated && elapsed > phases.labelsIn.start) {
+      labelsActivated = true;
+      document.querySelectorAll('.endpoint-label, .endpoint-you').forEach(el => el.classList.add('active'));
+    }
+
+    if (!deltasActivated && elapsed > phases.deltasIn.start) {
+      deltasActivated = true;
+      document.querySelectorAll('.delta-card').forEach((el, i) => {
+        el.style.animationDelay = (0.1 * i) + 's';
+        el.classList.add('active');
+      });
+    }
+
+    if (elapsed < phases.deltasIn.end + 500) {
+      animFrame = requestAnimationFrame(animate);
+    }
+  }
+
+  function resetAll() {
+    cancelAnimationFrame(animFrame);
+    startTime = 0;
+    signalsActivated = false;
+    decisionActivated = false;
+    labelsActivated = false;
+    deltasActivated = false;
+    headerShown = false;
+    legendShown = false;
+    document.getElementById('header').classList.remove('active');
+    document.getElementById('legend').classList.remove('active');
+    document.getElementById('headerDate').textContent = 'Q4 2006';
+    document.querySelectorAll('.sd, .decision-line, .decision-tag, .endpoint-label, .endpoint-you, .delta-card').forEach(el => {
+      el.classList.remove('active');
+      el.style.animationDelay = '';
+    });
+    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+  }
+
+  function play() {
+    resetAll();
+    resize();
+    requestAnimationFrame(() => { animFrame = requestAnimationFrame(animate); });
+  }
+
+  setTimeout(play, 400);
+  document.getElementById('replayBtn').addEventListener('click', play);
+  window.addEventListener('resize', () => { if (startTime) { resetAll(); play(); } });
+})();
+</script>
+</body>
+</html>

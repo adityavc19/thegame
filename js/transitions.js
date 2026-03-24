@@ -316,7 +316,7 @@ const Transitions = {
             messages: {
                 mainLabel: "Q1 2007 concluding...",
                 indicators: [
-                    { label: "iPhone Pre-orders", oldValue: "—", newValue: "270K" },
+                    { label: "iPhone Pre-orders", oldValue: "--", newValue: "270K" },
                     { label: "Media Coverage", oldValue: "Neutral", newValue: "Enthusiastic" },
                     { label: "Carrier Interest", oldValue: "AT&T Exclusive", newValue: "Others Watching" }
                 ]
@@ -482,7 +482,7 @@ const Transitions = {
 
                 <div class="consequence-continue hidden">
                     <button class="continue-btn" id="continue-after-consequence">
-                        Continue →
+                        Continue
                     </button>
                 </div>
             </div>
@@ -502,19 +502,19 @@ const Transitions = {
                 content: narrativeParagraphs[0] || consequences.narrative
             },
             {
-                delay: 2000,
+                delay: 1500,
                 type: 'ripple-1',
                 title: 'FIRST RIPPLE EFFECTS',
                 content: narrativeParagraphs[1] || 'Market responds to the announcement.'
             },
             {
-                delay: 2000,
+                delay: 1500,
                 type: 'ripple-2',
                 title: 'MARKET RESPONSE',
                 content: narrativeParagraphs[2] || 'Analysts weigh in on the decision.'
             },
             {
-                delay: 2000,
+                delay: 1500,
                 type: 'impact',
                 title: 'KEY METRICS IMPACT',
                 content: this.generateImpactHTML(consequences)
@@ -524,7 +524,7 @@ const Transitions = {
         // If there are delayed consequences, add them
         if (option.consequences.delayed) {
             revealSequence.push({
-                delay: 2000,
+                delay: 1500,
                 type: 'delayed',
                 title: 'EMERGING CONCERNS',
                 content: `<div class="delayed-warning">${option.consequences.delayed.narrative}</div>`
@@ -627,6 +627,10 @@ const Transitions = {
     },
 
     showChapterIntro(callback) {
+        // Stop any lingering consequence audio
+        this._csqActive = false;
+        this._stopCsqAudio();
+
         const mainContent = document.getElementById('main-content');
         const decisionPoint = gameState.getCurrentDecisionPoint();
         const chapter = decisionPoint?.chapter;
@@ -638,7 +642,10 @@ const Transitions = {
         }
 
         const imageSlug = this._slugify(chapter.title);
-        const imagePath = `assets/images/chapters/chapter-${imageSlug}.png`;
+        // Prefer .jpg when available (higher quality photos), fall back to .png
+        const jpgChapters = ['the-burning-platform'];
+        const ext = jpgChapters.includes(imageSlug) ? 'jpg' : 'png';
+        const imagePath = `assets/images/chapters/chapter-${imageSlug}.${ext}`;
 
         mainContent.innerHTML = `
             <div class="ch-intro">
@@ -653,7 +660,6 @@ const Transitions = {
 
                     <button class="ch-enter-btn" id="ch-enter-btn">
                         <span>ENTER BRIEFING</span>
-                        <i class="ph ph-arrow-right"></i>
                     </button>
                 </div>
             </div>
@@ -670,38 +676,181 @@ const Transitions = {
         const mainContent = document.getElementById('main-content');
         const decisionPoint = gameState.getCurrentDecisionPoint();
         const transitionMessages = this.getTransitionMessages(decisionPoint);
+        const indicators = transitionMessages.indicators;
+
+        // Determine if value is numeric-like (for scramble effect)
+        const isNumeric = (v) => /^[\d$%.+\-,BMKmk\s]+$/.test(v);
+        const scrambleChars = '0123456789%$BM.+-';
+
+        // Build metric cards HTML
+        const cardsHTML = indicators.map((ind, i) => {
+            const isNum = isNumeric(ind.newValue);
+            return `
+                <div class="mu-card mu-mc-${i + 1}">
+                    <div class="mu-card-label">${ind.label}</div>
+                    <div class="mu-value-row">
+                        <span class="mu-val-current">${ind.oldValue}</span>
+                        <span class="mu-val-arrow">→</span>
+                        <div class="mu-val-next-wrap">
+                            <span class="mu-val-scramble" data-final="${ind.newValue}" data-numeric="${isNum}">?</span>
+                            <span class="mu-val-resolved">${ind.newValue}</span>
+                        </div>
+                    </div>
+                </div>`;
+        }).join('');
 
         mainContent.innerHTML = `
-            <div class="metrics-loader">
-                <div class="metrics-loader-inner">
-                    <div class="metrics-loader-header">
-                        <div class="metrics-loader-spinner"></div>
-                        <span class="metrics-loader-label">Updating situation...</span>
+            <div class="mu-screen" id="mu-screen">
+                <svg class="mu-network" id="mu-network" viewBox="0 0 390 700" preserveAspectRatio="xMidYMid meet">
+                    <!-- TOP-LEFT -->
+                    <line class="mu-nl mu-nl-1" x1="70" y1="130" x2="15" y2="35"/>
+                    <line class="mu-nl mu-nl-2" x1="70" y1="130" x2="140" y2="55"/>
+                    <line class="mu-nl mu-nl-3" x1="70" y1="130" x2="25" y2="195"/>
+                    <line class="mu-nb mu-nb-1" x1="15" y1="35" x2="55" y2="8"/>
+                    <line class="mu-nb mu-nb-2" x1="15" y1="35" x2="0" y2="70"/>
+                    <line class="mu-nb mu-nb-3" x1="140" y1="55" x2="165" y2="12"/>
+                    <line class="mu-nb mu-nb-4" x1="25" y1="195" x2="5" y2="240"/>
+                    <circle class="mu-nn mu-nn-1" cx="70" cy="130" r="3.5"/>
+                    <circle class="mu-nn mu-nn-2" cx="15" cy="35" r="2.5"/>
+                    <circle class="mu-nn mu-nn-3" cx="140" cy="55" r="2.5"/>
+                    <circle class="mu-nnt mu-nnt-1" cx="55" cy="8" r="1.5"/>
+                    <circle class="mu-nnt mu-nnt-2" cx="165" cy="12" r="1.5"/>
+                    <circle class="mu-nnt mu-nnt-3" cx="0" cy="70" r="1.5"/>
+                    <polygon class="mu-ns mu-ns-1" points="42,82 45,77 48,82 45,87"/>
+                    <text class="mu-glyph mu-glyph-c mu-ns-9" x="85" y="100">$7.2B</text>
+
+                    <!-- TOP-RIGHT -->
+                    <line class="mu-nl mu-nl-4" x1="345" y1="95" x2="380" y2="20"/>
+                    <line class="mu-nl mu-nl-5" x1="345" y1="95" x2="290" y2="30"/>
+                    <line class="mu-nl mu-nl-6" x1="345" y1="95" x2="375" y2="175"/>
+                    <line class="mu-nb mu-nb-5" x1="380" y1="20" x2="355" y2="0"/>
+                    <line class="mu-nb mu-nb-6" x1="290" y1="30" x2="240" y2="10"/>
+                    <line class="mu-nb mu-nb-7" x1="375" y1="175" x2="388" y2="220"/>
+                    <circle class="mu-nn mu-nn-4" cx="345" cy="95" r="3.5"/>
+                    <circle class="mu-nn mu-nn-5" cx="380" cy="20" r="2.5"/>
+                    <circle class="mu-nnt mu-nnt-4" cx="355" cy="0" r="1.5"/>
+                    <circle class="mu-nnt mu-nnt-5" cx="240" cy="10" r="1.5"/>
+                    <polygon class="mu-ns mu-ns-2" points="362,58 365,53 368,58 365,63"/>
+                    <text class="mu-glyph mu-glyph-i mu-ns-10" x="300" y="55">MKT</text>
+
+                    <!-- LEFT EDGE -->
+                    <line class="mu-nl mu-nl-1" x1="18" y1="320" x2="8" y2="260"/>
+                    <line class="mu-nl mu-nl-3" x1="18" y1="320" x2="5" y2="400"/>
+                    <line class="mu-nb mu-nb-9" x1="8" y1="260" x2="30" y2="230"/>
+                    <circle class="mu-nn mu-nn-6" cx="18" cy="320" r="3"/>
+                    <circle class="mu-nn mu-nn-2" cx="8" cy="260" r="2"/>
+
+                    <!-- RIGHT EDGE -->
+                    <line class="mu-nl mu-nl-2" x1="378" y1="365" x2="385" y2="295"/>
+                    <line class="mu-nl mu-nl-4" x1="378" y1="365" x2="390" y2="440"/>
+                    <line class="mu-nb mu-nb-10" x1="385" y1="295" x2="370" y2="255"/>
+                    <circle class="mu-nn mu-nn-1" cx="378" cy="365" r="3"/>
+                    <polygon class="mu-ns mu-ns-6" points="381,328 384,323 387,328 384,333"/>
+
+                    <!-- BOTTOM-LEFT -->
+                    <line class="mu-nl mu-nl-5" x1="55" y1="590" x2="15" y2="650"/>
+                    <line class="mu-nl mu-nl-6" x1="55" y1="590" x2="110" y2="665"/>
+                    <line class="mu-nb mu-nb-1" x1="15" y1="650" x2="0" y2="690"/>
+                    <line class="mu-nb mu-nb-2" x1="110" y1="665" x2="140" y2="700"/>
+                    <circle class="mu-nn mu-nn-3" cx="55" cy="590" r="3.5"/>
+                    <circle class="mu-nn mu-nn-4" cx="15" cy="650" r="2.5"/>
+                    <circle class="mu-nnt mu-nnt-6" cx="0" cy="690" r="1.5"/>
+                    <text class="mu-glyph mu-glyph-c mu-ns-3" x="30" y="575">REF</text>
+
+                    <!-- BOTTOM-RIGHT -->
+                    <line class="mu-nl mu-nl-4" x1="340" y1="610" x2="380" y2="670"/>
+                    <line class="mu-nl mu-nl-1" x1="340" y1="610" x2="290" y2="680"/>
+                    <line class="mu-nb mu-nb-5" x1="380" y1="670" x2="390" y2="700"/>
+                    <line class="mu-nb mu-nb-6" x1="290" y1="680" x2="260" y2="700"/>
+                    <circle class="mu-nn mu-nn-5" cx="340" cy="610" r="3.5"/>
+                    <circle class="mu-nn mu-nn-6" cx="380" cy="670" r="2.5"/>
+                    <text class="mu-glyph mu-glyph-i mu-ns-6" x="350" y="580">0xA3</text>
+                </svg>
+
+                <div class="mu-scan-line"></div>
+
+                <div class="mu-content">
+                    <div class="mu-status-label">
+                        <div class="mu-pulse-dot"></div>
+                        Updating situation
                     </div>
-                    <div class="metrics-loader-indicators">
-                        ${transitionMessages.indicators.map((ind, i) => `
-                            <div class="metrics-loader-ind" style="animation-delay: ${0.3 + i * 0.35}s">
-                                <span class="ml-ind-label">${ind.label}</span>
-                                <span class="ml-ind-values">
-                                    <span class="ml-ind-old">${ind.oldValue}</span>
-                                    <span class="ml-ind-arrow"><i class="ph ph-arrow-right"></i></span>
-                                    <span class="ml-ind-new">${ind.newValue}</span>
-                                </span>
-                            </div>
-                        `).join('')}
-                    </div>
+                    ${cardsHTML}
                 </div>
             </div>
         `;
 
-        // Auto-advance after indicators animate in
-        const totalDelay = 0.3 + transitionMessages.indicators.length * 0.35 + 1.2;
+        // Run animation phases
+        const screen = document.getElementById('mu-screen');
+        const network = document.getElementById('mu-network');
+        const cards = screen.querySelectorAll('.mu-card');
+        const scrambles = screen.querySelectorAll('.mu-val-scramble');
+        let scrambleIntervals = [];
+
+        const startScramble = () => {
+            scrambles.forEach(el => {
+                const final = el.dataset.final;
+                const isNum = el.dataset.numeric === 'true';
+                const interval = setInterval(() => {
+                    if (isNum) {
+                        let s = '';
+                        for (let j = 0; j < final.length; j++) s += scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+                        el.textContent = s;
+                    } else {
+                        // For text values, scramble with dots/dashes
+                        let s = '';
+                        for (let j = 0; j < Math.min(final.length, 12); j++) s += '·—·—'[Math.floor(Math.random() * 4)];
+                        el.textContent = s;
+                    }
+                }, 55);
+                scrambleIntervals.push(interval);
+            });
+        };
+        const stopScramble = () => {
+            scrambleIntervals.forEach(i => clearInterval(i));
+            scrambleIntervals = [];
+            scrambles.forEach(el => el.textContent = el.dataset.final);
+        };
+
+        // Phase 1 (0ms): Metrics + status label appear
+        requestAnimationFrame(() => {
+            screen.querySelectorAll('.mu-status-label, .mu-card').forEach(el => el.classList.add('mu-active'));
+        });
+
+        // Phase 2 (400ms): Network draws in + scan line
         setTimeout(() => {
-            // Fade out
-            const loader = mainContent.querySelector('.metrics-loader');
-            if (loader) loader.style.opacity = '0';
-            setTimeout(() => callback(), 400);
-        }, totalDelay * 1000);
+            screen.querySelectorAll('.mu-nl, .mu-nb, .mu-nn, .mu-nnt, .mu-ns, .mu-glyph').forEach(el => el.classList.add('mu-active'));
+            const scanLine = screen.querySelector('.mu-scan-line');
+            if (scanLine) scanLine.classList.add('mu-active');
+        }, 400);
+
+        // Phase 3 (650ms): Arrow + scramble appear
+        setTimeout(() => {
+            cards.forEach(c => c.classList.add('mu-show-after'));
+        }, 650);
+
+        // Phase 4 (800ms): Network breathes, scramble starts
+        setTimeout(() => {
+            network.classList.add('mu-breathing');
+            startScramble();
+        }, 800);
+
+        // Phase 5 (1100ms): Network fades
+        setTimeout(() => {
+            network.classList.remove('mu-breathing');
+            network.classList.add('mu-fading');
+        }, 1100);
+
+        // Phase 6 (1300ms): Values resolve
+        setTimeout(() => {
+            stopScramble();
+            cards.forEach(c => c.classList.add('mu-revealing'));
+        }, 1300);
+
+        // Phase 7 (2000ms): Exit + callback
+        setTimeout(() => {
+            screen.classList.add('mu-exiting');
+            setTimeout(() => callback(), 350);
+        }, 2000);
     },
 
     // ========================================
@@ -710,6 +859,8 @@ const Transitions = {
     // ========================================
 
     showConsequenceStepper(option, onComplete) {
+        this._csqActive = true;
+
         const rawMoments = option.consequences.moments;
         if (!rawMoments || rawMoments.length === 0) {
             // Fallback to legacy if no moments data
@@ -717,20 +868,23 @@ const Transitions = {
             return;
         }
 
-        // Auto-inject market share chart after metrics moment (or after verdict)
-        const moments = [];
-        let chartInserted = false;
+        // Build moments in fixed order: verdict → timeline → marketChart → emerging
+        // Extract each type, merge metrics data into chart card
+        let metricsData = null;
+        let verdictMoment = null;
+        let timelineMoment = null;
+        let emergingMoment = null;
         for (const m of rawMoments) {
-            moments.push(m);
-            if (!chartInserted && (m.type === 'metrics' || m.type === 'verdict')) {
-                moments.push({ type: 'marketChart' });
-                chartInserted = true;
-            }
+            if (m.type === 'metrics') { metricsData = m; continue; }
+            if (m.type === 'verdict') { verdictMoment = m; continue; }
+            if (m.type === 'timeline') { timelineMoment = m; continue; }
+            if (m.type === 'emerging') { emergingMoment = m; continue; }
         }
-        // If no metrics/verdict, add chart at the end
-        if (!chartInserted) {
-            moments.push({ type: 'marketChart' });
-        }
+        const moments = [];
+        if (verdictMoment) moments.push(verdictMoment);
+        if (timelineMoment) moments.push(timelineMoment);
+        moments.push({ type: 'marketChart', metricsChanges: metricsData ? metricsData.changes : null });
+        if (emergingMoment) moments.push(emergingMoment);
 
         const mainContent = document.getElementById('main-content');
         let currentStep = 0;
@@ -738,18 +892,23 @@ const Transitions = {
         // Render shell
         mainContent.innerHTML = `
             <div class="csq-stepper-bg" id="csq-stepper-bg"></div>
-            <div class="csq-stepper">
+            <div class="csq-stepper" id="csq-stepper-wrap">
                 <div class="csq-recap">
-                    <span class="csq-recap-label">YOUR CALL</span>
+                    <span class="csq-recap-label">YOUR STRATEGY</span>
                     <span class="csq-recap-title">${option.title}</span>
                 </div>
                 <div class="csq-stage" id="csq-stage">
                     <!-- Current moment rendered here -->
                 </div>
-                <button class="csq-next-btn" id="csq-next-btn">
-                    <span id="csq-next-label">SEE WHAT HAPPENS</span>
-                    <i class="ph ph-arrow-right"></i>
-                </button>
+                <div class="csq-nav-row">
+                    <button class="csq-back-btn hidden" id="csq-back-btn">
+                        <i class="ph ph-arrow-left"></i>
+                    </button>
+                    <button class="csq-next-btn" id="csq-next-btn">
+                        <span id="csq-next-label">CONTINUE</span>
+                        <i class="ph ph-arrow-right"></i>
+                    </button>
+                </div>
                 <div class="csq-pips" id="csq-pips">
                     ${moments.map((_, i) => `<div class="csq-pip ${i === 0 ? 'csq-pip--active' : ''}" data-step="${i}"></div>`).join('')}
                 </div>
@@ -759,6 +918,7 @@ const Transitions = {
         const stageEl = document.getElementById('csq-stage');
         const nextBtn = document.getElementById('csq-next-btn');
         const nextLabel = document.getElementById('csq-next-label');
+        const backBtn = document.getElementById('csq-back-btn');
         const pipsEl = document.getElementById('csq-pips');
         const bgEl = document.getElementById('csq-stepper-bg');
 
@@ -773,14 +933,71 @@ const Transitions = {
             const moment = moments[index];
             stageEl.classList.remove('csq-stage--visible');
 
+            // Track audio skip if TTS was playing when user navigated away
+            if (this._csqSpeaking && window.Analytics) {
+                Analytics.trackAudioSkip(moments[currentStep > 0 ? currentStep - 1 : 0]?.type || 'unknown');
+            }
+
+            // Stop any active audio
+            this._stopCsqAudio();
+
+            // Track consequence step viewed
+            if (window.Analytics) Analytics.trackConsequenceStep(index, moment.type, moments.length);
+
             // Swap background
             bgEl.className = 'csq-stepper-bg ' + getBgClass(moment);
 
-            setTimeout(() => {
+            // Update recap bar text for emerging card
+            const recapLabel = document.querySelector('.csq-recap-label');
+            const recapTitle = document.querySelector('.csq-recap-title');
+            if (recapLabel && recapTitle) {
+                if (moment.type === 'emerging') {
+                    recapLabel.textContent = 'EMERGING THREAT';
+                    recapTitle.textContent = '';
+                    recapLabel.style.width = '100%';
+                    recapLabel.style.textAlign = 'center';
+                } else {
+                    recapLabel.textContent = 'YOUR STRATEGY';
+                    recapTitle.textContent = option.title;
+                    recapLabel.style.width = '';
+                    recapLabel.style.textAlign = '';
+                }
+            }
+
+            // Toggle light mode for light-bg moments (timeline, marketChart, verdict, emerging)
+            const stepperWrap = document.getElementById('csq-stepper-wrap');
+            const isLightBg = moment.type === 'timeline' || moment.type === 'marketChart' || moment.type === 'emerging' || (moment.type === 'verdict' && moment.sentiment !== 'neutral');
+            if (stepperWrap) stepperWrap.classList.toggle('csq-stepper--light', isLightBg);
+
+            // Store timer so _stopCsqAudio() can cancel stale renders
+            if (this._csqRenderTimer) clearTimeout(this._csqRenderTimer);
+            this._csqRenderTimer = setTimeout(() => {
+                this._csqRenderTimer = null;
+                if (!this._csqActive) return; // stepper was exited while timer pending
+
                 stageEl.innerHTML = this._renderMoment(moment);
                 // Force reflow then animate in
                 void stageEl.offsetHeight;
                 stageEl.classList.add('csq-stage--visible');
+
+                // Trigger chart animation for combined card
+                if (moment.type === 'marketChart') {
+                    this._animateChart();
+                }
+
+                // Timeline SFX — tick for each event appearing
+                if (moment.type === 'timeline' && typeof AudioEngine !== 'undefined') {
+                    AudioEngine.playSfx('timelineStart');
+                    const evCount = moment.events ? moment.events.length : 0;
+                    for (let ei = 0; ei < evCount; ei++) {
+                        setTimeout(() => AudioEngine.playSfx('timelineTick'), ei * 375 + 400);
+                    }
+                }
+
+                // Auto-play TTS for verdict and emerging cards
+                if (moment.type === 'verdict' || moment.type === 'emerging') {
+                    this._speakMoment(moment);
+                }
 
                 // Update pips
                 pipsEl.querySelectorAll('.csq-pip').forEach((pip, i) => {
@@ -788,24 +1005,15 @@ const Transitions = {
                     pip.classList.toggle('csq-pip--active', i === index);
                 });
 
-                // Update button label
-                if (index === moments.length - 1) {
-                    nextLabel.textContent = 'CONTINUE';
-                    nextBtn.querySelector('i').className = 'ph ph-arrow-right';
-                } else {
-                    const nextMoment = moments[index + 1];
-                    const labels = {
-                        verdict: 'THE VERDICT',
-                        metrics: 'IMPACT',
-                        marketChart: 'MARKET LANDSCAPE',
-                        timeline: 'WHAT HAPPENS NEXT',
-                        emerging: 'BUT THEN...'
-                    };
-                    nextLabel.textContent = labels[nextMoment.type] || 'NEXT';
-                }
+                // Show/hide back button
+                backBtn.classList.toggle('hidden', index === 0);
 
-                // Update metrics bar on metrics moment
-                if (moment.type === 'metrics') {
+                // Update button label — always "CONTINUE"
+                nextLabel.textContent = 'CONTINUE';
+                nextBtn.querySelector('i').className = 'ph ph-arrow-right';
+
+                // Update metrics bar on chart+metrics moment
+                if (moment.type === 'marketChart') {
                     UI.updateMetricsBar(true);
                 }
 
@@ -823,9 +1031,36 @@ const Transitions = {
             if (currentStep < moments.length) {
                 renderMoment(currentStep);
             } else {
+                // Track audio skip if playing when sequence completed
+                if (this._csqSpeaking && window.Analytics) {
+                    Analytics.trackAudioSkip(moments[currentStep - 1]?.type || 'unknown');
+                }
+                this._csqActive = false;
+                this._stopCsqAudio();
                 // Clean up background, then fire completion
                 bgEl.remove();
                 onComplete();
+            }
+        });
+
+        // Back button handler
+        backBtn.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                renderMoment(currentStep);
+            }
+        });
+
+        // Pip click navigation — allow jumping to any visited (done) or current step
+        pipsEl.addEventListener('click', (e) => {
+            const pip = e.target.closest('.csq-pip');
+            if (!pip) return;
+            const targetStep = parseInt(pip.dataset.step, 10);
+            if (isNaN(targetStep) || targetStep === currentStep) return;
+            // Allow navigating to any step up to the furthest visited
+            if (targetStep <= currentStep) {
+                currentStep = targetStep;
+                renderMoment(currentStep);
             }
         });
     },
@@ -853,29 +1088,29 @@ const Transitions = {
         return `
             <div class="csq-verdict ${sentimentClass}">
                 <div class="csq-verdict-icon">
-                    ${m.sentiment === 'positive' ? '<i class="ph ph-check-circle"></i>' :
-                      m.sentiment === 'negative' ? '<i class="ph ph-warning-circle"></i>' :
-                      '<i class="ph ph-minus-circle"></i>'}
+                    <i class="ph ph-pulse"></i>
                 </div>
                 <h2 class="csq-verdict-headline">${m.headline}</h2>
                 ${m.subline ? `<p class="csq-verdict-subline">${m.subline}</p>` : ''}
+                <button class="csq-voice-btn" id="csq-voice-btn"><i class="ph ph-speaker-high" id="csq-voice-icon"></i></button>
             </div>
         `;
     },
 
     _renderMetrics(m) {
+        const T = (text) => typeof gameState !== 'undefined' ? gameState.resolveTemplate(text) : text;
         return `
             <div class="csq-metrics">
                 <div class="csq-metrics-label"><i class="ph ph-chart-line-up"></i> KEY IMPACTS</div>
                 <div class="csq-metrics-grid">
                     ${m.changes.map(c => `
                         <div class="csq-metric-item csq-metric--${c.direction}">
-                            <span class="csq-metric-name">${c.metric}</span>
+                            <span class="csq-metric-name">${T(c.metric)}</span>
                             <span class="csq-metric-change">
                                 ${c.direction === 'up' ? '<i class="ph ph-arrow-up"></i>' :
                                   c.direction === 'down' ? '<i class="ph ph-arrow-down"></i>' :
                                   '<i class="ph ph-arrows-horizontal"></i>'}
-                                ${c.change}
+                                ${T(c.change)}
                             </span>
                         </div>
                     `).join('')}
@@ -885,14 +1120,15 @@ const Transitions = {
     },
 
     _renderTimeline(m) {
+        const T = (text) => typeof gameState !== 'undefined' ? gameState.resolveTemplate(text) : text;
         return `
             <div class="csq-timeline">
                 <div class="csq-timeline-label"><i class="ph ph-clock-countdown"></i> TIMELINE</div>
                 <div class="csq-timeline-events">
                     ${m.events.map((ev, i) => `
-                        <div class="csq-timeline-event csq-event--${ev.mood}" style="animation-delay: ${i * 0.15}s">
+                        <div class="csq-timeline-event csq-event--${ev.mood}" style="animation-delay: ${i * 0.375}s">
                             <span class="csq-event-date">${ev.date}</span>
-                            <span class="csq-event-text">${ev.text}</span>
+                            <span class="csq-event-text">${T(ev.text)}</span>
                         </div>
                     `).join('')}
                 </div>
@@ -907,56 +1143,424 @@ const Transitions = {
                 <h2 class="csq-emerging-headline">${m.headline}</h2>
                 <p class="csq-emerging-body">${m.body}</p>
                 ${m.closing ? `<p class="csq-emerging-closing">${m.closing}</p>` : ''}
+                <button class="csq-voice-btn" id="csq-voice-btn"><i class="ph ph-speaker-high" id="csq-voice-icon"></i></button>
             </div>
         `;
     },
 
-    // ── Market Share Chart (animated horizontal bars) ──────────────────────
+    // ── Market Share Chart + Metrics (animated from prev → current) ──────
     _renderMarketChart(m) {
-        // Pull live metrics from gameState + previous snapshot
         const metrics = typeof gameState !== 'undefined' ? gameState.metrics : {};
         const prev = typeof gameState !== 'undefined' ? gameState.previousMetrics : {};
+        const initial = typeof scenarioData !== 'undefined' ? scenarioData.initialMetrics : {};
 
-        const players = [
-            { label: 'Windows Mobile', share: metrics.marketShare || 0, prev: prev.marketShare || 0, color: '#D4A08C', you: true },
-            { label: 'Nokia / Symbian', share: metrics.nokiaShare || 0, prev: prev.nokiaShare || 0, color: '#5B8DEF' },
-            { label: 'Apple iOS', share: metrics.appleShare || 0, prev: prev.appleShare || 0, color: '#A0A0A0' },
-            { label: 'Android', share: metrics.googleShare || 0, prev: prev.googleShare || 0, color: '#7BC67E' },
-            { label: 'BlackBerry', share: metrics.bbShare || 0, prev: prev.bbShare || 0, color: '#888' },
-        ].filter(p => p.share > 0 || p.you);
+        // Helper: get share value safely (0 is valid, only use fallback for undefined)
+        const v = (obj, key, fallback) => obj[key] !== undefined ? obj[key] : fallback;
 
-        // Sort by share descending, but keep "you" visually prominent
-        players.sort((a, b) => b.share - a.share);
+        // Metric key mapping
+        const metricKey = { nokia: 'nokiaShare', msft: 'marketShare', bb: 'bbShare', apple: 'appleShare', android: 'googleShare' };
 
-        const maxShare = Math.max(...players.map(p => Math.max(p.share, p.prev)), 1);
+        // Detect absorbed entities: both prev AND current share are 0
+        // (e.g., Nokia after acquisition — share folded into MSFT)
+        const isAbsorbed = (key) => {
+            const mk = metricKey[key];
+            return v(prev, mk, -1) === 0 && v(metrics, mk, -1) === 0;
+        };
+
+        // Build a 3-point time series: initial → previous → current
+        // Absorbed entities get [0,0,0] so no line draws
+        const series = {
+            nokia:   isAbsorbed('nokia')   ? [0,0,0] : [v(initial,'nokiaShare',49),   v(prev,'nokiaShare',49),   v(metrics,'nokiaShare',49)],
+            msft:    [v(initial,'marketShare',42), v(prev,'marketShare',42), v(metrics,'marketShare',42)],
+            bb:      isAbsorbed('bb')      ? [0,0,0] : [v(initial,'bbShare',9),        v(prev,'bbShare',9),       v(metrics,'bbShare',9)],
+            apple:   [v(initial,'appleShare',0),   v(prev,'appleShare',0),   v(metrics,'appleShare',0)],
+            android: [v(initial,'googleShare',0),  v(prev,'googleShare',0),  v(metrics,'googleShare',0)]
+        };
+
+        // All possible entities with display metadata
+        const allOrder = [
+            { key: 'nokia', label: 'Nokia', color: '#3A6B8C', bg: 'rgba(58,107,140,0.12)' },
+            { key: 'msft', label: 'MSFT', color: '#E8856C', bg: 'rgba(232,133,108,0.15)', you: true },
+            { key: 'bb', label: 'BlackBerry', color: '#5A5856', bg: 'rgba(90,88,86,0.08)' },
+            { key: 'apple', label: 'Apple', color: '#4A8C6F', bg: 'rgba(74,140,111,0.10)' },
+            { key: 'android', label: 'Android', color: '#8B9A3A', bg: 'rgba(139,154,58,0.10)' }
+        ];
+
+        // Filter out absorbed entities — they don't show on chart, legend, or delta cards
+        const order = allOrder.filter(p => p.key === 'msft' || !isAbsorbed(p.key));
+
+        // Delta cards (only active entities)
+        const deltasHTML = order.map(p => {
+            const mk = metricKey[p.key];
+            const val = v(metrics, mk, 0);
+            const prevVal = v(prev, mk, 0);
+            const delta = Math.round(val - prevVal);
+            const deltaStr = delta > 0 ? `+${delta}` : delta < 0 ? `${delta}` : '--';
+            const deltaClass = delta > 0 ? 'csq-lc-delta-up' : delta < 0 ? 'csq-lc-delta-down' : 'csq-lc-delta-flat';
+            return `<div class="csq-lc-delta-card${p.you ? ' csq-lc-delta-card--you' : ''}" style="background:${p.bg}">
+                <div class="csq-lc-delta-val" style="color:${p.color}">${Math.round(val)}%</div>
+                <div class="csq-lc-delta-name">${p.label}</div>
+                <div class="csq-lc-delta-badge ${deltaClass}">${deltaStr}</div>
+            </div>`;
+        }).join('');
+
+        // Dynamic legend (only active entities)
+        const legendHTML = order.map(p =>
+            `<span class="csq-lc-leg${p.you ? ' csq-lc-leg--you' : ''}"><span class="csq-lc-dot" style="background:${p.color}"></span>${p.key === 'msft' ? 'Microsoft' : p.label}</span>`
+        ).join('');
+
+        // SVG endpoint labels (only active entities)
+        const endpointSVG = order.map(p =>
+            `<text class="csq-lc-endpoint" id="lc-lbl-${p.key}" fill="${p.color}"></text>`
+        ).join('\n                        ');
+
+        // Embed series data + active keys as JSON for the animation script
+        const chartData = { series, activeKeys: order.map(p => p.key) };
 
         return `
-            <div class="csq-market-chart">
-                <div class="csq-chart-label"><i class="ph ph-chart-bar-horizontal"></i> MARKET SHARE</div>
-                <div class="csq-chart-date">${metrics.date || ''}</div>
-                <div class="csq-chart-bars">
-                    ${players.map((p, i) => {
-                        const delta = p.share - p.prev;
-                        const deltaStr = delta > 0 ? `+${delta}%` : delta < 0 ? `${delta}%` : '—';
-                        const deltaClass = delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
-                        const barWidth = Math.max((p.share / maxShare) * 100, 2);
-                        const prevWidth = Math.max((p.prev / maxShare) * 100, 2);
-                        return `
-                            <div class="csq-chart-row ${p.you ? 'csq-chart-row--you' : ''}" style="animation-delay: ${i * 0.12}s">
-                                <div class="csq-chart-row-header">
-                                    <span class="csq-chart-player">${p.label}${p.you ? ' <span class="csq-you-tag">YOU</span>' : ''}</span>
-                                    <span class="csq-chart-share">${p.share}%</span>
-                                </div>
-                                <div class="csq-chart-track">
-                                    <div class="csq-chart-bar-ghost" style="width: ${prevWidth}%"></div>
-                                    <div class="csq-chart-bar" style="--bar-target: ${barWidth}%; --bar-color: ${p.color}; animation-delay: ${0.3 + i * 0.12}s"></div>
-                                </div>
-                                <div class="csq-chart-delta csq-delta--${deltaClass}">${deltaStr}</div>
-                            </div>
-                        `;
-                    }).join('')}
+            <div class="csq-line-chart" id="csq-line-chart">
+                <script type="application/json" id="csq-chart-data">${JSON.stringify(chartData)}</script>
+                <div class="csq-lc-header">
+                    <span class="csq-lc-header-label">MARKET SHARE</span>
+                    <span class="csq-lc-header-date" id="csq-lc-date">${prev.date || ''}</span>
                 </div>
+                <div class="csq-lc-legend" id="csq-lc-legend">${legendHTML}</div>
+                <div class="csq-lc-chart-wrap">
+                    <canvas id="csq-lc-canvas" class="csq-lc-canvas"></canvas>
+                    <svg id="csq-lc-svg" class="csq-lc-svg" viewBox="0 0 380 260" preserveAspectRatio="xMidYMid meet">
+                        <line class="csq-lc-decision-line" id="csq-lc-dline" x1="0" y1="16" x2="0" y2="240"/>
+                        <text class="csq-lc-decision-tag" id="csq-lc-dtag" x="0" y="10" text-anchor="middle">Your call</text>
+                        ${endpointSVG}
+                    </svg>
+                </div>
+                <div class="csq-lc-deltas" id="csq-lc-deltas">${deltasHTML}</div>
             </div>
         `;
+    },
+
+    // Trigger line chart animation after moment is rendered
+    _animateChart() {
+        const dataEl = document.getElementById('csq-chart-data');
+        if (!dataEl) return;
+        const chartData = JSON.parse(dataEl.textContent);
+        const series = chartData.series || chartData; // support new {series, activeKeys} format
+        const activeKeys = chartData.activeKeys || ['nokia', 'msft', 'bb', 'apple', 'android'];
+        const canvas = document.getElementById('csq-lc-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 2;
+
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const pad = { top: 24, right: 44, bottom: 24, left: 32 };
+        const cW = rect.width - pad.left - pad.right;
+        const cH = rect.height - pad.top - pad.bottom;
+        const labels = ['Before', 'Decision', 'After'];
+        const decisionIdx = 1;
+        const maxVal = 60;
+
+        const xPos = (i) => pad.left + (i / (labels.length - 1)) * cW;
+        const yPos = (v) => pad.top + (1 - v / maxVal) * cH;
+
+        const colors = {
+            nokia:   { line: '#3A6B8C', fill: 'rgba(58,107,140,0.08)' },
+            msft:    { line: '#E8856C', fill: 'rgba(232,133,108,0.12)' },
+            bb:      { line: '#5A5856', fill: 'rgba(90,88,86,0.06)' },
+            apple:   { line: '#4A8C6F', fill: 'rgba(74,140,111,0.08)' },
+            android: { line: '#8B9A3A', fill: 'rgba(139,154,58,0.08)' }
+        };
+        const order = activeKeys;
+
+        function drawGrid(alpha) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.strokeStyle = 'rgba(26,23,24,0.06)';
+            ctx.lineWidth = 0.5;
+            for (let v = 0; v <= maxVal; v += 15) {
+                const y = yPos(v);
+                ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cW, y); ctx.stroke();
+                ctx.fillStyle = 'rgba(26,23,24,0.25)';
+                ctx.font = '9px "SF Mono", monospace';
+                ctx.textAlign = 'right';
+                ctx.fillText(v + '%', pad.left - 6, y + 3);
+            }
+            ctx.restore();
+        }
+
+        function drawArea(key, upToFloat) {
+            const d = series[key];
+            const c = colors[key];
+            const maxI = Math.min(Math.floor(upToFloat), d.length - 1);
+            const frac = upToFloat - Math.floor(upToFloat);
+            if (maxI < 0) return;
+
+            let allZero = true;
+            for (let i = 0; i <= maxI; i++) { if (d[i] > 0) { allZero = false; break; } }
+            if (allZero && (maxI >= d.length - 1 || frac === 0 || d[maxI + 1] === 0)) return;
+
+            const interpVal = maxI < d.length - 1 && frac > 0 ? d[maxI] + (d[maxI + 1] - d[maxI]) * frac : d[maxI];
+            const lastX = maxI < d.length - 1 && frac > 0 ? xPos(maxI + frac) : xPos(maxI);
+            const lastY = yPos(interpVal);
+
+            ctx.save();
+            const aP = new Path2D();
+            aP.moveTo(xPos(0), yPos(d[0]));
+            for (let i = 1; i <= maxI; i++) aP.lineTo(xPos(i), yPos(d[i]));
+            if (maxI < d.length - 1 && frac > 0) aP.lineTo(lastX, lastY);
+            aP.lineTo(lastX, yPos(0)); aP.lineTo(xPos(0), yPos(0)); aP.closePath();
+            ctx.fillStyle = c.fill; ctx.fill(aP);
+            ctx.restore();
+
+            ctx.beginPath();
+            ctx.moveTo(xPos(0), yPos(d[0]));
+            for (let i = 1; i <= maxI; i++) ctx.lineTo(xPos(i), yPos(d[i]));
+            if (maxI < d.length - 1 && frac > 0) ctx.lineTo(lastX, lastY);
+            ctx.strokeStyle = c.line;
+            ctx.lineWidth = key === 'msft' ? 2.5 : 1.5;
+            ctx.lineJoin = 'round'; ctx.stroke();
+
+            if (interpVal > 0) {
+                ctx.beginPath();
+                ctx.arc(lastX, lastY, key === 'msft' ? 4 : 3, 0, Math.PI * 2);
+                ctx.fillStyle = c.line; ctx.fill();
+            }
+        }
+
+        const svgVB = { w: 380, h: 260 };
+        const toSvgX = (cx) => (cx / rect.width) * svgVB.w;
+        const toSvgY = (cy) => (cy / rect.height) * svgVB.h;
+
+        function updateEndpointLabels(progress) {
+            const allLbls = [
+                { key: 'nokia', id: 'lc-lbl-nokia', off: -4 },
+                { key: 'msft', id: 'lc-lbl-msft', off: 0 },
+                { key: 'bb', id: 'lc-lbl-bb', off: 2 },
+                { key: 'apple', id: 'lc-lbl-apple', off: 4 },
+                { key: 'android', id: 'lc-lbl-android', off: 6 }
+            ];
+            const lbls = allLbls.filter(l => activeKeys.includes(l.key));
+            const maxI = Math.min(Math.floor(progress), labels.length - 1);
+            const frac = progress - Math.floor(progress);
+            lbls.forEach(s => {
+                const d = series[s.key];
+                let val, cx, cy;
+                if (maxI < d.length - 1 && frac > 0) {
+                    val = d[maxI] + (d[maxI + 1] - d[maxI]) * frac;
+                    cx = xPos(maxI + frac); cy = yPos(val);
+                } else {
+                    val = d[Math.min(maxI, d.length - 1)];
+                    cx = xPos(Math.min(maxI, d.length - 1)); cy = yPos(val);
+                }
+                const el = document.getElementById(s.id);
+                if (!el) return;
+                if (Math.round(val) === 0) { el.setAttribute('opacity', '0'); }
+                else {
+                    el.removeAttribute('opacity');
+                    el.setAttribute('x', toSvgX(cx) + 12);
+                    el.setAttribute('y', toSvgY(cy) + 3 + s.off);
+                    el.textContent = Math.round(val) + '%';
+                }
+            });
+        }
+
+        // Set decision line
+        const dlX = toSvgX(xPos(decisionIdx));
+        const dline = document.getElementById('csq-lc-dline');
+        const dtag = document.getElementById('csq-lc-dtag');
+        if (dline) { dline.setAttribute('x1', dlX); dline.setAttribute('x2', dlX); }
+        if (dtag) dtag.setAttribute('x', dlX);
+
+        // Animation phases
+        const ease = (t) => t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+        const phases = {
+            gridFade:    { start: 0, end: 300 },
+            drawHist:    { start: 200, end: 1000 },
+            decisionIn:  { start: 800, end: 1100 },
+            drawNew:     { start: 1400, end: 2200 },
+            labelsIn:    { start: 2000, end: 2400 },
+            deltasIn:    { start: 2400, end: 2800 }
+        };
+        let startTime = 0;
+        let decisionShown = false;
+        let labelsShown = false;
+        let deltasShown = false;
+        let legendShown = false;
+
+        function animate(ts) {
+            if (!startTime) startTime = ts;
+            const elapsed = ts - startTime;
+            ctx.clearRect(0, 0, rect.width, rect.height);
+
+            if (!legendShown && elapsed > 100) {
+                legendShown = true;
+                const leg = document.getElementById('csq-lc-legend');
+                if (leg) leg.style.opacity = '1';
+            }
+
+            const gridT = ease(Math.max(0, Math.min(1, (elapsed - phases.gridFade.start) / (phases.gridFade.end - phases.gridFade.start))));
+            drawGrid(gridT);
+
+            const histT = ease(Math.max(0, Math.min(1, (elapsed - phases.drawHist.start) / (phases.drawHist.end - phases.drawHist.start))));
+            const histProgress = histT * decisionIdx;
+            order.forEach(key => drawArea(key, histProgress));
+
+            if (!decisionShown && elapsed > phases.decisionIn.start) {
+                decisionShown = true;
+                if (dline) { dline.style.opacity = '0.5'; dline.style.strokeDasharray = '3,3'; dline.style.stroke = '#E8856C'; }
+                if (dtag) dtag.style.opacity = '0.65';
+            }
+
+            if (elapsed > phases.drawNew.start) {
+                const newT = ease(Math.max(0, Math.min(1, (elapsed - phases.drawNew.start) / (phases.drawNew.end - phases.drawNew.start))));
+                const totalProgress = decisionIdx + newT * (labels.length - 1 - decisionIdx);
+                ctx.clearRect(0, 0, rect.width, rect.height);
+                drawGrid(1);
+                order.forEach(key => drawArea(key, totalProgress));
+                updateEndpointLabels(totalProgress);
+            } else {
+                updateEndpointLabels(histProgress);
+            }
+
+            if (!labelsShown && elapsed > phases.labelsIn.start) {
+                labelsShown = true;
+                document.querySelectorAll('.csq-lc-endpoint').forEach(el => el.style.opacity = '1');
+            }
+
+            if (!deltasShown && elapsed > phases.deltasIn.start) {
+                deltasShown = true;
+                document.querySelectorAll('.csq-lc-delta-card').forEach((el, i) => {
+                    el.style.transition = `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s`;
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                });
+            }
+
+            if (elapsed < phases.deltasIn.end + 500) {
+                requestAnimationFrame(animate);
+            }
+        }
+        requestAnimationFrame(animate);
+    },
+
+    // ── Pre-generated MP3 narration for consequence moments ──
+    _csqSpeaking: false,
+    _csqAudio: null,
+    _csqSpeechTimer: null,
+    _csqRenderTimer: null,
+    _csqActive: false,
+
+    // Build the narration text for a moment (same logic as generate-audio.js)
+    _getMomentNarrationText(moment) {
+        if (moment.type === 'verdict') {
+            return [moment.headline, moment.subline].filter(Boolean)
+                .map(t => t.replace(/<[^>]+>/g, '')).join('. ');
+        }
+        if (moment.type === 'emerging') {
+            return [moment.headline, moment.body, moment.closing].filter(Boolean)
+                .map(t => t.replace(/<[^>]+>/g, '')).join('. ');
+        }
+        return '';
+    },
+
+    // Compute MD5 hash matching Narration.textHash (same algorithm)
+    _csqTextHash(rawText) {
+        if (typeof Narration !== 'undefined' && Narration.textHash) {
+            return Narration.textHash(rawText);
+        }
+        // Fallback: clean then hash — but Narration should always be available
+        return '';
+    },
+
+    _speakMoment(moment) {
+        if (!this._csqActive) return; // stepper already exited
+        this._stopCsqAudio();
+
+        const fullText = this._getMomentNarrationText(moment);
+        if (!fullText) return;
+
+        const audioHash = this._csqTextHash(fullText);
+        if (!audioHash) return;
+        const audioSrc = `assets/audio/story-${audioHash}.mp3`;
+
+        const btn = document.getElementById('csq-voice-btn');
+        const icon = document.getElementById('csq-voice-icon');
+
+        const markSpeaking = () => {
+            this._csqSpeaking = true;
+            if (icon) icon.className = 'ph ph-speaker-x';
+            if (btn) btn.classList.add('speaking');
+            if (typeof AudioEngine !== 'undefined' && AudioEngine.isStarted()) AudioEngine.duckVolume(true);
+        };
+
+        const markDone = () => {
+            this._csqSpeaking = false;
+            if (icon) icon.className = 'ph ph-speaker-high';
+            if (btn) btn.classList.remove('speaking');
+            if (typeof AudioEngine !== 'undefined' && AudioEngine.isStarted()) AudioEngine.duckVolume(false);
+        };
+
+        // Delay audio creation to avoid premature loading — create and play after 1.5s
+        this._csqSpeechTimer = setTimeout(() => {
+            if (!this._csqActive) return; // stepper exited while timer pending
+
+            const audio = new Audio();
+            this._csqAudio = audio;
+
+            // Respect global mute
+            if (typeof AudioEngine !== 'undefined' && AudioEngine.isMuted()) {
+                audio.muted = true;
+            }
+
+            audio.addEventListener('canplaythrough', () => {
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(markSpeaking).catch(markDone);
+                } else {
+                    markSpeaking();
+                }
+            }, { once: true });
+
+            audio.addEventListener('ended', markDone);
+            audio.addEventListener('error', () => {
+                console.warn('Consequence audio not found:', audioSrc, '— falling back to silent');
+                markDone();
+            });
+
+            // Wire toggle button
+            if (btn) {
+                btn.onclick = () => {
+                    if (this._csqSpeaking) {
+                        this._stopCsqAudio();
+                    } else {
+                        audio.currentTime = 0;
+                        const p = audio.play();
+                        if (p !== undefined) p.then(markSpeaking).catch(markDone);
+                        else markSpeaking();
+                    }
+                };
+            }
+
+            // Set src and load — triggers canplaythrough → play
+            audio.src = audioSrc;
+            audio.load();
+        }, 1500);
+    },
+
+    _stopCsqAudio() {
+        // Clear the 250ms render timer (prevents stale _speakMoment calls)
+        if (this._csqRenderTimer) { clearTimeout(this._csqRenderTimer); this._csqRenderTimer = null; }
+        if (this._csqSpeechTimer) { clearTimeout(this._csqSpeechTimer); this._csqSpeechTimer = null; }
+        if (this._csqAudio) {
+            this._csqAudio.pause();
+            this._csqAudio.removeAttribute('src');
+            this._csqAudio = null;
+        }
+        this._csqSpeaking = false;
+        if (typeof AudioEngine !== 'undefined' && AudioEngine.isStarted()) AudioEngine.duckVolume(false);
     }
 };

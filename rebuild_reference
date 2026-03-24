@@ -1,0 +1,805 @@
+import { useState, useEffect, useRef } from "react";
+
+// ============================================
+// MOBILE WARS — v3 Prototype
+// Three card types: Entity, Memo, Briefing
+// ============================================
+
+const C = {
+  bg: "#141110", bgCard: "#1e1a17", bgCardHover: "#252019",
+  bgOverlay: "rgba(10,9,8,0.88)",
+  cream: "#e8dcc8", creamMuted: "#a89a85", creamDim: "#6b6054",
+  coral: "#d4856a", green: "#7ab88e", red: "#c45c4d", gold: "#c4a35a",
+  border: "#2a2420", borderLight: "#3a332c",
+  // Type-specific accents
+  memoAccent: "#c4a35a",
+  briefingAccent: "#7ab88e",
+  entityAccent: "#d4856a",
+};
+
+// ============================================
+// INTEL CARD DATA (D1)
+// ============================================
+const INTEL_CARDS = [
+  {
+    id: "briefing-iphone",
+    type: "briefing",
+    thumb: { icon: "📊", label: "MARKET REPORT", title: "iPhone Launch Analysis", subtitle: "$499 · AT&T · No apps", accent: C.briefingAccent },
+    popup: {
+      title: "iPhone Launch Analysis",
+      source: "Gartner + Morgan Stanley Research",
+      date: "JAN 2007",
+      reliability: "HIGH",
+      heroStat: { value: "1%", label: "Projected iPhone share by end of 2008", attribution: "Gartner" },
+      sections: [
+        { heading: "The Device", content: "Apple's iPhone combines iPod, phone, and internet communicator. Multi-touch is genuinely novel — but no physical keyboard, no enterprise email, no 3G, no apps.", artifactLabel: "iPhone 2G specs" },
+        { heading: "Key Specs", type: "stats", items: [
+          { label: "Camera", value: "2MP" }, { label: "Storage", value: "4/8GB" },
+          { label: "Network", value: "2G EDGE only", color: C.red }, { label: "Price", value: "$499", color: C.red },
+          { label: "Contract", value: "2yr AT&T" }, { label: "vs Market avg", value: "2× higher", color: C.gold },
+        ]},
+        { heading: "Market Context", content: "Global smartphone market: 80M units/year, growing 35% annually. Average selling price: $250. iPhone is double the market average." },
+        { heading: "Analyst Consensus", content: "\"Apple is unlikely to make significant inroads into the corporate market.\" Nokia and BlackBerry remain the firms to watch." },
+      ],
+      footnote: "Apple has never shipped a phone. Manufacturing at scale is unproven.",
+    },
+  },
+  {
+    id: "memo-internal",
+    type: "memo",
+    thumb: { icon: "📋", label: "INTERNAL MEMO", title: "Strategic Position", subtitle: "From: Pieter Knook, SVP", accent: C.memoAccent },
+    popup: {
+      from: "Pieter Knook",
+      fromTitle: "SVP Mobile Communications",
+      re: "Apple iPhone Announcement",
+      date: "JAN 2007",
+      classification: "INTERNAL",
+      reliability: "MEDIUM",
+      source: "Microsoft Internal",
+      sections: [
+        { heading: "Current Position", content: "Windows Mobile commands 42% of smartphone market share with 14M devices shipped in 2006. Enterprise relationships unassailable: 89% of Fortune 500 standardized on Windows Mobile." },
+        { heading: "iPhone Weaknesses for Enterprise", type: "list", items: [
+          "No Exchange support (push email impossible)",
+          "No keyboard (legal/compliance typing requirements)",
+          "Consumer-only carrier (AT&T, no Verizon/Sprint)",
+          "No IT management/MDM capabilities",
+        ]},
+        { heading: "Recommendation", content: "Stay the course. The consumer smartphone market is margin-dilutive — ASPs are falling, carrier subsidies eat profitability. Our enterprise licensing model generates $18/device. Let Apple fight carriers for scraps.", highlighted: true },
+      ],
+      footnote: "Apple has historically failed outside its core: Newton, Pippin, Motorola ROKR.",
+    },
+  },
+  {
+    id: "entity-nokia",
+    type: "entity",
+    thumb: { icon: "📞", label: "COMPETITOR", title: "NOKIA", subtitle: "40% global share", sentiment: "CALM / SCRAMBLING", sentimentColor: C.gold },
+    popup: {
+      name: "NOKIA", icon: "📞", category: "Incumbent",
+      gradient: "linear-gradient(135deg, #0f1f1a 0%, #1a2f25 50%, #0f1f1a 100%)",
+      front: {
+        shortStat: "40% global share",
+        sentiment: "PUBLICLY CALM / PRIVATELY SCRAMBLING", sentimentKey: "panicking",
+        quickStats: [
+          { label: "Global share", value: "40%", color: C.green }, { label: "Platform", value: "Symbian" },
+          { label: "Touch R&D", value: "Accelerating", color: C.gold }, { label: "Devices/yr", value: "400M+" },
+        ],
+        source: "BD team + Industry", reliability: "MEDIUM",
+      },
+      back: {
+        keySignal: "Apple will only appeal to a niche market — but sources say Nokia has accelerated internal touch-screen projects and is evaluating Linux-based software.",
+        details: [
+          { label: "CEO stance", value: "Publicly dismissive" },
+          { label: "Symbian age", value: "Aging fast", color: C.gold },
+          { label: "Linux eval", value: "In progress" },
+          { label: "Mfg scale", value: "Unmatched", color: C.green },
+          { label: "US presence", value: "Weak", color: C.red },
+        ],
+        analysisNote: "Nokia has the scale but their software is a decade behind. They know it — that's why they're scrambling.",
+      },
+    },
+  },
+  {
+    id: "entity-rim",
+    type: "entity",
+    thumb: { icon: "🔒", label: "COMPETITOR", title: "BLACKBERRY", subtitle: "Enterprise dominant", sentiment: "DISMISSIVE", sentimentColor: C.creamDim },
+    popup: {
+      name: "BLACKBERRY", icon: "🔒", category: "Incumbent",
+      gradient: "linear-gradient(135deg, #12121e 0%, #1a1a2a 50%, #12121e 100%)",
+      front: {
+        shortStat: "Enterprise dominant · Keyboard-first",
+        sentiment: "DISMISSIVE", sentimentKey: "dismissive",
+        quickStats: [
+          { label: "Enterprise", value: "Dominant", color: C.green }, { label: "Security", value: "Best-in-class", color: C.green },
+          { label: "Touch plans", value: "None", color: C.red }, { label: "Keyboard bet", value: "Doubling down" },
+        ],
+        source: "Internal memo + Press", reliability: "HIGH",
+      },
+      back: {
+        keySignal: "Someone finally made a phone for people who can't type.",
+        details: [
+          { label: "CEO stance", value: "Mocking iPhone" },
+          { label: "Enterprise moat", value: "BES lock-in", color: C.green },
+          { label: "Consumer appeal", value: "Growing (BBM)", color: C.green },
+          { label: "Touch R&D", value: "No plans", color: C.red },
+        ],
+        analysisNote: "Lazaridis genuinely believes keyboards are the future. History suggests this level of certainty is dangerous.",
+      },
+    },
+  },
+  {
+    id: "entity-google",
+    type: "entity",
+    secondary: true,
+    thumb: { icon: "🔍", label: "EMERGING", title: "GOOGLE", subtitle: "Android rumors · 12-24mo", sentiment: "UNCLEAR", sentimentColor: C.gold },
+    popup: {
+      name: "GOOGLE", icon: "🔍", category: "Emerging",
+      gradient: "linear-gradient(135deg, #121a18 0%, #1a2822 50%, #121a18 100%)",
+      front: {
+        shortStat: "Android rumors · No announcement",
+        sentiment: "UNCLEAR TIMELINE", sentimentKey: "unproven",
+        quickStats: [
+          { label: "Status", value: "Rumors", color: C.gold }, { label: "OEM talks", value: "HTC, Samsung" },
+          { label: "Pricing", value: "Unknown" }, { label: "Timeline", value: "12-24 mo", color: C.creamDim },
+        ],
+        source: "BD + Industry", reliability: "MEDIUM",
+      },
+      back: {
+        keySignal: "HTC and Samsung reportedly in conversations about a 'Google phone.' Our OEM partners are not panicking — yet.",
+        details: [
+          { label: "OS pricing", value: "Likely free", color: C.red },
+          { label: "Open source?", value: "Likely yes", color: C.red },
+          { label: "Our OEMs", value: "In talks", color: C.gold },
+          { label: "Andy Rubin", value: "Ex-Danger/Sidekick" },
+        ],
+        analysisNote: "If Google ships a free OS, our licensing model breaks overnight. This is the real threat — not Apple.",
+      },
+    },
+  },
+];
+
+// ============================================
+// POPUP: ENTITY CARD (with flip)
+// ============================================
+function EntityPopup({ data, onClose }) {
+  const [flipped, setFlipped] = useState(false);
+  const [show, setShow] = useState(false);
+  useEffect(() => { requestAnimationFrame(() => setShow(true)); }, []);
+  const close = () => { setShow(false); setTimeout(onClose, 250); };
+
+  const sentColors = { dangerous: C.red, unproven: C.gold, dismissive: C.creamDim, panicking: C.gold };
+  const d = data.popup;
+
+  return (
+    <Overlay show={show} onClose={close}>
+      <div style={{ perspective: 1000, width: "100%", maxWidth: 310 }}>
+        <div style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0)", transition: "transform 0.5s cubic-bezier(0.4,0,0.2,1)" }}>
+
+          {/* FRONT */}
+          <div style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", borderRadius: 14, overflow: "hidden", border: `1px solid ${C.borderLight}`, background: C.bgCard }}>
+            <div style={{ height: 160, background: d.gradient, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative" }}>
+              <DotPattern />
+              <span style={{ fontSize: 44, position: "relative", zIndex: 1 }}>{d.icon}</span>
+              <span style={{ fontSize: 10, fontFamily: "var(--sans)", letterSpacing: "0.2em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginTop: 6, position: "relative", zIndex: 1 }}>{d.category}</span>
+            </div>
+            <div style={{ padding: "16px 18px 14px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+                <div>
+                  <div style={{ fontSize: 17, fontWeight: 700, color: C.cream, fontFamily: "var(--sans)" }}>{d.name}</div>
+                  <div style={{ fontSize: 11, color: C.creamMuted, fontFamily: "var(--sans)", marginTop: 2 }}>{d.front.shortStat}</div>
+                </div>
+                <SentimentBadge text={d.front.sentiment} color={sentColors[d.front.sentimentKey] || C.creamDim} />
+              </div>
+              <StatsGrid items={d.front.quickStats} />
+              <button onClick={() => setFlipped(true)} style={{ ...flipBtnStyle, marginTop: 14 }}>↻ Flip for intel briefing</button>
+            </div>
+            <SourceBar source={d.front.source} reliability={d.front.reliability} />
+          </div>
+
+          {/* BACK */}
+          <div style={{ position: "absolute", top: 0, left: 0, width: "100%", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)", borderRadius: 14, overflow: "hidden", border: `1px solid ${C.borderLight}`, background: C.bgCard }}>
+            <div style={{ padding: "14px 18px", borderBottom: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 18 }}>{d.icon}</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: C.cream, fontFamily: "var(--sans)" }}>{d.name}</span>
+              </div>
+              <TypeBadge text="Intel Brief" color={C.entityAccent} />
+            </div>
+            <div style={{ padding: "14px 18px", borderBottom: `1px solid ${C.border}` }}>
+              <SectionLabel text="Key Signal" color={C.entityAccent} />
+              <p style={{ fontSize: 14, lineHeight: 1.65, color: C.cream, margin: 0, fontStyle: "italic" }}>"{d.back.keySignal}"</p>
+            </div>
+            <div style={{ padding: "6px 18px" }}>
+              {d.back.details.map((r, i) => <DetailRow key={i} label={r.label} value={r.value} color={r.color} last={i === d.back.details.length - 1} />)}
+            </div>
+            {d.back.analysisNote && (
+              <div style={{ margin: "0 18px 14px", padding: "10px 12px", background: `${C.entityAccent}08`, borderRadius: 6, borderLeft: `2px solid ${C.entityAccent}33` }}>
+                <div style={{ fontSize: 9, fontFamily: "var(--sans)", color: C.entityAccent, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 3 }}>Analysis</div>
+                <p style={{ fontSize: 11, lineHeight: 1.5, color: C.creamMuted, margin: 0, fontFamily: "var(--sans)" }}>{d.back.analysisNote}</p>
+              </div>
+            )}
+            <div style={{ padding: "0 18px 14px" }}>
+              <button onClick={() => setFlipped(false)} style={flipBtnStyle}>↻ Flip back</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Overlay>
+  );
+}
+
+// ============================================
+// POPUP: MEMO (document-style, no flip)
+// ============================================
+function MemoPopup({ data, onClose }) {
+  const [show, setShow] = useState(false);
+  useEffect(() => { requestAnimationFrame(() => setShow(true)); }, []);
+  const close = () => { setShow(false); setTimeout(onClose, 250); };
+  const d = data.popup;
+
+  return (
+    <Overlay show={show} onClose={close}>
+      <div style={{ width: "100%", maxWidth: 330, borderRadius: 14, overflow: "hidden", border: `1px solid ${C.borderLight}`, background: C.bgCard }}>
+        {/* Memo header */}
+        <div style={{ padding: "16px 18px", borderBottom: `1px solid ${C.border}`, position: "relative" }}>
+          {/* Classification stamp */}
+          <div style={{
+            position: "absolute", top: 12, right: 16,
+            fontSize: 8, fontFamily: "var(--sans)", fontWeight: 700, letterSpacing: "0.15em",
+            color: C.memoAccent, textTransform: "uppercase",
+            padding: "3px 8px", border: `1px solid ${C.memoAccent}44`, borderRadius: 3,
+            transform: "rotate(2deg)",
+          }}>
+            {d.classification}
+          </div>
+          <div style={{ marginBottom: 10 }}>
+            <span style={{ fontSize: 9, fontFamily: "var(--sans)", color: C.creamDim, letterSpacing: "0.1em", textTransform: "uppercase" }}>From</span>
+            <div style={{ fontSize: 15, fontWeight: 700, color: C.cream, fontFamily: "var(--sans)", marginTop: 2 }}>{d.from}</div>
+            <div style={{ fontSize: 11, color: C.creamMuted, fontFamily: "var(--sans)" }}>{d.fromTitle}</div>
+          </div>
+          <div>
+            <span style={{ fontSize: 9, fontFamily: "var(--sans)", color: C.creamDim, letterSpacing: "0.1em", textTransform: "uppercase" }}>Re</span>
+            <div style={{ fontSize: 13, color: C.cream, fontFamily: "var(--sans)", marginTop: 2 }}>{d.re}</div>
+          </div>
+        </div>
+
+        {/* Memo body */}
+        <div style={{ padding: "14px 18px", maxHeight: 380, overflowY: "auto" }}>
+          {d.sections.map((sec, i) => (
+            <div key={i} style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 10, fontFamily: "var(--sans)", fontWeight: 700, letterSpacing: "0.12em", color: C.memoAccent, textTransform: "uppercase", marginBottom: 6 }}>{sec.heading}</div>
+              {sec.highlighted && <div style={{ borderLeft: `2px solid ${C.memoAccent}`, paddingLeft: 12 }}>
+                <p style={{ fontSize: 13, lineHeight: 1.6, color: C.cream, margin: 0, fontFamily: "var(--sans)", fontWeight: 500 }}>{sec.content}</p>
+              </div>}
+              {!sec.highlighted && sec.type !== "list" && <p style={{ fontSize: 13, lineHeight: 1.6, color: C.creamMuted, margin: 0, fontFamily: "var(--sans)" }}>{sec.content}</p>}
+              {sec.type === "list" && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {sec.items.map((item, j) => (
+                    <div key={j} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                      <span style={{ color: C.red, fontSize: 8, marginTop: 5 }}>●</span>
+                      <span style={{ fontSize: 12, lineHeight: 1.5, color: C.creamMuted, fontFamily: "var(--sans)" }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          {d.footnote && (
+            <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 12, marginTop: 8 }}>
+              <p style={{ fontSize: 11, lineHeight: 1.5, color: C.creamDim, margin: 0, fontStyle: "italic" }}>{d.footnote}</p>
+            </div>
+          )}
+        </div>
+
+        <SourceBar source={d.source} reliability={d.reliability} />
+      </div>
+    </Overlay>
+  );
+}
+
+// ============================================
+// POPUP: BRIEFING (data-forward, no flip)
+// ============================================
+function BriefingPopup({ data, onClose }) {
+  const [show, setShow] = useState(false);
+  useEffect(() => { requestAnimationFrame(() => setShow(true)); }, []);
+  const close = () => { setShow(false); setTimeout(onClose, 250); };
+  const d = data.popup;
+
+  return (
+    <Overlay show={show} onClose={close}>
+      <div style={{ width: "100%", maxWidth: 330, borderRadius: 14, overflow: "hidden", border: `1px solid ${C.borderLight}`, background: C.bgCard }}>
+        {/* Hero stat */}
+        <div style={{ padding: "24px 18px 20px", borderBottom: `1px solid ${C.border}`, textAlign: "center" }}>
+          <TypeBadge text="Market Report" color={C.briefingAccent} />
+          <div style={{ marginTop: 14 }}>
+            <div style={{ fontSize: 48, fontWeight: 700, color: C.briefingAccent, fontFamily: "var(--sans)", lineHeight: 1 }}>{d.heroStat.value}</div>
+            <div style={{ fontSize: 12, color: C.creamMuted, fontFamily: "var(--sans)", marginTop: 6, lineHeight: 1.4 }}>{d.heroStat.label}</div>
+            <div style={{ fontSize: 10, color: C.creamDim, fontFamily: "var(--sans)", marginTop: 4 }}>— {d.heroStat.attribution}</div>
+          </div>
+        </div>
+
+        {/* Title */}
+        <div style={{ padding: "14px 18px 0" }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, fontFamily: "var(--sans)", marginBottom: 14 }}>{d.title}</div>
+        </div>
+
+        {/* Sections */}
+        <div style={{ padding: "0 18px 14px", maxHeight: 350, overflowY: "auto" }}>
+          {d.sections.map((sec, i) => (
+            <div key={i} style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 10, fontFamily: "var(--sans)", fontWeight: 700, letterSpacing: "0.12em", color: C.briefingAccent, textTransform: "uppercase", marginBottom: 6 }}>{sec.heading}</div>
+
+              {sec.type === "stats" ? (
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: C.border, borderRadius: 6, overflow: "hidden" }}>
+                  {sec.items.map((s, j) => (
+                    <div key={j} style={{ background: C.bgCard, padding: "8px 10px" }}>
+                      <div style={{ fontSize: 9, fontFamily: "var(--sans)", color: C.creamDim, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 2 }}>{s.label}</div>
+                      <div style={{ fontSize: 13, fontFamily: "var(--sans)", fontWeight: 600, color: s.color || C.cream }}>{s.value}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: 13, lineHeight: 1.6, color: C.creamMuted, margin: 0, fontFamily: "var(--sans)" }}>{sec.content}</p>
+              )}
+            </div>
+          ))}
+          {d.footnote && (
+            <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 10, marginTop: 4 }}>
+              <p style={{ fontSize: 11, lineHeight: 1.5, color: C.creamDim, margin: 0, fontStyle: "italic" }}>{d.footnote}</p>
+            </div>
+          )}
+        </div>
+
+        <SourceBar source={d.source} reliability={d.reliability} />
+      </div>
+    </Overlay>
+  );
+}
+
+// ============================================
+// SHARED COMPONENTS
+// ============================================
+function Overlay({ show, onClose, children }) {
+  return (
+    <div onClick={onClose} style={{
+      position: "fixed", inset: 0, zIndex: 200,
+      background: show ? C.bgOverlay : "transparent",
+      backdropFilter: show ? "blur(10px)" : "none", WebkitBackdropFilter: show ? "blur(10px)" : "none",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      transition: "all 0.25s ease", padding: 20,
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        opacity: show ? 1 : 0, transform: show ? "scale(1) translateY(0)" : "scale(0.92) translateY(16px)",
+        transition: "all 0.3s cubic-bezier(0.34,1.56,0.64,1)", position: "relative",
+        width: "100%", display: "flex", justifyContent: "center",
+      }}>
+        {children}
+        <button onClick={onClose} style={{
+          position: "absolute", top: -10, right: -2, width: 30, height: 30, borderRadius: "50%",
+          background: C.bgCard, border: `1px solid ${C.borderLight}`, color: C.creamMuted,
+          fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10,
+        }}>×</button>
+      </div>
+    </div>
+  );
+}
+
+function DotPattern() {
+  return <div style={{ position: "absolute", inset: 0, opacity: 0.05, backgroundImage: `radial-gradient(${C.cream} 1px, transparent 1px)`, backgroundSize: "18px 18px" }} />;
+}
+
+function SentimentBadge({ text, color }) {
+  return <div style={{ fontSize: 8, fontFamily: "var(--sans)", fontWeight: 700, color, letterSpacing: "0.1em", textTransform: "uppercase", textAlign: "right", lineHeight: 1.4, padding: "3px 7px", background: `${color}12`, borderRadius: 4, whiteSpace: "pre-line" }}>{text}</div>;
+}
+
+function TypeBadge({ text, color }) {
+  return <div style={{ display: "inline-block", fontSize: 9, fontFamily: "var(--sans)", fontWeight: 700, letterSpacing: "0.15em", color, textTransform: "uppercase", padding: "3px 10px", border: `1px solid ${color}33`, borderRadius: 4 }}>{text}</div>;
+}
+
+function SectionLabel({ text, color }) {
+  return <div style={{ fontSize: 9, fontFamily: "var(--sans)", letterSpacing: "0.15em", color, textTransform: "uppercase", marginBottom: 6, display: "flex", alignItems: "center", gap: 6 }}>
+    <span style={{ display: "inline-block", width: 12, height: 1, background: color }} />{text}
+  </div>;
+}
+
+function StatsGrid({ items }) {
+  return <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: C.border, borderRadius: 8, overflow: "hidden" }}>
+    {items.map((s, i) => (
+      <div key={i} style={{ background: C.bgCard, padding: "9px 10px" }}>
+        <div style={{ fontSize: 9, fontFamily: "var(--sans)", color: C.creamDim, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 2 }}>{s.label}</div>
+        <div style={{ fontSize: 13, fontFamily: "var(--sans)", fontWeight: 600, color: s.color || C.cream }}>{s.value}</div>
+      </div>
+    ))}
+  </div>;
+}
+
+function DetailRow({ label, value, color, last }) {
+  return <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: !last ? `1px solid ${C.border}` : "none" }}>
+    <span style={{ fontSize: 11, fontFamily: "var(--sans)", color: C.creamMuted }}>{label}</span>
+    <span style={{ fontSize: 11, fontFamily: "var(--sans)", fontWeight: 600, color: color || C.cream }}>{value}</span>
+  </div>;
+}
+
+function SourceBar({ source, reliability }) {
+  return <div style={{ padding: "8px 18px", borderTop: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", fontSize: 9, fontFamily: "var(--sans)", color: C.creamDim, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+    <span>{source}</span>
+    <span style={{ color: reliability === "HIGH" ? C.green : C.gold, fontWeight: 600 }}>{reliability}</span>
+  </div>;
+}
+
+const flipBtnStyle = { width: "100%", padding: "9px", background: "transparent", border: `1px solid ${C.border}`, borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "var(--sans)", color: C.creamMuted, letterSpacing: "0.05em", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 };
+
+// ============================================
+// CARD THUMBNAILS (type-aware)
+// ============================================
+function CardThumb({ card, onClick }) {
+  const t = card.thumb;
+  const isEntity = card.type === "entity";
+  const isMemo = card.type === "memo";
+  const isBriefing = card.type === "briefing";
+
+  const headerBg = isEntity
+    ? (card.popup.gradient || `linear-gradient(135deg, #1a1a25 0%, #252030 100%)`)
+    : isMemo
+      ? `linear-gradient(135deg, #1f1a14 0%, #2a2118 100%)`
+      : `linear-gradient(135deg, #121f1a 0%, #1a2a22 100%)`;
+
+  return (
+    <div onClick={onClick} style={{
+      background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 10,
+      overflow: "hidden", cursor: "pointer", transition: "all 0.2s ease",
+      flex: card.secondary ? "1 1 100%" : "1 1 calc(50% - 5px)",
+      minWidth: card.secondary ? "100%" : "calc(50% - 5px)",
+    }}>
+      {/* Header strip */}
+      <div style={{ height: card.secondary ? 36 : 44, background: headerBg, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+        {isEntity && <DotPattern />}
+        <span style={{ fontSize: card.secondary ? 16 : 20, position: "relative", zIndex: 1 }}>{t.icon}</span>
+      </div>
+      <div style={{ padding: card.secondary ? "8px 12px" : "10px 12px" }}>
+        {/* Type label */}
+        <div style={{
+          fontSize: 8, fontFamily: "var(--sans)", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
+          color: isMemo ? C.memoAccent : isBriefing ? C.briefingAccent : C.entityAccent,
+          marginBottom: 3,
+        }}>{t.label}</div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: C.cream, fontFamily: "var(--sans)", marginBottom: 2 }}>{t.title}</div>
+        <div style={{ fontSize: 10, color: C.creamMuted, fontFamily: "var(--sans)", lineHeight: 1.3 }}>{t.subtitle}</div>
+        {/* Sentiment for entities */}
+        {isEntity && t.sentiment && (
+          <div style={{ marginTop: 5, fontSize: 8, fontFamily: "var(--sans)", fontWeight: 700, color: t.sentimentColor, letterSpacing: "0.1em", textTransform: "uppercase", lineHeight: 1.3 }}>{t.sentiment}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// POPUP ROUTER
+// ============================================
+function CardPopupRouter({ card, onClose }) {
+  if (!card) return null;
+  if (card.type === "entity") return <EntityPopup data={card} onClose={onClose} />;
+  if (card.type === "memo") return <MemoPopup data={card} onClose={onClose} />;
+  if (card.type === "briefing") return <BriefingPopup data={card} onClose={onClose} />;
+  return null;
+}
+
+// ============================================
+// HEADER
+// ============================================
+function Header({ date, revenue, share, num }) {
+  return (
+    <div style={{ position: "sticky", top: 0, zIndex: 50, background: `linear-gradient(180deg, ${C.bg} 0%, ${C.bg}ee 85%, ${C.bg}00 100%)`, padding: "16px 20px 24px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+        <div>
+          <div style={{ fontSize: 10, fontFamily: "var(--sans)", letterSpacing: "0.15em", color: C.creamDim, textTransform: "uppercase" }}>Date</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: C.cream, fontFamily: "var(--sans)", display: "flex", alignItems: "center", gap: 8 }}>
+            {date}<span style={{ fontSize: 10, background: C.border, color: C.creamMuted, padding: "2px 8px", borderRadius: 10, fontWeight: 500 }}>{num}/5</span>
+          </div>
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: 10, fontFamily: "var(--sans)", letterSpacing: "0.15em", color: C.creamDim, textTransform: "uppercase" }}>Revenue</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: C.green, fontFamily: "var(--sans)" }}>{revenue}</div>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <div style={{ fontSize: 10, fontFamily: "var(--sans)", letterSpacing: "0.15em", color: C.creamDim, textTransform: "uppercase" }}>OS Share</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: C.cream, fontFamily: "var(--sans)" }}>{share}</div>
+        </div>
+      </div>
+      <div style={{ marginTop: 12, height: 2, background: C.border, borderRadius: 1 }}>
+        <div style={{ width: `${(parseInt(num) / 5) * 100}%`, height: "100%", background: `linear-gradient(90deg, ${C.coral}, ${C.gold})`, borderRadius: 1 }} />
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// SCENE BEAT
+// ============================================
+function SceneBeat({ onContinue }) {
+  const [v, setV] = useState(0);
+  const lines = [
+    { t: "date", text: "JAN 2007" },
+    { t: "title", text: "The iPhone Moment" },
+    { t: "image" },
+    { t: "p", text: `Your phone buzzes at 5:58 AM Pacific. It's Kevin Turner, your COO. "Steve, you watching Macworld?"` },
+    { t: "p", text: `You switch on CNBC. Jobs is on stage in his black turtleneck, holding something. "This is a day I've been looking forward to for two and a half years."` },
+    { t: "p", text: `Three products. An iPod. A phone. An internet communicator. The crowd doesn't get it yet — then they do.` },
+    { t: "p", text: `By 7 AM, your inbox has 43 messages. The consensus from your mobile team: "No physical keyboard. Enterprise won't touch it. It's an iPod that makes calls."` },
+    { t: "em", text: `But you've seen this movie before. Everyone laughed at the iPod too. And you've just watched 4,000 people give Steve Jobs a standing ovation for a phone that doesn't exist yet.` },
+    { t: "p", text: `Windows Mobile owns 42% of the smartphone market. You've got partnerships with every carrier, every major OEM. Your enterprise relationships are unassailable.` },
+    { t: "close", text: `The question isn't whether the iPhone is a threat. The question is what kind of threat — and what you're going to do about it.` },
+  ];
+  useEffect(() => { if (v < lines.length) { const d = v === 0 ? 400 : v === 2 ? 600 : 120; const t = setTimeout(() => setV(n => n + 1), d); return () => clearTimeout(t); } }, [v, lines.length]);
+
+  return (
+    <div style={{ padding: "0 24px 80px" }}>
+      {lines.map((l, i) => {
+        if (i > v) return null;
+        const a = { opacity: 1, transform: "translateY(0)", transition: "all 0.6s ease" };
+        if (l.t === "date") return <div key={i} style={{ ...a, fontSize: 13, fontFamily: "var(--sans)", letterSpacing: "0.2em", color: C.coral, textTransform: "uppercase", marginBottom: 8, marginTop: 16 }}>{l.text}</div>;
+        if (l.t === "title") return <h1 key={i} style={{ ...a, fontSize: 30, fontWeight: 700, color: C.coral, marginBottom: 20, lineHeight: 1.15 }}>{l.text}</h1>;
+        if (l.t === "image") return <div key={i} style={{ ...a, width: "100%", height: 170, borderRadius: 8, background: "linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}><div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 70% 40%, rgba(100,140,255,0.12), transparent 60%)" }} /><span style={{ fontSize: 10, fontFamily: "var(--sans)", color: C.creamDim, letterSpacing: "0.15em", textTransform: "uppercase" }}>[ Macworld 2007 ]</span></div>;
+        if (l.t === "em") return <p key={i} style={{ ...a, fontSize: 16, lineHeight: 1.75, color: C.cream, marginBottom: 20, fontStyle: "italic", borderLeft: `2px solid ${C.coral}`, paddingLeft: 16 }}>{l.text}</p>;
+        if (l.t === "close") return <p key={i} style={{ ...a, fontSize: 17, lineHeight: 1.7, color: C.cream, marginBottom: 28, fontWeight: 600 }}>{l.text}</p>;
+        return <p key={i} style={{ ...a, fontSize: 16, lineHeight: 1.75, color: C.cream, marginBottom: 20 }}>{l.text}</p>;
+      })}
+      {v >= lines.length && <button onClick={onContinue} style={{ width: "100%", padding: "16px", background: C.coral, color: C.bg, border: "none", borderRadius: 8, fontSize: 13, fontFamily: "var(--sans)", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", animation: "fadeUp 0.5s ease" }}>Review Intel & Decide →</button>}
+    </div>
+  );
+}
+
+// ============================================
+// BRIEFING + CHOICE (unified page)
+// ============================================
+function BriefingAndChoice({ onChoose }) {
+  const [popup, setPopup] = useState(null);
+  const [exp, setExp] = useState(null);
+  const [sel, setSel] = useState(null);
+  const [confirming, setConfirming] = useState(false);
+  const [entered, setEntered] = useState(false);
+  useEffect(() => { setTimeout(() => setEntered(true), 100); }, []);
+
+  const primaryCards = INTEL_CARDS.filter(c => !c.secondary);
+  const secondaryCards = INTEL_CARDS.filter(c => c.secondary);
+  const openCard = INTEL_CARDS.find(c => c.id === popup);
+
+  const options = [
+    { id: "enterprise", title: "Reinforce Enterprise", inv: "$100M", desc: "Double down on what's working. Accelerate Windows Mobile enterprise features, deepen IT partnerships. Let Apple have the consumer toy market.", risk: "Consumer market evolves into the real market", riskColor: C.gold, upside: "Protect $28B enterprise ecosystem" },
+    { id: "consumer", title: "Launch Consumer Offensive", inv: "$500M+", desc: "Build a direct iPhone competitor. New hardware partnerships, consumer marketing push, app developer program.", risk: "Two-front war depletes resources and focus", riskColor: C.red, upside: "Capture the consumer shift early" },
+    { id: "acquire", title: "Acquisition Strategy", inv: "$5-8B", desc: "Buy Nokia or Palm outright. Acquire hardware capability, manufacturing scale, and global distribution.", risk: "Massive integration challenge, culture clash", riskColor: C.red, upside: "Instant scale, global distribution" },
+    { id: "wait", title: "Wait and Watch", inv: "$0", desc: "Hold position. The iPhone is unproven and expensive. Let the market reveal whether this is real before committing.", risk: "If this is real, you're already behind", riskColor: C.gold, upside: "Preserve optionality, avoid costly mistakes" },
+  ];
+
+  const pick = (id) => { setSel(id); setExp(id); setConfirming(true); };
+
+  return (
+    <div style={{ padding: "0 20px 100px", opacity: entered ? 1 : 0, transition: "opacity 0.5s ease" }}>
+      <CardPopupRouter card={openCard} onClose={() => setPopup(null)} />
+
+      {/* Objective */}
+      <div style={{ textAlign: "center", marginBottom: 24 }}>
+        <Divider text="Objective" />
+        <h2 style={{ fontSize: 20, color: C.cream, fontWeight: 400, lineHeight: 1.4, margin: 0 }}>How should Microsoft respond to Apple's entry into mobile?</h2>
+      </div>
+
+      {/* Intel label */}
+      <div style={{ fontSize: 10, fontFamily: "var(--sans)", letterSpacing: "0.2em", color: C.coral, textTransform: "uppercase", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke={C.coral} strokeWidth="1" /><circle cx="7" cy="7" r="2" fill={C.coral} /></svg>
+        Intelligence Briefing
+      </div>
+
+      {/* Card grid */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: secondaryCards.length ? 8 : 12 }}>
+        {primaryCards.map(c => <CardThumb key={c.id} card={c} onClick={() => setPopup(c.id)} />)}
+      </div>
+      {secondaryCards.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
+          {secondaryCards.map(c => <CardThumb key={c.id} card={c} onClick={() => setPopup(c.id)} />)}
+        </div>
+      )}
+      <div style={{ textAlign: "center", fontSize: 10, fontFamily: "var(--sans)", color: C.creamDim, marginBottom: 24 }}>Tap any card for full briefing</div>
+
+      {/* Your position */}
+      <div style={{ background: C.bgCard, border: `1px solid ${C.coral}25`, borderRadius: 10, padding: "14px 16px", marginBottom: 36 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.coral }} />
+          <span style={{ fontSize: 11, fontFamily: "var(--sans)", fontWeight: 700, color: C.coral, letterSpacing: "0.1em", textTransform: "uppercase" }}>Your Position — Microsoft</span>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 16px" }}>
+          {[
+            { l: "Mobile OS Share", v: "42%", c: C.green }, { l: "Revenue", v: "$800M/yr", c: C.green },
+            { l: "OEM Partners", v: "All majors" }, { l: "Carrier deals", v: "Every carrier" },
+            { l: "Enterprise moat", v: "Unassailable", c: C.green }, { l: "Consumer brand", v: "Weak", c: C.gold },
+          ].map((s, i) => <div key={i} style={{ padding: "4px 0" }}><div style={{ fontSize: 9, fontFamily: "var(--sans)", color: C.creamDim, marginBottom: 2 }}>{s.l}</div><div style={{ fontSize: 13, fontFamily: "var(--sans)", fontWeight: 600, color: s.c || C.cream }}>{s.v}</div></div>)}
+        </div>
+      </div>
+
+      <Divider text="Your Call" />
+
+      {/* Options */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 20 }}>
+        {options.map(o => {
+          const isExp = exp === o.id;
+          const isSel = sel === o.id;
+          return (
+            <div key={o.id} onClick={() => { if (!confirming) setExp(isExp ? null : o.id); }}
+              style={{ background: isSel ? `${C.coral}12` : C.bgCard, border: `1px solid ${isSel ? C.coral : C.border}`, borderRadius: 10, overflow: "hidden", cursor: confirming && !isSel ? "default" : "pointer", opacity: confirming && !isSel ? 0.3 : 1, transition: "all 0.3s ease" }}>
+              <div style={{ padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: isSel ? C.coral : C.cream, fontFamily: "var(--sans)" }}>{o.title}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 11, fontFamily: "var(--sans)", color: C.creamDim }}>{o.inv}</span>
+                  <span style={{ fontSize: 14, color: C.creamDim, transition: "transform 0.2s", transform: isExp ? "rotate(180deg)" : "rotate(0)" }}>▾</span>
+                </div>
+              </div>
+              {isExp && (
+                <div style={{ padding: "0 16px 16px", borderTop: `1px solid ${C.border}`, paddingTop: 14 }}>
+                  <p style={{ fontSize: 13, lineHeight: 1.6, color: C.creamMuted, margin: "0 0 14px", fontFamily: "var(--sans)" }}>{o.desc}</p>
+                  <div style={{ display: "flex", gap: 12 }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 9, fontFamily: "var(--sans)", letterSpacing: "0.15em", color: C.red, textTransform: "uppercase", marginBottom: 4 }}>Risk</div>
+                      <div style={{ fontSize: 11, color: o.riskColor, fontFamily: "var(--sans)", lineHeight: 1.4 }}>{o.risk}</div>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 9, fontFamily: "var(--sans)", letterSpacing: "0.15em", color: C.green, textTransform: "uppercase", marginBottom: 4 }}>Upside</div>
+                      <div style={{ fontSize: 11, color: C.green, fontFamily: "var(--sans)", lineHeight: 1.4 }}>{o.upside}</div>
+                    </div>
+                  </div>
+                  {!confirming && <button onClick={e => { e.stopPropagation(); pick(o.id); }} style={{ width: "100%", marginTop: 16, padding: "11px", background: "transparent", color: C.coral, border: `1px solid ${C.coral}`, borderRadius: 6, fontSize: 11, fontFamily: "var(--sans)", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}>Choose This Path</button>}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {confirming && (
+        <div style={{ marginTop: 20, animation: "fadeUp 0.4s ease" }}>
+          <div style={{ textAlign: "center", fontSize: 12, fontFamily: "var(--sans)", color: C.creamDim, marginBottom: 12 }}>You chose: <strong style={{ color: C.cream }}>{options.find(o => o.id === sel)?.title}</strong></div>
+          <button onClick={() => onChoose(sel)} style={{ width: "100%", padding: "16px", background: C.coral, color: C.bg, border: "none", borderRadius: 8, fontSize: 13, fontFamily: "var(--sans)", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}>Confirm Decision →</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Divider({ text }) {
+  return <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 10 }}>
+    <span style={{ width: 40, height: 1, background: C.borderLight, display: "inline-block" }} />
+    <span style={{ fontSize: 10, fontFamily: "var(--sans)", letterSpacing: "0.2em", color: C.creamDim, textTransform: "uppercase" }}>{text}</span>
+    <span style={{ width: 40, height: 1, background: C.borderLight, display: "inline-block" }} />
+  </div>;
+}
+
+// ============================================
+// CONSEQUENCE BEAT
+// ============================================
+function ConsequenceBeat({ onContinue }) {
+  const [step, setStep] = useState(0);
+  const [entered, setEntered] = useState(false);
+  useEffect(() => { setTimeout(() => setEntered(true), 100); }, []);
+
+  const moments = [
+    { type: "verdict", label: "The Street Reacts", headline: "Wall Street approves of your discipline.", subline: "\"Ballmer wisely avoiding panic,\" writes Goldman Sachs." },
+    { type: "metrics", label: "Metrics Impact", changes: [
+      { metric: "Market Cap", change: "+$1B", dir: "up" }, { metric: "Stock Price", change: "+2.3%", dir: "up" },
+      { metric: "Board Mood", change: "Approving", dir: "up" }, { metric: "Mobile Team", change: "Complacent", dir: "neutral" },
+    ]},
+    { type: "timeline", label: "First Ripple Effects", events: [
+      { date: "JUN 29", text: "iPhone launches. Lines around the block. Breathless media coverage.", mood: "neutral" },
+      { date: "JULY", text: "Early reviews: poor battery, AT&T struggling, no App Store. Your team: \"Told you so.\"", mood: "positive" },
+      { date: "AUG", text: "Windows Mobile 6.1 on schedule. Enterprise satisfied. Board commends patience.", mood: "positive" },
+      { date: "OCT", text: "Apple announces App Store is coming. They just created a platform, not just a phone.", mood: "warning" },
+    ]},
+    { type: "emerging", label: "Emerging Threat", headline: "Then Google drops the real bomb.", body: "Android with the Open Handset Alliance: HTC, Samsung, LG, Motorola — all your hardware partners. Android will be free and open source. The OEMs don't have to pay you licensing fees anymore.", closing: "The market just forked and you're standing at the intersection holding a map from 2005." },
+  ];
+
+  const advance = () => { step < moments.length - 1 ? setStep(s => s + 1) : onContinue(); };
+  const m = moments[step];
+
+  return (
+    <div style={{ padding: "0 20px 100px", opacity: entered ? 1 : 0, transition: "opacity 0.5s ease" }}>
+      <div style={{ padding: "10px 14px", background: `${C.coral}10`, borderLeft: `2px solid ${C.coral}`, borderRadius: "0 6px 6px 0", marginBottom: 28, fontSize: 13, fontFamily: "var(--sans)", color: C.creamMuted }}>
+        You chose: <strong style={{ color: C.coral }}>Wait and Watch</strong>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 24 }}>
+        {moments.map((_, i) => <div key={i} style={{ width: i === step ? 24 : 6, height: 6, borderRadius: 3, background: i <= step ? C.coral : C.border, transition: "all 0.4s ease" }} />)}
+      </div>
+      <div key={step} style={{ animation: "fadeIn 0.5s ease" }}>
+        <div style={{ fontSize: 10, fontFamily: "var(--sans)", letterSpacing: "0.2em", color: C.coral, textTransform: "uppercase", marginBottom: 16, textAlign: "center" }}>{m.label}</div>
+        {m.type === "verdict" && <div style={{ textAlign: "center", padding: "16px 0" }}><div style={{ fontSize: 26, fontWeight: 700, color: C.cream, lineHeight: 1.3, marginBottom: 14 }}>{m.headline}</div><div style={{ fontSize: 15, color: C.creamMuted, fontStyle: "italic" }}>{m.subline}</div><div style={{ marginTop: 20, fontSize: 36, opacity: 0.5 }}>📈</div></div>}
+        {m.type === "metrics" && <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>{m.changes.map((c, i) => <div key={i} style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 10, padding: "14px", textAlign: "center", animation: `fadeIn 0.4s ease ${i * 0.1}s both` }}><div style={{ fontSize: 9, fontFamily: "var(--sans)", color: C.creamDim, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>{c.metric}</div><div style={{ fontSize: 20, fontWeight: 700, fontFamily: "var(--sans)", color: c.dir === "up" ? C.green : c.dir === "down" ? C.red : C.gold }}>{c.change}</div></div>)}</div>}
+        {m.type === "timeline" && <div style={{ position: "relative", paddingLeft: 20 }}><div style={{ position: "absolute", left: 4, top: 8, bottom: 8, width: 1, background: C.border }} />{m.events.map((e, i) => <div key={i} style={{ position: "relative", paddingBottom: i < m.events.length - 1 ? 18 : 0, animation: `fadeIn 0.4s ease ${i * 0.15}s both` }}><div style={{ position: "absolute", left: -20, top: 6, width: 9, height: 9, borderRadius: "50%", background: e.mood === "warning" ? C.gold : e.mood === "positive" ? C.green : C.creamDim, border: `2px solid ${C.bg}` }} /><div style={{ fontSize: 10, fontFamily: "var(--sans)", fontWeight: 700, color: C.creamDim, letterSpacing: "0.1em", marginBottom: 3 }}>{e.date}</div><div style={{ fontSize: 13, lineHeight: 1.6, color: e.mood === "warning" ? C.cream : C.creamMuted, fontWeight: e.mood === "warning" ? 600 : 400 }}>{e.text}</div></div>)}</div>}
+        {m.type === "emerging" && <div style={{ textAlign: "center", padding: "8px 0" }}><div style={{ fontSize: 32, marginBottom: 12 }}>⚡</div><div style={{ fontSize: 22, fontWeight: 700, color: C.red, marginBottom: 18, lineHeight: 1.3 }}>{m.headline}</div><p style={{ fontSize: 14, lineHeight: 1.7, color: C.creamMuted, marginBottom: 18, textAlign: "left" }}>{m.body}</p><p style={{ fontSize: 15, lineHeight: 1.6, color: C.cream, fontWeight: 600, fontStyle: "italic", borderTop: `1px solid ${C.border}`, paddingTop: 18, textAlign: "left" }}>{m.closing}</p></div>}
+      </div>
+      <button onClick={advance} style={{ width: "100%", marginTop: 28, padding: "16px", background: step === moments.length - 1 ? C.coral : "transparent", color: step === moments.length - 1 ? C.bg : C.coral, border: `1px solid ${C.coral}`, borderRadius: 8, fontSize: 13, fontFamily: "var(--sans)", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}>{step === moments.length - 1 ? "Continue →" : "Next →"}</button>
+    </div>
+  );
+}
+
+// ============================================
+// TIME PASSAGE
+// ============================================
+function TimePassage({ onContinue }) {
+  const [p, setP] = useState(0);
+  useEffect(() => { const t = [setTimeout(() => setP(1), 500), setTimeout(() => setP(2), 1200), setTimeout(() => setP(3), 2000), setTimeout(() => setP(4), 2800)]; return () => t.forEach(clearTimeout); }, []);
+  const s = [{ l: "Windows Mobile Share", f: "42%", t: "20%", c: C.red }, { l: "Market Clarity", f: "Uncertain", t: "iPhone + Android win", c: C.gold }, { l: "Strategic Options", f: "Many", t: "Fewer", c: C.red }];
+  return (
+    <div style={{ padding: "0 20px 100px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "55vh" }}>
+      <div style={{ fontSize: 13, fontFamily: "var(--sans)", letterSpacing: "0.2em", color: C.coral, textTransform: "uppercase", marginBottom: 20, opacity: p >= 0 ? 1 : 0, transition: "opacity 0.6s" }}>SEP 2009</div>
+      <div style={{ width: 56, height: 56, borderRadius: "50%", border: `2px solid ${C.creamDim}`, borderTopColor: C.coral, marginBottom: 16, animation: p >= 1 ? "spin 2s linear infinite" : "none", opacity: p >= 1 ? 1 : 0, transition: "opacity 0.6s" }} />
+      <div style={{ fontSize: 18, color: C.creamMuted, marginBottom: 36, opacity: p >= 1 ? 1 : 0, transition: "opacity 0.8s" }}>32 months pass...</div>
+      <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 10 }}>
+        {s.map((x, i) => <div key={i} style={{ background: C.bgCard, borderLeft: `3px solid ${x.c}`, borderRadius: "0 8px 8px 0", padding: "12px 16px", opacity: p >= i + 2 ? 1 : 0, transform: p >= i + 2 ? "translateX(0)" : "translateX(-16px)", transition: "all 0.5s ease" }}><div style={{ fontSize: 9, fontFamily: "var(--sans)", letterSpacing: "0.15em", color: C.creamDim, textTransform: "uppercase", marginBottom: 4 }}>{x.l}</div><div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 15, color: C.creamDim, fontFamily: "var(--sans)" }}>{x.f}</span><span style={{ fontSize: 11, color: C.creamDim }}>→</span><span style={{ fontSize: 17, fontWeight: 700, color: x.c, fontFamily: "var(--sans)" }}>{x.t}</span></div></div>)}
+      </div>
+      {p >= 4 && <button onClick={onContinue} style={{ width: "100%", marginTop: 28, padding: "16px", background: C.coral, color: C.bg, border: "none", borderRadius: 8, fontSize: 13, fontFamily: "var(--sans)", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", animation: "fadeUp 0.5s ease" }}>Next Decision →</button>}
+    </div>
+  );
+}
+
+// ============================================
+// CHAPTER
+// ============================================
+function Chapter({ onReplay }) {
+  const [e, setE] = useState(false);
+  useEffect(() => { setTimeout(() => setE(true), 100); }, []);
+  return (
+    <div style={{ padding: "40px 24px 80px", textAlign: "center", opacity: e ? 1 : 0, transition: "opacity 0.8s" }}>
+      <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: "50%", border: `1px solid ${C.coral}33`, marginBottom: 20 }}><span style={{ fontSize: 18, fontFamily: "var(--sans)", fontWeight: 700, color: C.coral }}>2</span></div>
+      <div style={{ fontSize: 11, fontFamily: "var(--sans)", letterSpacing: "0.25em", color: C.coral, textTransform: "uppercase", marginBottom: 12 }}>Decision Two</div>
+      <h2 style={{ fontSize: 28, color: C.cream, fontWeight: 700, lineHeight: 1.25, marginBottom: 16 }}>The Android Threat</h2>
+      <p style={{ fontSize: 15, color: C.creamMuted, lineHeight: 1.65, marginBottom: 8 }}>Android is exploding. OEMs are fleeing to a free OS.</p>
+      <p style={{ fontSize: 15, color: C.cream, lineHeight: 1.65, fontWeight: 500, fontStyle: "italic" }}>Your "wait and watch" strategy gave you perfect clarity — on exactly how far behind you've fallen.</p>
+      <div style={{ marginTop: 40, padding: "20px", background: C.bgCard, borderRadius: 10, border: `1px solid ${C.border}` }}>
+        <div style={{ fontSize: 11, fontFamily: "var(--sans)", color: C.creamDim, marginBottom: 6 }}>End of prototype</div>
+        <div style={{ fontSize: 13, fontFamily: "var(--sans)", color: C.creamMuted, lineHeight: 1.5 }}>Three card types demonstrated: Entity (flip), Memo (document), Briefing (data-forward).</div>
+      </div>
+      <button onClick={onReplay} style={{ marginTop: 24, padding: "14px 32px", background: "transparent", color: C.coral, border: `1px solid ${C.coral}`, borderRadius: 8, fontSize: 12, fontFamily: "var(--sans)", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}>Replay from Start</button>
+    </div>
+  );
+}
+
+// ============================================
+// MAIN
+// ============================================
+export default function MobileWarsV3() {
+  const [beat, setBeat] = useState("scene");
+  const ref = useRef(null);
+  const top = () => { if (ref.current) ref.current.scrollTo({ top: 0, behavior: "smooth" }); };
+  const go = (b) => { setBeat("x"); setTimeout(() => { setBeat(b); top(); }, 300); };
+
+  const hd = { scene: ["JAN 2007", "$800M", "42%", "1"], briefing: ["JAN 2007", "$800M", "42%", "1"], consequence: ["APR 2007", "$800M", "42%", "1"], time: ["SEP 2009", "$650M", "27%", "1"], chapter: ["SEP 2009", "$650M", "20%", "2"], x: ["JAN 2007", "$800M", "42%", "1"] };
+  const h = hd[beat] || hd.scene;
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+        :root { --sans: 'DM Sans', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0908; font-family: 'Libre Baskerville', 'Georgia', serif; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        button:hover { filter: brightness(1.08); }
+        button:active { transform: scale(0.98); }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 2px; }
+      `}</style>
+      <div style={{ background: "#0a0908", minHeight: "100vh", display: "flex", justifyContent: "center" }}>
+        <div ref={ref} style={{ width: "100%", maxWidth: 420, margin: "0 auto", background: C.bg, minHeight: "100vh", position: "relative", overflow: "hidden" }}>
+          <Header date={h[0]} revenue={h[1]} share={h[2]} num={h[3]} />
+          <div style={{ opacity: beat === "x" ? 0 : 1, transition: "opacity 0.3s" }}>
+            {beat === "scene" && <SceneBeat onContinue={() => go("briefing")} />}
+            {beat === "briefing" && <BriefingAndChoice onChoose={() => go("consequence")} />}
+            {beat === "consequence" && <ConsequenceBeat onContinue={() => go("time")} />}
+            {beat === "time" && <TimePassage onContinue={() => go("chapter")} />}
+            {beat === "chapter" && <Chapter onReplay={() => { setBeat("scene"); top(); }} />}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

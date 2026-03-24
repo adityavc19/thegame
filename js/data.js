@@ -21,6 +21,8 @@ const scenarioData = {
         // Mobile Division P&L (displayed to user instead of marketCap)
         mobileRevenue: 0.8,  // $800M/year - Windows Mobile licensing (~$15-20/device × 14M devices)
         mobileCosts: 0.4,    // $400M/year - Development and operations costs
+        // Cumulative mobile P&L tracker (for ending comparison)
+        cumulativePL: 0.4,   // Starting at +$0.4B (revenue - costs at game start)
         // Competitor market shares (contextual)
         appleShare: 0,
         googleShare: 0,
@@ -56,7 +58,7 @@ const scenarioData = {
             forensicTitle: "The Enterprise Champion",
             status: "DISCONTINUED",
             casualties: "Windows Mobile platform",
-            description: "The pinnacle of Windows Mobile enterprise devices. Slide-out QWERTY keyboard, Exchange push email, stylus-driven interface. Everything the iPhone wasn't—and everything the market was about to stop wanting.",
+            description: "The pinnacle of Windows Mobile enterprise devices. Slide-out QWERTY keyboard, Exchange push email, stylus-driven interface. Everything the iPhone wasn't, and everything the market was about to stop wanting.",
             model3D: '<img src="assets/images/Htc_tytn_ii.jpg" alt="HTC TyTN II (Windows Mobile 6)">',
             timelineProgress: 25,
             timelineMarkers: [
@@ -90,7 +92,7 @@ const scenarioData = {
             forensicTitle: "The 48-Day Phone",
             status: "DISCONTINUED",
             casualties: "~$1,000,000,000",
-            description: "Microsoft's first consumer phone. A social-first device that bet everything on being the 'anti-smartphone'—and lost everything in 48 days. May 6 - June 30, 2010.",
+            description: "Microsoft's first consumer phone. A social-first device that bet everything on being the 'anti-smartphone', and lost everything in 48 days. May 6 - June 30, 2010.",
             model3D: '<img src="assets/images/1005-MSKinOne-hmed-1244p.webp" alt="Microsoft Kin One" style="max-width: 100%; max-height: 100%; object-fit: contain;">',
             timelineProgress: 100,
             timelineMarkers: [
@@ -103,31 +105,31 @@ const scenarioData = {
                     x: 50,
                     y: 15,
                     title: "Evidence #1: Identity Crisis",
-                    description: "Kin bet everything on social—a 'Spot' feature to share photos instantly, deep social network integration, cloud backup of every moment. But it wasn't a smartphone. No apps. No games. Just... social. In 2010, that meant Facebook. And Facebook worked fine on every other phone."
+                    description: "Kin bet everything on social, a 'Spot' feature to share photos instantly, deep social network integration, cloud backup of every moment. But it wasn't a smartphone. No apps. No games. Just... social. In 2010, that meant Facebook. And Facebook worked fine on every other phone."
                 },
                 {
                     x: 20,
                     y: 40,
                     title: "Evidence #2: The App Gap",
-                    description: "Zero third-party apps. Not 'limited apps.' Zero. Microsoft positioned this as a feature—'everything you need, nothing you don't.' But users saw a phone that couldn't run Angry Birds while the iPhone had 200,000 apps. The Kin couldn't even run Windows Phone 7 apps that were coming later that year."
+                    description: "Zero third-party apps. Not 'limited apps.' Zero. Microsoft positioned this as a feature, 'everything you need, nothing you don't.' But users saw a phone that couldn't run Angry Birds while the iPhone had 200,000 apps. The Kin couldn't even run Windows Phone 7 apps that were coming later that year."
                 },
                 {
                     x: 80,
                     y: 40,
                     title: "Evidence #3: Hardware Nostalgia",
-                    description: "A slide-out QWERTY keyboard in 2010—two years after the iPhone proved touch was the future. Microsoft designers genuinely believed teens wanted to type with their thumbs on tiny physical keys. They were building for a user that no longer existed."
+                    description: "A slide-out QWERTY keyboard in 2010, two years after the iPhone proved touch was the future. Microsoft designers genuinely believed teens wanted to type with their thumbs on tiny physical keys. They were building for a user that no longer existed."
                 },
                 {
                     x: 35,
                     y: 70,
                     title: "Evidence #4: The $30 Problem",
-                    description: "Kin required a $30/month smartphone data plan—the same as an iPhone. For that price, you got a phone that couldn't do smartphone things. When Verizon briefly tested a $15 'feature phone' plan, sales tripled. Then they stopped the test. The math never worked."
+                    description: "Kin required a $30/month smartphone data plan, the same as an iPhone. For that price, you got a phone that couldn't do smartphone things. When Verizon briefly tested a $15 'feature phone' plan, sales tripled. Then they stopped the test. The math never worked."
                 },
                 {
                     x: 65,
                     y: 85,
                     title: "Evidence #5: Dead on Arrival",
-                    description: "48 days from launch to death. Approximately 500 units sold in the first week. Microsoft had already pivoted to Windows Phone 7—Kin was an orphan before it shipped. The team knew. Verizon knew. Everyone knew except the customers who bought one."
+                    description: "48 days from launch to death. Approximately 500 units sold in the first week. Microsoft had already pivoted to Windows Phone 7. Kin was an orphan before it shipped. The team knew. Verizon knew. Everyone knew except the customers who bought one."
                 }
             ],
             failureTags: ["No App Ecosystem", "Identity Crisis", "Wrong Price Point", "Obsolete Hardware", "Platform Orphan"],
@@ -140,7 +142,7 @@ const scenarioData = {
                 "Data Plan": "$30/month (smartphone tier)",
                 "Apps Available": "0 (zero)"
             },
-            story: "The Kin was Microsoft's billion-dollar bet that social could beat apps. It couldn't. Born from Project Pink—a skunkworks effort to build a 'phone for the social generation'—Kin arrived two years too late with a philosophy three years too early. It had no apps because Microsoft believed the future was the cloud. It had a keyboard because someone thought teens still wanted one. It cost smartphone money for feature phone capabilities. The math never worked. The vision never connected. 48 days after launch, Microsoft killed it. The lesson was expensive but clear: in mobile, you can be different or you can be cheap. Being neither is fatal."
+            story: "The Kin was Microsoft's billion-dollar bet that social could beat apps. It couldn't. Born from Project Pink, a skunkworks effort to build a 'phone for the social generation'. Kin arrived two years too late with a philosophy three years too early. It had no apps because Microsoft believed the future was the cloud. It had a keyboard because someone thought teens still wanted one. It cost smartphone money for feature phone capabilities. The math never worked. The vision never connected. 48 days after launch, Microsoft killed it. The lesson was expensive but clear: in mobile, you can be different or you can be cheap. Being neither is fatal."
         },
 
 // ========================================
@@ -199,7 +201,7 @@ const scenarioData = {
     forensicTitle: "The Trojan Horse",
     status: "DISCONTINUED",
     casualties: "BlackBerry's Enterprise Monopoly",
-    description: "The first iPhone for the masses. It added 3G speeds, GPS, and most importantly, the App Store—creating a billion-dollar economy out of thin air.",
+    description: "The first iPhone for the masses. It added 3G speeds, GPS, and most importantly, the App Store, creating a billion-dollar economy out of thin air.",
     model3D: '<img src="assets/images/iphone_3g.jpg" alt="iPhone 3G">',
     timelineProgress: 100,
     timelineMarkers: [
@@ -287,7 +289,7 @@ const scenarioData = {
     forensicTitle: "The Polished Brick",
     status: "DISCONTINUED",
     casualties: "Pocket Space",
-    description: "The ultimate power-user device before the iPhone changed the rules. With a tilting screen, full keyboard, GPS, and 3G, it could do everything—except fit comfortably in your pocket.",
+    description: "The ultimate power-user device before the iPhone changed the rules. With a tilting screen, full keyboard, GPS, and 3G, it could do everything, except fit comfortably in your pocket.",
     model3D: '<img src="assets/images/Htc_tytn_ii.jpg" alt="HTC TyTN II (Kaiser)">',
     timelineProgress: 100,
     timelineMarkers: [
@@ -418,7 +420,7 @@ const scenarioData = {
     forensicTitle: "The Last Emperor",
     status: "OBSOLETE",
     casualties: "Nokia's complacency",
-    description: "The peak of the 'old world.' A dual-sliding multimedia computer that could do absolutely everything—except offer a fluid user experience.",
+    description: "The peak of the 'old world.' A dual-sliding multimedia computer that could do absolutely everything, except offer a fluid user experience.",
     model3D: '<img src="assets/images/Nokia_N95.png" alt="Nokia N95">',
     timelineProgress: 100,
     timelineMarkers: [
@@ -447,7 +449,7 @@ const scenarioData = {
         "Network": "3.5G (HSDPA)",
         "Price": "€550 (Approx $730)"
     },
-    story: "The N95 was the best phone in the world on paper. It had GPS, Wi-Fi, 3G, and a killer camera when the iPhone had none of those. But it ran Symbian S60—a clunky, menu-heavy OS designed for buttons, not humans. It represents the fatal error of the incumbent: believing that features matter more than feelings."
+    story: "The N95 was the best phone in the world on paper. It had GPS, Wi-Fi, 3G, and a killer camera when the iPhone had none of those. But it ran Symbian S60, a clunky, menu-heavy OS designed for buttons, not humans. It represents the fatal error of the incumbent: believing that features matter more than feelings."
 },
 
 "artifact-nokia-n9": {
@@ -489,7 +491,7 @@ const scenarioData = {
         "Processor": "1GHz Cortex A8",
         "Units": "Limited Release"
     },
-    story: "The N9 is a tragedy. Before it even hit shelves, CEO Stephen Elop issued his famous 'Burning Platform' memo, partnering with Microsoft and effectively announcing that MeeGo was dead. People bought the N9 knowing it had no future, simply because it was that beautiful. It remains the 'ghost in the machine'—its body was reused for the Lumia 800, but its soul (MeeGo) was lost forever."
+    story: "The N9 is a tragedy. Before it even hit shelves, CEO Stephen Elop issued his famous 'Burning Platform' memo, partnering with Microsoft and effectively announcing that MeeGo was dead. People bought the N9 knowing it had no future, simply because it was that beautiful. It remains the 'ghost in the machine', its body was reused for the Lumia 800, but its soul (MeeGo) was lost forever."
 },
 
 "artifact-nokia-lumia-800": {
@@ -531,7 +533,7 @@ const scenarioData = {
         "Battery": "1450 mAh",
         "Code Name": "Sea Ray"
     },
-    story: "The Lumia 800 was 'The Real Windows Phone.' It had the best navigation (Nokia Drive) and the best design. But it launched into a vacuum. Windows Phone 7 was missing basic features, and less than a year later, Microsoft announced Windows Phone 8—which wouldn't run on the Lumia 800. Buyers were left with an expensive, beautiful paperweight."
+    story: "The Lumia 800 was 'The Real Windows Phone.' It had the best navigation (Nokia Drive) and the best design. But it launched into a vacuum. Windows Phone 7 was missing basic features, and less than a year later, Microsoft announced Windows Phone 8, which wouldn't run on the Lumia 800. Buyers were left with an expensive, beautiful paperweight."
 },
 
 
@@ -675,7 +677,7 @@ const scenarioData = {
     forensicTitle: "The Ghost Ship",
     status: "KILLED",
     casualties: "The 'Third Ecosystem'",
-    description: "The first and last flagship built for Windows 10 Mobile. It promised 'Continuum'—turning your phone into a PC—but launched with bug-riddled software and a generic plastic design.",
+    description: "The first and last flagship built for Windows 10 Mobile. It promised 'Continuum' (turning your phone into a PC) but launched with bug-riddled software and a generic plastic design.",
     model3D: '<img src="assets/images/lumia_950.jpg" alt="Nokia Lumia 950">',
     timelineProgress: 100,
     timelineMarkers: [
@@ -876,7 +878,7 @@ const scenarioData = {
         "Screen": "3.2\" HVGA",
         "Sales": "1 Million (6 months)"
     },
-    story: "The G1 wasn't pretty, but it was open. While Apple was building a walled garden, the G1 let you customize everything. It introduced the 'Notification Shade'—a feature so good that every other OS (including iOS) eventually stole it. It was the rough draft of the future."
+    story: "The G1 wasn't pretty, but it was open. While Apple was building a walled garden, the G1 let you customize everything. It introduced the 'Notification Shade', a feature so good that every other OS (including iOS) eventually stole it. It was the rough draft of the future."
 },
 
 "artifact-motorola-droid": {
@@ -1006,7 +1008,7 @@ const scenarioData = {
         "Thickness": "9.9mm",
         "Price": "$199"
     },
-    story: "The Focus proved that Samsung was the hardware king in waiting. It was the preferred device for tech journalists because the screen made the Metro UI sing. However, it was held back by the OS's immaturity—no copy/paste, no multitasking. It was a Ferrari engine inside a car with no steering wheel."
+    story: "The Focus proved that Samsung was the hardware king in waiting. It was the preferred device for tech journalists because the screen made the Metro UI sing. However, it was held back by the OS's immaturity, no copy/paste, no multitasking. It was a Ferrari engine inside a car with no steering wheel."
 },
 
 "artifact-danger-sidekick": {
@@ -1038,7 +1040,7 @@ const scenarioData = {
             x: 50,
             y: 20,
             title: "Evidence #2: The Server Crash",
-            description: "In 2009, after Microsoft acquired Danger, a server failure wiped the data of virtually every Sidekick user. Contacts, photos, notes—gone. It was the death blow for the brand."
+            description: "In 2009, after Microsoft acquired Danger, a server failure wiped the data of virtually every Sidekick user. Contacts, photos, notes, gone. It was the death blow for the brand."
         }
     ],
     failureTags: ["Proprietary OS", "Data Loss Event", "Niche Demographic"],
@@ -1090,7 +1092,7 @@ const scenarioData = {
         "Weight": "189g",
         "Successor": "None"
     },
-    story: "The 7710 proves Nokia saw the touch revolution coming—they just didn't know how to execute it. They built a media tablet and tried to force it to be a phone. Its failure spooked Nokia executives so badly that they retreated to safe, button-based phones for the next three years, leaving the door wide open for Apple."
+    story: "The 7710 proves Nokia saw the touch revolution coming, they just didn't know how to execute it. They built a media tablet and tried to force it to be a phone. Its failure spooked Nokia executives so badly that they retreated to safe, button-based phones for the next three years, leaving the door wide open for Apple."
 },
 
 "artifact-microsoft-surface-duo": {
@@ -1179,7 +1181,7 @@ const scenarioData = {
             visual: '<i class="ph ph-chart-line" style="font-size: 2rem;"></i>',
             summary: "Revolutionary interface, unproven market demand at $499 price point",
             content: `
-                <p>Apple's <a href="#" class="artifact-link" data-artifact-id="artifact-iphone-2g">iPhone</a> combines three devices: iPod, phone, internet communicator. Multi-touch interface is genuinely novel—but comes with trade-offs: <strong>no physical keyboard, no enterprise email, no 3G, no apps.</strong></p>
+                <p>Apple's <a href="#" class="artifact-link" data-artifact-id="artifact-iphone-2g">iPhone</a> combines three devices: iPod, phone, internet communicator. Multi-touch interface is genuinely novel, but comes with trade-offs: <strong>no physical keyboard, no enterprise email, no 3G, no apps.</strong></p>
 
                 <div class="info-section">
                     <i class="ph ph-cpu info-section-icon"></i>
@@ -1236,7 +1238,7 @@ const scenarioData = {
                     <i class="ph ph-target info-section-icon"></i>
                     <span class="info-section-title">Recommendation</span>
                 </div>
-                <p>Stay the course. The consumer smartphone market is <strong>margin-dilutive</strong>—ASPs are falling, carrier subsidies eat profitability. Our enterprise licensing model generates $18/device. Let Apple fight carriers for scraps.</p>
+                <p>Stay the course. The consumer smartphone market is <strong>margin-dilutive</strong>. ASPs are falling, carrier subsidies eat profitability. Our enterprise licensing model generates $18/device. Let Apple fight carriers for scraps.</p>
 
                 <p><em>Apple has historically failed outside its core: Newton, Pippin, Motorola ROKR.</em></p>
             `,
@@ -1267,7 +1269,7 @@ const scenarioData = {
                     <i class="ph ph-magnifying-glass info-section-icon"></i>
                     <span class="info-section-title">Google</span>
                 </div>
-                <p>Android rumors persist but no public announcement. HTC and Samsung are reportedly in conversations about a <a href="#" class="artifact-link" data-artifact-id="artifact-google-sooner">"Google phone"</a>. Timeline unclear—12-24 months out if real.</p>
+                <p>Android rumors persist but no public announcement. HTC and Samsung are reportedly in conversations about a <a href="#" class="artifact-link" data-artifact-id="artifact-google-sooner">"Google phone"</a>. Timeline unclear, 12-24 months out if real.</p>
 
                 <div class="info-section">
                     <i class="ph ph-pulse info-section-icon"></i>
@@ -1347,7 +1349,7 @@ const scenarioData = {
                 </div>
                 <p>iPhone lacks enterprise MDM, remote wipe is limited, no on-device encryption. <strong>Yet employees sync corporate email anyway.</strong> Shadow IT is the bigger security risk.</p>
 
-                <p><span class="note-label">Note:</span> <em>Employees who can't use iPhones at work are buying them for personal use—and building app habits there.</em></p>
+                <p><span class="note-label">Note:</span> <em>Employees who can't use iPhones at work are buying them for personal use, and building app habits there.</em></p>
             `,
             source: "Gartner + Forrester Enterprise Survey",
             date: "AUG 2009",
@@ -1367,7 +1369,7 @@ const scenarioData = {
                     <i class="ph ph-calendar-x info-section-icon"></i>
                     <span class="info-section-title">Schedule Status</span>
                 </div>
-                <p>Project Photon (WM7) is <strong>18+ months from ship.</strong> Touch UI framework rebuild required. Cannot ship incremental update—architecture fundamentally incompatible with modern touch paradigm.</p>
+                <p>Project Photon (WM7) is <strong>18+ months from ship.</strong> Touch UI framework rebuild required. Cannot ship incremental update, architecture fundamentally incompatible with modern touch paradigm.</p>
 
                 <div class="info-section">
                     <i class="ph ph-git-fork info-section-icon"></i>
@@ -1421,7 +1423,7 @@ const scenarioData = {
                     <i class="ph ph-lightbulb info-section-icon"></i>
                     <span class="info-section-title">Strategic Read</span>
                 </div>
-                <p>Google's play isn't mobile—it's Microsoft's entire enterprise stack. Android is the wedge. If they win mobile, Google Apps follows.</p>
+                <p>Google's play isn't mobile, it's Microsoft's entire enterprise stack. Android is the wedge. If they win mobile, Google Apps follows.</p>
 
                 <p><span class="note-label">Note:</span> <em>Android is free. We charge $15-25/device. Math problem is obvious.</em></p>
             `,
@@ -1459,7 +1461,7 @@ const scenarioData = {
                     <i class="ph ph-device-mobile info-section-icon"></i>
                     <span class="info-section-title">Hardware Status</span>
                 </div>
-                <p>Sharp manufacturing two prototypes: "Turtle" (slider) and "Pure" (candy bar). Both behind Apple/Android hardware by 18+ months. No capacitive touch—still using resistive screens.</p>
+                <p>Sharp manufacturing two prototypes: "Turtle" (slider) and "Pure" (candy bar). Both behind Apple/Android hardware by 18+ months. No capacitive touch, still using resistive screens.</p>
 
                 <p><span class="note-label">Risk:</span> <em>If we ship Pink in current state, reviews will be devastating. If we delay further, market opportunity closes.</em></p>
             `,
@@ -1486,7 +1488,7 @@ const scenarioData = {
                     <i class="ph ph-storefront info-section-icon"></i>
                     <span class="info-section-title">App Market Growth</span>
                 </div>
-                <p>Android Market: 70,000+ apps, growing 10,000/month. Developer interest accelerating. <strong>Java-based development attracts enterprise developers</strong>—ironic given Google's consumer focus.</p>
+                <p>Android Market: 70,000+ apps, growing 10,000/month. Developer interest accelerating. <strong>Java-based development attracts enterprise developers</strong>, ironic given Google's consumer focus.</p>
 
                 <div class="info-section">
                     <i class="ph ph-chart-line info-section-icon"></i>
@@ -1546,7 +1548,7 @@ const scenarioData = {
             type: "Internal Memo",
             title: "Nokia Integration Assessment",
             visual: '<i class="ph ph-buildings" style="font-size: 2rem;"></i>',
-            summary: "32 months post-acquisition, integration severely behind schedule, two platforms competing internally",
+            summary: "24 months post-acquisition, integration severely behind schedule, two platforms competing internally",
             content: `
                 <p class="memo-header"><strong>FROM:</strong> Integration Task Force</p>
                 <p class="memo-header"><strong>RE:</strong> Nokia-Microsoft Integration Status (CONFIDENTIAL)</p>
@@ -1555,7 +1557,7 @@ const scenarioData = {
                     <i class="ph ph-warning-circle info-section-icon"></i>
                     <span class="info-section-title">Integration Status</span>
                 </div>
-                <p>32 months post-close. Integration is <strong>18 months behind schedule.</strong> Original plan called for unified platform by Q3 2008. We're now targeting Q4 2010 at earliest.</p>
+                <p>24 months post-close. Integration is <strong>18 months behind schedule.</strong> Original plan called for unified platform by Q3 2008. We're now targeting Q4 2010 at earliest.</p>
 
                 <div class="info-section">
                     <i class="ph ph-git-fork info-section-icon"></i>
@@ -1600,7 +1602,7 @@ const scenarioData = {
                     <i class="ph ph-code info-section-icon"></i>
                     <span class="info-section-title">Developer Sentiment</span>
                 </div>
-                <p>Developer interest collapsing. Ovi Store has 15,000 apps vs. App Store's 200,000. "Symbian is a maintenance platform"—Stack Overflow developer survey.</p>
+                <p>Developer interest collapsing. Ovi Store has 15,000 apps vs. App Store's 200,000. "Symbian is a maintenance platform". Stack Overflow developer survey.</p>
 
                 <p><span class="note-label">Note:</span> <em>Symbian's volume masks declining relevance. High-value customers and developers are leaving.</em></p>
             `,
@@ -1637,7 +1639,7 @@ const scenarioData = {
                     <i class="ph ph-lightbulb info-section-icon"></i>
                     <span class="info-section-title">Strategic Implication</span>
                 </div>
-                <p>Maintaining two platforms means losing to Android twice—once in premium markets, once in emerging markets. The math favors consolidation.</p>
+                <p>Maintaining two platforms means losing to Android twice, once in premium markets, once in emerging markets. The math favors consolidation.</p>
 
                 <p><span class="note-label">Note:</span> <em>Google is outspending us on developer relations 3:1. Every month we delay unification, the app gap widens.</em></p>
             `,
@@ -1656,13 +1658,13 @@ const scenarioData = {
             visual: '<i class="ph ph-chart-line" style="font-size: 2rem;"></i>',
             summary: "32 months of waiting has cost Microsoft half its market share",
             content: `
-                <p>Since January 2007, the smartphone market has been <strong>completely restructured.</strong> Your wait-and-see strategy has produced clarity—but at a cost.</p>
+                <p>Since January 2007, the smartphone market has been <strong>completely restructured.</strong> Your wait-and-see strategy has produced clarity, but at a cost.</p>
 
                 <div class="info-section">
                     <i class="ph ph-chart-bar info-section-icon"></i>
                     <span class="info-section-title">Market Share Reality</span>
                 </div>
-                <p>Windows Mobile: <strong>42% (2007) → 20% (2009).</strong> Lost more than half your share while "waiting for clarity."</p>
+                <p>Windows Mobile: <strong>42% (2007) → 32% (2009).</strong> Lost 10 points while "waiting for clarity." iPhone and Android growing fast.</p>
 
                 <div class="info-section">
                     <i class="ph ph-trend-up info-section-icon"></i>
@@ -1806,7 +1808,7 @@ const scenarioData = {
             type: "Internal Memo",
             title: "Windows Phone 7 Launch Assessment",
             visual: '<i class="ph ph-device-mobile" style="font-size: 2rem;"></i>',
-            summary: "WP7 launched October 2010 to mixed results—praised for design, criticized for missing features",
+            summary: "WP7 launched October 2010 to mixed results, praised for design, criticized for missing features",
             content: `
                 <p class="memo-header"><strong>FROM:</strong> Andy Lees, Mobile Communications</p>
                 <p class="memo-header"><strong>RE:</strong> WP7 90-Day Post-Launch Review</p>
@@ -1819,7 +1821,7 @@ const scenarioData = {
                     <li>Metro UI praised as "refreshingly different"</li>
                     <li>Live Tiles concept resonating with users</li>
                     <li>Integration with Xbox and Zune services</li>
-                    <li><strong>NPS of 8.2</strong>—highest of any Microsoft consumer product</li>
+                    <li><strong>NPS of 8.2</strong>, highest of any Microsoft consumer product</li>
                 </ul>
 
                 <div class="info-section">
@@ -1924,7 +1926,7 @@ const scenarioData = {
                 </div>
                 <p>Mobile Device Management spending: <strong>$1.2B in 2010, projected $5.8B by 2015.</strong> iOS and Android MDM solutions maturing rapidly. Our security advantage is eroding.</p>
 
-                <p><span class="note-label">Note:</span> <em>Enterprise is no longer a fortress—it's a market segment that uses consumer devices.</em></p>
+                <p><span class="note-label">Note:</span> <em>Enterprise is no longer a fortress, it's a market segment that uses consumer devices.</em></p>
             `,
             source: "Forrester + Gartner Enterprise Survey",
             date: "JAN 2011",
@@ -1961,7 +1963,7 @@ const scenarioData = {
                     <i class="ph ph-clock info-section-icon"></i>
                     <span class="info-section-title">Development Investment</span>
                 </div>
-                <p>"We'll port to Windows Phone when they have 15% market share." —Common developer response. <strong>Chicken-and-egg problem: no apps means no users means no apps.</strong></p>
+                <p>"We'll port to Windows Phone when they have 15% market share." --Common developer response. <strong>Chicken-and-egg problem: no apps means no users means no apps.</strong></p>
 
                 <div class="info-section">
                     <i class="ph ph-lightbulb info-section-icon"></i>
@@ -2056,9 +2058,9 @@ const scenarioData = {
                     <i class="ph ph-users info-section-icon"></i>
                     <span class="info-section-title">Developer Feedback</span>
                 </div>
-                <p>"We'll build for Windows Phone when it has 10% market share." But you can't get 10% without the apps that drive adoption. <strong>Classic chicken-and-egg.</strong></p>
+                <p>"We'll build for Windows Phone when it has 15% market share." But you can't get 10% without the apps that drive adoption. <strong>Classic chicken-and-egg.</strong></p>
 
-                <p><span class="note-label">Assessment:</span> <em>The app gap may be insurmountable without billions in developer subsidies—and even then, timing lag kills user experience.</em></p>
+                <p><span class="note-label">Assessment:</span> <em>The app gap may be insurmountable without billions in developer subsidies, and even then, timing lag kills user experience.</em></p>
             `,
             source: "App Store Data + Developer Surveys",
             date: "JAN 2013",
@@ -2098,7 +2100,7 @@ const scenarioData = {
                     <i class="ph ph-question info-section-icon"></i>
                     <span class="info-section-title">Strategic Question</span>
                 </div>
-                <p>Is it better to continue subsidizing Nokia, or acquire them outright? At $10B market cap, full acquisition is financially possible—but absorbing 30,000 employees and Finnish operations adds complexity.</p>
+                <p>Is it better to continue subsidizing Nokia, or acquire them outright? At $10B market cap, full acquisition is financially possible, but absorbing 30,000 employees and Finnish operations adds complexity.</p>
 
                 <p><span class="note-label">Note:</span> <em>Nokia's board increasingly desperate. They may accept terms they would have rejected 2 years ago.</em></p>
             `,
@@ -2112,7 +2114,7 @@ const scenarioData = {
             type: "Internal Strategy",
             title: "Surface Tablet Lessons",
             visual: '<i class="ph ph-device-tablet" style="font-size: 2rem;"></i>',
-            summary: "Surface RT struggled despite quality—ecosystem matters more than hardware",
+            summary: "Surface RT struggled despite quality, ecosystem matters more than hardware",
             content: `
                 <div class="info-section">
                     <i class="ph ph-info info-section-icon"></i>
@@ -2227,7 +2229,7 @@ const scenarioData = {
                     <i class="ph ph-trend-up info-section-icon"></i>
                     <span class="info-section-title">Industry Trajectory</span>
                 </div>
-                <p>Total smartphone market: <strong>1B units/year</strong> and growing. Even at 3% share, Windows Phone is 30M units—but growth is coming from markets with lowest margins. Premium segment locked by iPhone; volume segment owned by cheap Android.</p>
+                <p>Total smartphone market: <strong>1B units/year</strong> and growing. Even at 8% share, Windows Phone is 80M units, but growth is coming from markets with lowest margins. Premium segment locked by iPhone; volume segment owned by cheap Android.</p>
 
                 <p><span class="note-label">Bottom Line:</span> <em>Market growing, but our position is not. We're running to stay in place.</em></p>
             `,
@@ -2288,7 +2290,7 @@ const scenarioData = {
             type: "Internal Assessment",
             title: "Nokia Integration Status",
             visual: '<i class="ph ph-buildings" style="font-size: 2rem;"></i>',
-            summary: "Nokia acquisition 18 months in—integration challenging, layoffs ongoing, culture clash persists",
+            summary: "Nokia acquisition 18 months in, integration challenging, layoffs ongoing, culture clash persists",
             content: `
                 <div class="info-section">
                     <i class="ph ph-chart-bar info-section-icon"></i>
@@ -2331,7 +2333,7 @@ const scenarioData = {
             type: "Market Analysis",
             title: "Mobile Market 2015",
             visual: '<i class="ph ph-chart-pie" style="font-size: 2rem;"></i>',
-            summary: "iOS/Android now 97% combined—effectively a duopoly with no realistic path to disruption",
+            summary: "iOS/Android now 97% combined, effectively a duopoly with no realistic path to disruption",
             content: `
                 <p><em style="color: var(--text-tertiary); font-size: 0.85rem;">Note: This report reflects real-world baseline data. Your strategic decisions may have altered these outcomes.</em></p>
 
@@ -2376,7 +2378,7 @@ const scenarioData = {
             type: "Financial Analysis",
             title: "Impending Write-Down",
             visual: '<i class="ph ph-currency-dollar" style="font-size: 2rem;"></i>',
-            summary: "Nokia acquisition goodwill impairment expected—$7.6B write-down likely within 12 months",
+            summary: "Nokia acquisition goodwill impairment expected, $7.6B write-down likely within 12 months",
             content: `
                 <div class="info-section">
                     <i class="ph ph-warning-circle info-section-icon"></i>
@@ -2399,7 +2401,7 @@ const scenarioData = {
                     <i class="ph ph-chart-line info-section-icon"></i>
                     <span class="info-section-title">Market Implications</span>
                 </div>
-                <p>Write-down is accounting, not cash—but signals:</p>
+                <p>Write-down is accounting, not cash, but signals:</p>
                 <ul>
                     <li>Public admission acquisition failed expectations</li>
                     <li>Pressure to show path forward</li>
@@ -2436,6 +2438,7 @@ const scenarioData = {
             date: "JAN 2007",
             timeMarker: "JAN 2007",
             title: "The iPhone Moment",
+            storyBg: 'assets/images/story-bg-d1.png',
             storyImage: '<img src="assets/images/iphone-2007.jpg" alt="Steve Jobs unveiling the iPhone at Macworld 2007" style="max-width: 100%; border-radius: 8px;" />',
             storyText: `Your phone buzzes at 5:58 AM Pacific. It's Kevin Turner, your COO. "Steve, you watching Macworld?"
 
@@ -2449,7 +2452,7 @@ But you've seen this movie before. Everyone laughed at the iPod too. And you've 
 
 Windows Mobile owns 42% of the smartphone market. You've got partnerships with every carrier, every major OEM. Your enterprise relationships are unassailable.
 
-The question isn't whether the iPhone is a threat. The question is what kind of threat—and what you're going to do about it.`,
+The question isn't whether the iPhone is a threat. The question is what kind of threat, and what you're going to do about it.`,
             objective: "How should Microsoft respond to Apple's entry into mobile?",
             availableInfo: ["d1-info-market", "d1-info-internal", "d1-info-competitor"],
 
@@ -2463,7 +2466,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
 
             // ── NEW: Player position card ──
             playerPosition: {
-                label: "Your Position — Microsoft",
+                label: "Your Position: Microsoft",
                 stats: [
                     { label: "Mobile OS Share", value: "42%", color: "green" },
                     { label: "Revenue", value: "$800M/yr", color: "green" },
@@ -2495,8 +2498,8 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                         date: "JAN 2007",
                         reliability: "HIGH",
                         keyPoints: [
-                            "iPhone has no keyboard, no 3G, no enterprise email — priced at 2× market average",
-                            "Smartphone market growing 35% YoY — 80M units and accelerating",
+                            "iPhone has no keyboard, no 3G, no enterprise email — priced at 2× market average.",
+                            "Smartphone market growing 35% YoY — 80M units and accelerating.",
                             "Every analyst says Apple caps at 1%. But every analyst said the iPod was a toy too."
                         ],
                         heroStat: {
@@ -2507,7 +2510,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                         sections: [
                             {
                                 heading: "The Device",
-                                content: "Apple's iPhone combines iPod, phone, and internet communicator. Multi-touch is genuinely novel — but no physical keyboard, no enterprise email, no 3G, no apps.",
+                                content: "Apple's iPhone combines iPod, phone, and internet communicator. Multi-touch is genuinely novel - but no physical keyboard, no enterprise email, no 3G, no apps.",
                                 artifactId: "artifact-iphone-2g"
                             },
                             {
@@ -2539,7 +2542,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                     id: "d1-intel-internal-memo",
                     type: "memo",
                     thumb: {
-                        icon: "ph-clipboard-text",
+                        icon: "ph-envelope-simple",
                         label: "INTERNAL MEMO",
                         title: "Strategic Position",
                         subtitle: "From: Pieter Knook, SVP",
@@ -2555,7 +2558,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                         reliability: "MEDIUM",
                         source: "Microsoft Internal",
                         keyPoints: [
-                            "Windows Mobile owns 42% share — 89% of Fortune 500 standardized on it",
+                            "Windows Mobile owns 42% share - 89% of Fortune 500 standardized on it",
                             "iPhone has zero enterprise features: no Exchange, no keyboard, no MDM",
                             "Recommendation: don't chase consumers. Protect the $18/device licensing model."
                         ],
@@ -2576,7 +2579,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                             },
                             {
                                 heading: "Recommendation",
-                                content: "Stay the course. The consumer smartphone market is margin-dilutive — ASPs are falling, carrier subsidies eat profitability. Our enterprise licensing model generates $18/device. Let Apple fight carriers for scraps.",
+                                content: "Stay the course. The consumer smartphone market is margin-dilutive - ASPs are falling, carrier subsidies eat profitability. Our enterprise licensing model generates $18/device. Let Apple fight carriers for scraps.",
                                 isHighlighted: true
                             }
                         ],
@@ -2590,6 +2593,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                     type: "entity",
                     thumb: {
                         icon: "ph-phone",
+                        headerImage: "assets/images/nokia-mwc.webp",
                         label: "COMPETITOR",
                         title: "NOKIA",
                         subtitle: "40% global share",
@@ -2601,6 +2605,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                     popup: {
                         name: "NOKIA",
                         icon: "ph-phone",
+                        headerImage: "assets/images/nokia-mwc.webp",
                         category: "Incumbent",
                         gradient: "linear-gradient(135deg, #0f1f1a 0%, #1a2f25 50%, #0f1f1a 100%)",
                         front: {
@@ -2617,7 +2622,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                             reliability: "MEDIUM"
                         },
                         back: {
-                            keySignal: "Apple will only appeal to a niche market — but sources say Nokia has accelerated internal touch-screen projects and is evaluating Linux-based software.",
+                            keySignal: "Apple will only appeal to a niche market - but sources say Nokia has accelerated internal touch-screen projects and is evaluating Linux-based software.",
                             details: [
                                 { label: "CEO stance", value: "Publicly dismissive" },
                                 { label: "Symbian platform age", value: "Aging fast", color: "gold" },
@@ -2625,7 +2630,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                                 { label: "Manufacturing scale", value: "Unmatched", color: "green" },
                                 { label: "US presence", value: "Weak", color: "red" }
                             ],
-                            analysisNote: "Nokia has the scale but their software is a decade behind. They know it — that's why they're scrambling.",
+                            analysisNote: "Nokia has the scale but their software is a decade behind. They know it - that's why they're scrambling.",
                             artifactId: "artifact-nokia-7710"
                         }
                     }
@@ -2637,6 +2642,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                     type: "entity",
                     thumb: {
                         icon: "ph-lock",
+                        headerImage: "assets/images/blackberry-hq.jpg",
                         label: "COMPETITOR",
                         title: "BLACKBERRY",
                         subtitle: "Enterprise dominant",
@@ -2648,6 +2654,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                     popup: {
                         name: "BLACKBERRY",
                         icon: "ph-lock",
+                        headerImage: "assets/images/blackberry-hq.jpg",
                         category: "Incumbent",
                         gradient: "linear-gradient(135deg, #12121e 0%, #1a1a2a 50%, #12121e 100%)",
                         front: {
@@ -2684,6 +2691,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                     secondary: true,
                     thumb: {
                         icon: "ph-magnifying-glass",
+                        headerImage: "assets/images/google-android-hq.webp",
                         label: "EMERGING",
                         title: "GOOGLE",
                         subtitle: "Android rumors · 12-24mo",
@@ -2695,6 +2703,7 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                     popup: {
                         name: "GOOGLE",
                         icon: "ph-magnifying-glass",
+                        headerImage: "assets/images/google-android-hq.webp",
                         category: "Emerging",
                         gradient: "linear-gradient(135deg, #121a18 0%, #1a2822 50%, #121a18 100%)",
                         front: {
@@ -2711,14 +2720,14 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                             reliability: "MEDIUM"
                         },
                         back: {
-                            keySignal: "HTC and Samsung reportedly in conversations about a 'Google phone.' Our OEM partners are not panicking — yet.",
+                            keySignal: "HTC and Samsung reportedly in conversations about a 'Google phone.' Our OEM partners are not panicking - yet.",
                             details: [
                                 { label: "OS pricing model", value: "Likely free", color: "red" },
                                 { label: "Open source?", value: "Likely yes", color: "red" },
                                 { label: "Our OEM partners", value: "In talks with Google", color: "gold" },
                                 { label: "Andy Rubin background", value: "Ex-Danger/Sidekick" }
                             ],
-                            analysisNote: "If Google ships a free OS, our licensing model breaks overnight. This is the real threat — not Apple.",
+                            analysisNote: "If Google ships a free OS, our licensing model breaks overnight. This is the real threat - not Apple.",
                             artifactId: "artifact-google-sooner"
                         }
                     }
@@ -2740,13 +2749,15 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                         d2Branch: "d2-a"
                     },
 
+                    pathMetrics: { marketShare: 34, nokiaShare: 44, appleShare: 8, googleShare: 3, bbShare: 11 },
+
                     consequences: {
                         // ── NEW: Stepped consequence moments ──
                         moments: [
                             {
                                 type: "verdict",
                                 headline: "The board loves your discipline.",
-                                subline: "\"Ballmer showing strategic restraint while competitors chase consumer fads.\" — Goldman Sachs",
+                                subline: "\"Ballmer showing strategic restraint while competitors chase consumer fads.\" -- Goldman Sachs",
                                 sentiment: "positive"
                             },
                             {
@@ -2772,25 +2783,21 @@ The question isn't whether the iPhone is a threat. The question is what kind of 
                                 icon: "ph-trend-down",
                                 headline: "The fortress holds. But the world outside is changing.",
                                 body: "Gartner predicts iPhone will capture 20% of the market by 2010. Your team calls it wildly optimistic. But Apple's stock is up 85% since January. Yours is flat. The developer events are half-empty.",
-                                closing: "Enterprise customers are safe — for now. But their employees are bringing iPhones to work."
+                                closing: "Enterprise customers are safe - for now. But their employees are bringing iPhones to work."
                             }
                         ],
                         immediate: {
                             date: "APR 2007",
                             cash: -0.2,
                             marketCap: 2,
-                            marketShare: 0,
+                            marketShare: -2,
                             morale: "high",
                             mobileRevenue: 0.1,  // Enterprise renewals boost licensing revenue
                             mobileCosts: 0,      // Efficient, focused spending
-                            appleShare: 3,
-                            googleShare: 0,
-                            nokiaShare: -2,
-                            bbShare: 2,
                             unlockedArtifacts: ["artifact-wm6", "artifact-htc-tytn2"],
-                            narrative: `The board loves it. "Finally, discipline," says Bill. Your mobile team gets the message: enterprise first, consumer never. The iPhone launches in June—lines around the block, breathless coverage. Your sales team calls it "the Jesus Phone" mockingly.
+                            narrative: `The board loves it. "Finally, discipline," says Bill. Your mobile team gets the message: enterprise first, consumer never. The iPhone launches in June, lines around the block, breathless coverage. Your sales team calls it "the Jesus Phone" mockingly.
 
-Windows Mobile 6.1 ships with push email that actually works. Enterprise customers sign three-year renewals. CIOs send thank-you notes. Your market share holds steady at 42%. The strategy is working exactly as planned.
+Windows Mobile 6.1 ships with push email that actually works. Enterprise customers sign three-year renewals. CIOs send thank-you notes. Your market share slips slightly to 40% as consumer buyers drift to iPhone, but the enterprise base holds. The strategy is working as planned.
 
 Goldman Sachs upgrades Microsoft to "Buy." Their note reads: "Ballmer showing strategic discipline while competitors chase consumer fads." Your stock ticks up 3%. The board is pleased.`
                         },
@@ -2798,13 +2805,13 @@ Goldman Sachs upgrades Microsoft to "Buy." Their note reads: "Ballmer showing st
                             date: "SEP 2007",
                             cash: -0.1,
                             marketCap: -3,
-                            marketShare: -14,
+                            marketShare: -6,
                             morale: "neutral",
                             mobileRevenue: -0.05,  // Some consumer licensing lost
                             mobileCosts: 0.05,     // Increased dev costs to catch up
                             narrative: `AT&T reports 1.4 million iPhones sold in Q3. The number that catches your eye: 40% of buyers switched from Windows Mobile devices. "They're not enterprise customers," your team insists. But you're not so sure anymore.
 
-Your enterprise accounts are holding—for now. But you notice something else: developers are building apps for iPhone. Thousands of them. Games, utilities, productivity tools. Nobody's building apps for Windows Mobile anymore. The developer events are half-empty.
+Your enterprise accounts are holding, for now. But you notice something else: developers are building apps for iPhone. Thousands of them. Games, utilities, productivity tools. Nobody's building apps for Windows Mobile anymore. The developer events are half-empty.
 
 Gartner publishes their smartphone forecast. They predict iPhone will capture 20% of the market by 2010. Your team calls the report "wildly optimistic." But you notice Apple's stock is up 85% since January. Yours is flat.`
                         }
@@ -2824,6 +2831,8 @@ Gartner publishes their smartphone forecast. They predict iPhone will capture 20
                         d2Branch: "d2-b",
                         kinNarrativeActive: true
                     },
+
+                    pathMetrics: { marketShare: 34, nokiaShare: 44, appleShare: 8, googleShare: 2, bbShare: 12 },
 
                     consequences: {
                         moments: [
@@ -2867,14 +2876,10 @@ Gartner publishes their smartphone forecast. They predict iPhone will capture 20
                             morale: "neutral",
                             mobileRevenue: 0,        // No immediate revenue impact
                             mobileCosts: 0.3,        // Project Pink R&D costs
-                            appleShare: 3,
-                            googleShare: 0,
-                            nokiaShare: -2,
-                            bbShare: 2,
                             unlockedArtifacts: ["artifact-htc-touch-diamond"],
-                            narrative: `The board is skeptical. "We're chasing Apple now?" CFO Chris Liddell extracts a promise: show traction in 12 months or the project gets reviewed. You greenlight "Project Pink"—a consumer phone initiative led by J Allard, the Xbox visionary.
+                            narrative: `The board is skeptical. "We're chasing Apple now?" CFO Chris Liddell extracts a promise: show traction in 12 months or the project gets reviewed. You greenlight "Project Pink", a consumer phone initiative led by J Allard, the Xbox visionary.
 
-Your enterprise team is furious about the split focus. "We're winning in enterprise," they argue. "Why dilute?" But you've seen Jobs' demo. That's not an enterprise device—it's the future of personal computing. HTC wants $150M more for a "hero device" to compete.
+Your enterprise team is furious about the split focus. "We're winning in enterprise," they argue. "Why dilute?" But you've seen Jobs' demo. That's not an enterprise device, it's the future of personal computing. HTC wants $150M more for a "hero device" to compete.
 
 The press catches wind of Project Pink. "Microsoft finally takes iPhone seriously," writes Engadget. Your stock dips 2% on concerns about spending. The clock starts.`
                         },
@@ -2882,13 +2887,13 @@ The press catches wind of Project Pink. "Microsoft finally takes iPhone seriousl
                             date: "SEP 2009",
                             cash: -0.5,
                             marketCap: -2,
-                            marketShare: -20,
+                            marketShare: -8,
                             morale: "low",
                             mobileRevenue: -0.2,     // Lost licensing as partners hedge
                             mobileCosts: 0.4,        // Escalating dev and marketing costs
                             narrative: `Project Pink is behind schedule. The industrial design team and the software team can't agree on anything. J Allard wants revolutionary; your mobile veterans want evolutionary. Meanwhile, the iPhone SDK launches to 100,000 developer downloads in four days.
 
-Your hardware partners are hedging. HTC is quietly meeting with Google about something called "Android." Samsung's mobile chief cancels your quarterly dinner. Your consumer marketing tested poorly—focus groups say "Microsoft phone" sounds like "work phone." Nobody wants that.
+Your hardware partners are hedging. HTC is quietly meeting with Google about something called "Android." Samsung's mobile chief cancels your quarterly dinner. Your consumer marketing tested poorly, focus groups say "Microsoft phone" sounds like "work phone." Nobody wants that.
 
 Enterprise customers are asking why you're distracted. "We signed up for focus," says the Citibank CIO. You're spending on two fronts and winning on neither. The board wants a progress report.`
                         }
@@ -2908,12 +2913,14 @@ Enterprise customers are asking why you're distracted. "We signed up for focus,"
                         d2Branch: "d2-c"
                     },
 
+                    pathMetrics: { marketShare: 75, nokiaShare: 0, appleShare: 8, googleShare: 3, bbShare: 11 },
+
                     consequences: {
                         moments: [
                             {
                                 type: "verdict",
                                 headline: "Nokia says no. You buy them anyway.",
-                                subline: "\"You bought a house. The family still lives in it.\" — Note left on the conference table",
+                                subline: "\"You bought a house. The family still lives in it.\" -- Note left on the conference table",
                                 sentiment: "negative"
                             },
                             {
@@ -2950,14 +2957,10 @@ Enterprise customers are asking why you're distracted. "We signed up for focus,"
                             morale: "neutral",
                             mobileRevenue: 0,        // No deal, no impact
                             mobileCosts: 0.1,        // M&A advisory fees
-                            appleShare: 3,
-                            googleShare: 0,
-                            nokiaShare: -2,
-                            bbShare: 2,
                             unlockedArtifacts: ["artifact-nokia-n95"],
                             narrative: `You fly to Helsinki in secret. Nokia CEO Olli-Pekka Kallasvuo listens politely, then laughs. "We sell more phones in a week than Apple will sell all year. Why would we need you?" He slides a chart across the table: Nokia has 40% global market share. Apple has 0%.
 
-The Finnish press gets wind of the meeting within 48 hours. "Microsoft desperate, Nokia rebuffs," reads the headline. Your stock drops 6% on "strategic confusion." Nokia's board isn't even convening to discuss—they see no reason to.
+The Finnish press gets wind of the meeting within 48 hours. "Microsoft desperate, Nokia rebuffs," reads the headline. Your stock drops 6% on "strategic confusion." Nokia's board isn't even convening to discuss, they see no reason to.
 
 Wall Street is confused. "Is Ballmer panicking?" asks a CNBC anchor. Your M&A team is embarrassed. HTC's CEO calls to ask if you're "shopping around." The conversation doesn't go well.
 
@@ -2965,19 +2968,20 @@ But on the flight back to Redmond, Ballmer doesn't look embarrassed. He looks de
                         },
                         delayed: {
                             date: "SEP 2007",
-                            cash: -25,
+                            cash: -34,               // $54B total: ~$34B cash + $20B debt/stock (drains war chest)
+                            acquisitionCost: 54,     // Full $54B acquisition — tracked in cumulativePL
                             marketCap: +5,
-                            marketShare: +25,
+                            marketShare: +10,
                             morale: "low",
-                            mobileRevenue: 3.0,      // Nokia's massive phone revenue added
-                            mobileCosts: 2.5,         // Nokia's operations + integration + hostile premium
-                            narrative: `Three months of quiet stock accumulation. Microsoft's agents buy Nokia shares through shell entities in Luxembourg, Dublin, and Singapore. By June, you control 8.3% of Nokia—the single largest stake.
+                            mobileRevenue: 1.5,      // Nokia's smartphone revenue (not feature phone)
+                            mobileCosts: 4.9,         // Nokia smartphone ops ($1.2B) + acquisition amortization (~$3.7B/yr over ~15yr)
+                            narrative: `Three months of quiet stock accumulation. Microsoft's agents buy Nokia shares through shell entities in Luxembourg, Dublin, and Singapore. By June, you control 8.3% of Nokia, the single largest stake.
 
 Then the hammer drops. On a Monday morning in July, Microsoft files a hostile tender offer with the SEC: $54 billion. A 32% premium over Nokia's market price. "A once-in-a-generation opportunity to define the future of mobile computing," reads the press release. The real message: we're not asking anymore.
 
-Helsinki erupts. Finland's president calls it "economic imperialism." Nokia employees hang black flags from the headquarters. The Finnish government threatens to invoke national security protections—Nokia builds the country's telecom infrastructure, its military radios, its emergency networks. Editorial pages across Scandinavia run headlines about "American corporate raiders."
+Helsinki erupts. Finland's president calls it "economic imperialism." Nokia employees hang black flags from the headquarters. The Finnish government threatens to invoke national security protections. Nokia builds the country's telecom infrastructure, its military radios, its emergency networks. Editorial pages across Scandinavia run headlines about "American corporate raiders."
 
-Nokia's board scrambles to mount a defense. They announce a €10 billion share buyback. They court Samsung as a white knight. They leak to the press that Microsoft's bid "dramatically undervalues" the company. None of it works. Microsoft's war chest is $34 billion in cash, and Wall Street smells blood—Nokia's share price has been flat for two years while Apple's tripled.
+Nokia's board scrambles to mount a defense. They announce a €10 billion share buyback. They court Samsung as a white knight. They leak to the press that Microsoft's bid "dramatically undervalues" the company. None of it works. Microsoft's war chest is $34 billion in cash, and Wall Street smells blood. Nokia's share price has been flat for two years while Apple's tripled.
 
 The fight lasts eleven brutal weeks. Three Nokia board members resign in protest. The Finnish trade union threatens a general strike. But the math is the math: Microsoft offers €18.50 per share when the stock was trading at €14. On September 14th, Nokia's board votes 7-2 to accept.
 
@@ -3002,6 +3006,8 @@ You own the world's largest phone manufacturer. You also own 40,000 employees wh
                         d1Choice: "wait",
                         d2Branch: "d2-d"
                     },
+
+                    pathMetrics: { marketShare: 32, nokiaShare: 42, appleShare: 9, googleShare: 5, bbShare: 12 },
 
                     consequences: {
                         moments: [
@@ -3033,7 +3039,7 @@ You own the world's largest phone manufacturer. You also own 40,000 employees wh
                                 type: "emerging",
                                 icon: "ph-lightning",
                                 headline: "Then Google drops the real bomb.",
-                                body: "Android with the Open Handset Alliance: HTC, Samsung, LG, Motorola — all your hardware partners. Android will be free and open source. The OEMs don't have to pay you licensing fees anymore.",
+                                body: "Android with the Open Handset Alliance: HTC, Samsung, LG, Motorola - all your hardware partners. Android will be free and open source. The OEMs don't have to pay you licensing fees anymore.",
                                 closing: "The market just forked and you're standing at the intersection holding a map from 2005."
                             }
                         ],
@@ -3041,10 +3047,10 @@ You own the world's largest phone manufacturer. You also own 40,000 employees wh
                             date: "APR 2007",
                             cash: 0,
                             marketCap: 1,
-                            marketShare: 0,
+                            marketShare: -3,
                             morale: "neutral",
-                            mobileRevenue: 0,        // Status quo
-                            mobileCosts: 0,          // No additional spending
+                            mobileRevenue: -0.05,    // OEM partners quietly exploring Android
+                            mobileCosts: 0.05,       // Internal assessment and competitive monitoring
                             unlockedArtifacts: [],
                             narrative: `Wall Street approves of your discipline. "Ballmer wisely avoiding panic," writes Goldman Sachs. The analyst note praises your "focus on core competencies." Your stock ticks up slightly while Apple's volatility concerns some investors.
 
@@ -3056,15 +3062,15 @@ Your Windows Mobile 6.x development continues on schedule. Enterprise customers 
                             date: "SEP 2007",
                             cash: 0,
                             marketCap: -5,
-                            marketShare: -15,
+                            marketShare: -7,
                             morale: "neutral",
                             mobileRevenue: -0.15,    // Lost licensing as partners flee to Android
                             mobileCosts: 0.1,        // Emergency response spending
-                            narrative: `Apple sells 1.4 million iPhones in Q3—then Steve Jobs announces the App Store is coming. Developers can now build and sell software directly to iPhone users. The implications hit you: Apple just created a platform, not just a phone.
+                            narrative: `Apple sells 1.4 million iPhones in Q3, then Steve Jobs announces the App Store is coming. Developers can now build and sell software directly to iPhone users. The implications hit you: Apple just created a platform, not just a phone.
 
-Then Google drops the real bomb. They announce Android with the Open Handset Alliance: HTC, Samsung, LG, Motorola—all your hardware partners. Android will be free and open source. The OEMs don't have to pay you licensing fees anymore.
+Then Google drops the real bomb. They announce Android with the Open Handset Alliance: HTC, Samsung, LG, Motorola, all your hardware partners. Android will be free and open source. The OEMs don't have to pay you licensing fees anymore.
 
-The market just forked and you're standing at the intersection holding a map from 2005. Your "wait and see" approach gave you perfect clarity—on exactly how far behind you've fallen. The board meeting is uncomfortable.`
+The market just forked and you're standing at the intersection holding a map from 2005. Your "wait and see" approach gave you perfect clarity, on exactly how far behind you've fallen. The board meeting is uncomfortable.`
                         }
                     }
                 }
@@ -3085,8 +3091,8 @@ The market just forked and you're standing at the intersection holding a map fro
                     date: "SEP 2009",
                     timeMarker: "SEP 2009",
                     title: "The BYOD Breach [Bring your own Device]",
-                    storyImage: '<i class="ph ph-buildings" style="font-size: 4rem;"></i>',
-                    storyText: `The call comes at 7:34 AM. It's the CIO of Citibank—one of your largest enterprise accounts.
+                    storyBg: 'assets/images/chapters/d2a-byod-breach.jpg',
+                    storyText: `The call comes at 7:34 AM. It's the CIO of Citibank, one of your largest enterprise accounts.
 
 "I've got a problem," he says. "My sales team showed up to the board meeting with iPhones. All of them. They're syncing to Exchange through some workaround IT doesn't control. The board loved the presentations. Now they want iPhones too."
 
@@ -3094,7 +3100,7 @@ Your enterprise fortress held for 32 months. Windows Mobile still runs 78% of Fo
 
 But the walls have cracks. BYOD requests are up 400%. Employees are buying personal iPhones and figuring out how to make them work. IT departments are playing whack-a-mole with unauthorized devices.
 
-Meanwhile, Android launched—and it's free. Eighteen OEMs have signed on. Windows Mobile 6.5 shipped last month. Engadget called it "lipstick on a pig."
+Meanwhile, Android launched, and it's free. Eighteen OEMs have signed on. Windows Mobile 6.5 shipped last month. Engadget called it "lipstick on a pig."
 
 The CIO's voice hardens. "I need to give the board an answer. Are you the future, or are you legacy?"`,
                     objective: "How do you defend the enterprise while the consumer market pulls away?",
@@ -3104,12 +3110,12 @@ The CIO's voice hardens. "I need to give the board an answer. Are you the future
                         number: 2,
                         label: "Decision Two",
                         title: "The BYOD Breach",
-                        teaser: "Your enterprise fortress held for 32 months. But employees are bringing iPhones to work — and IT can't stop them."
+                        teaser: "Your enterprise fortress held for 32 months. But employees are bringing iPhones to work - and IT can't stop them."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
-                            { label: "Mobile OS Share", value: "~28%", color: "gold" },
+                            { label: "Mobile OS Share", value: "~34%", color: "gold" },
                             { label: "Enterprise Accounts", value: "78% F500", color: "green" },
                             { label: "WM7 Status", value: "18+ mo away", color: "red" },
                             { label: "OEM Loyalty", value: "Weakening", color: "gold" },
@@ -3143,7 +3149,7 @@ The CIO's voice hardens. "I need to give the board an answer. Are you the future
                                         "Shadow IT is the bigger security risk"
                                     ] }
                                 ],
-                                footnote: "Employees who can't use iPhones at work are buying them for personal use — and building app habits there."
+                                footnote: "Employees who can't use iPhones at work are buying them for personal use - and building app habits there."
                             }
                         },
                         {
@@ -3164,7 +3170,7 @@ The CIO's voice hardens. "I need to give the board an answer. Are you the future
                                 reliability: "MEDIUM",
                                 source: "Microsoft Internal",
                                 sections: [
-                                    { heading: "Schedule Status", content: "Project Photon (WM7) is 18+ months from ship. Touch UI framework rebuild required. Cannot ship incremental update — architecture fundamentally incompatible with modern touch paradigm." },
+                                    { heading: "Schedule Status", content: "Project Photon (WM7) is 18+ months from ship. Touch UI framework rebuild required. Cannot ship incremental update - architecture fundamentally incompatible with modern touch paradigm." },
                                     { heading: "Internal Debate", type: "list", items: [
                                         "Ship WM 6.6 as bridge (6 months)",
                                         "Wait for ground-up rewrite (18 months)",
@@ -3180,6 +3186,7 @@ The CIO's voice hardens. "I need to give the board an answer. Are you the future
                             type: "entity",
                             thumb: {
                                 icon: "ph-magnifying-glass",
+                                headerImage: "assets/images/google-android-hq.webp",
                                 label: "COMPETITOR",
                                 title: "GOOGLE",
                                 subtitle: "Android 2.0 · Exchange support",
@@ -3189,6 +3196,7 @@ The CIO's voice hardens. "I need to give the board an answer. Are you the future
                             popup: {
                                 name: "GOOGLE",
                                 icon: "ph-magnifying-glass",
+                                headerImage: "assets/images/google-android-hq.webp",
                                 category: "Disruptor",
                                 gradient: "linear-gradient(135deg, #121a18 0%, #1a2822 50%, #121a18 100%)",
                                 front: {
@@ -3212,7 +3220,7 @@ The CIO's voice hardens. "I need to give the board an answer. Are you the future
                                         "HTC told Microsoft: \"Windows Mobile licensing fees don't match the value anymore\"",
                                         "Android is free. Microsoft charges $15-25/device. Math problem is obvious."
                                     ],
-                                    analysisNote: "Google's play isn't mobile — it's Microsoft's entire enterprise stack. Android is the wedge. If they win mobile, Google Apps follows."
+                                    analysisNote: "Google's play isn't mobile - it's Microsoft's entire enterprise stack. Android is the wedge. If they win mobile, Google Apps follows."
                                 }
                             }
                         }
@@ -3222,7 +3230,7 @@ The CIO's voice hardens. "I need to give the board an answer. Are you the future
                         {
                             id: "d2a-option-1",
                             title: "Double Down on Enterprise",
-                            description: "Give the CIO what he wants—the most secure, most manageable platform in the market. Accelerate MDM features, remote wipe, encryption. Make IT departments love you so much they'll fight the board.",
+                            description: "Give the CIO what he wants, the most secure, most manageable platform in the market. Accelerate MDM features, remote wipe, encryption. Make IT departments love you so much they'll fight the board.",
                             risk: "Employees buy iPhones anyway and find workarounds",
                             upside: "Lock in enterprise contracts through 2012",
                             cost: "$150M security acceleration",
@@ -3233,6 +3241,8 @@ The CIO's voice hardens. "I need to give the board an answer. Are you the future
                                 d3Archetype: "enterprise-holdout",
                                 d3Variant: "d3-e"
                             },
+
+                            pathMetrics: { marketShare: 4, nokiaShare: 38, appleShare: 15, googleShare: 7, bbShare: 20 },
 
                             consequences: {
                                 moments: [
@@ -3245,10 +3255,10 @@ The CIO's voice hardens. "I need to give the board an answer. Are you the future
                                     { type: "timeline", events: [
                                         { date: "NOV 2009", text: "AES-256 encryption and granular policy controls shipped ahead of schedule", mood: "positive" },
                                         { date: "JAN 2010", text: "Gartner names Windows Mobile most enterprise-ready platform", mood: "positive" },
-                                        { date: "MAR 2010", text: "iPhone gets Exchange ActiveSync — security moat eroding", mood: "warning" },
+                                        { date: "MAR 2010", text: "iPhone gets Exchange ActiveSync - security moat eroding", mood: "warning" },
                                         { date: "APR 2010", text: "iPad launches. CEOs demand them. CIOs checking exit clauses.", mood: "negative" }
                                     ] },
-                                    { type: "emerging", icon: "ph-shield-warning", headline: "Consumer Gravity", body: "Your security differentiation erodes with every iOS update. Enterprise iPhone adoption up 340% year-over-year. The CIOs who signed five-year deals are asking their lawyers about exit clauses.", closing: "You're winning the war IT departments fight — but losing the war employees fight." }
+                                    { type: "emerging", icon: "ph-shield-warning", headline: "Consumer Gravity", body: "Your security differentiation erodes with every iOS update. Enterprise iPhone adoption up 340% year-over-year. The CIOs who signed five-year deals are asking their lawyers about exit clauses.", closing: "You're winning the war IT departments fight - but losing the war employees fight." }
                                 ],
                                 immediate: {
                                     date: "NOV 2009",
@@ -3258,7 +3268,7 @@ The CIO's voice hardens. "I need to give the board an answer. Are you the future
                                     morale: "high",
                                     mobileRevenue: 0.15,     // Enterprise renewals boost licensing
                                     mobileCosts: 0.1,        // Security development investment
-                                    narrative: `You call the Citibank CIO back. "Give me six months. We'll ship the most secure mobile platform ever built." He sounds relieved—he didn't want to support iPhones anyway. His IT team didn't either. You shake hands on a five-year renewal worth $40M.
+                                    narrative: `You call the Citibank CIO back. "Give me six months. We'll ship the most secure mobile platform ever built." He sounds relieved, he didn't want to support iPhones anyway. His IT team didn't either. You shake hands on a five-year renewal worth $40M.
 
 Your security team delivers ahead of schedule: AES-256 encryption, granular policy controls, remote wipe that actually works. Three more Fortune 100 CIOs sign similar deals. Gartner names Windows Mobile the "most enterprise-ready platform" in their Magic Quadrant.
 
@@ -3272,7 +3282,7 @@ The trade press calls it "doubling down on a shrinking market." TechCrunch runs 
                                     morale: "neutral",
                                     mobileRevenue: -0.1,     // Enterprise accounts starting to leave
                                     mobileCosts: 0.05,       // Trying to match Apple's features
-                                    narrative: `The iPhone gets Exchange ActiveSync. Apple adds remote wipe. Your security differentiation is eroding with every iOS update. "They're copying our features," your team complains. But copying is working—enterprise iPhone adoption is up 340% year-over-year.
+                                    narrative: `The iPhone gets Exchange ActiveSync. Apple adds remote wipe. Your security differentiation is eroding with every iOS update. "They're copying our features," your team complains. But copying is working, enterprise iPhone adoption is up 340% year-over-year.
 
 Then the iPad launches. Every executive in America watches that keynote. The Citibank CEO sees it on his flight home from Davos. He walks into the CIO's office the next morning: "I want one. Make it work."
 
@@ -3283,7 +3293,7 @@ The CIO calls you that afternoon. "My CEO saw the iPad keynote. He wants one. An
                         {
                             id: "d2a-option-2",
                             title: "Build the 'Business iPhone'",
-                            description: "Accept that employees want consumer experiences. Build a new device that's beautiful enough to want and secure enough to deploy. Best of both worlds—if you can ship it fast enough.",
+                            description: "Accept that employees want consumer experiences. Build a new device that's beautiful enough to want and secure enough to deploy. Best of both worlds, if you can ship it fast enough.",
                             risk: "18 months to ship while competitors extend lead",
                             upside: "Redefine the market on your terms",
                             cost: "$400M new development",
@@ -3294,6 +3304,8 @@ The CIO calls you that afternoon. "My CEO saw the iPad keynote. He wants one. An
                                 d3Archetype: "platform-builder",
                                 d3Variant: "d3-p-standard"
                             },
+
+                            pathMetrics: { marketShare: 4, nokiaShare: 39, appleShare: 14, googleShare: 6, bbShare: 20 },
 
                             consequences: {
                                 moments: [
@@ -3307,10 +3319,10 @@ The CIO calls you that afternoon. "My CEO saw the iPad keynote. He wants one. An
                                     { type: "timeline", events: [
                                         { date: "NOV 2009", text: "Project Metro green-lit. Zune designers brought in. First mockups genuinely exciting.", mood: "positive" },
                                         { date: "FEB 2010", text: "Android 2.0 ships Exchange support. Apple adding enterprise features every update.", mood: "warning" },
-                                        { date: "JUN 2010", text: "Working prototype impresses reviewers. But iPhone 4 launches — Retina display, video calling.", mood: "warning" },
+                                        { date: "JUN 2010", text: "Working prototype impresses reviewers. But iPhone 4 launches - Retina display, video calling.", mood: "warning" },
                                         { date: "JUL 2010", text: "Android hits 100K apps on 60 devices. Metro prototype has 12 internal apps.", mood: "negative" }
                                     ] },
-                                    { type: "emerging", icon: "ph-code", headline: "The Developer Gap", body: "Your prototype is genuinely different — live tiles, clean typography, fluid animations. But Android has 100,000 apps and iOS has 200,000. Developers are all building for the incumbents.", closing: "\"We're going to need developers. A lot of them.\" — and they're all building for iOS and Android." }
+                                    { type: "emerging", icon: "ph-code", headline: "The Developer Gap", body: "Your prototype is genuinely different - live tiles, clean typography, fluid animations. But Android has 100,000 apps and iOS has 200,000. Developers are all building for the incumbents.", closing: "\"We're going to need developers. A lot of them.\" -- and they're all building for iOS and Android." }
                                 ],
                                 immediate: {
                                     date: "NOV 2009",
@@ -3320,9 +3332,9 @@ The CIO calls you that afternoon. "My CEO saw the iPad keynote. He wants one. An
                                     morale: "neutral",
                                     mobileRevenue: 0,        // R&D phase, no revenue impact yet
                                     mobileCosts: 0.25,       // Major new platform development
-                                    narrative: `You green-light "Project Metro"—a ground-up reimagining of Windows Mobile. The pitch: iPhone's beauty, BlackBerry's security, Microsoft's ecosystem. You bring in designers from the Zune team. For the first time, mobile feels like a priority.
+                                    narrative: `You green-light "Project Metro", a ground-up reimagining of Windows Mobile. The pitch: iPhone's beauty, BlackBerry's security, Microsoft's ecosystem. You bring in designers from the Zune team. For the first time, mobile feels like a priority.
 
-The team is energized for the first time in years. Engineers who were updating their LinkedIn profiles are suddenly staying late. The first mockups are genuinely exciting—live tiles, bold typography, information-dense but beautiful.
+The team is energized for the first time in years. Engineers who were updating their LinkedIn profiles are suddenly staying late. The first mockups are genuinely exciting, live tiles, bold typography, information-dense but beautiful.
 
 But Android 2.0 just shipped with Exchange support. Apple's adding enterprise features every update. Your product manager shows you the timeline: 18 months minimum. "We're designing for a market that will look completely different when we ship," she warns. You approve it anyway. Some fights you can't afford not to take.`
                                 },
@@ -3336,7 +3348,7 @@ But Android 2.0 just shipped with Exchange support. Apple's adding enterprise fe
                                     mobileCosts: 0.2,        // Continued platform development
                                     narrative: `The project hits its first milestone: a working prototype that looks genuinely different. Live tiles, clean typography, fluid animations. At an internal demo, the reviewers are impressed. "This doesn't look like Microsoft," says one. "That's the point," replies your design lead.
 
-But outside the demo room, the market keeps moving. iPhone 4 just launched—Retina display, video calling, gyroscope. The reviews are rapturous. Android has 100,000 apps and is shipping on 60 different phone models. Your beautiful prototype has twelve apps, all built internally.
+But outside the demo room, the market keeps moving. iPhone 4 just launched. Retina display, video calling, gyroscope. The reviews are rapturous. Android has 100,000 apps and is shipping on 60 different phone models. Your beautiful prototype has twelve apps, all built internally.
 
 "We're going to need developers," someone says in the debrief. "A lot of them." Your developer relations lead looks worried. "They're all building for iOS and Android. Why would they wait for us?"`
                                 }
@@ -3357,9 +3369,11 @@ But outside the demo room, the market keeps moving. iPhone 4 just launched—Ret
                                 d3Variant: "d3-i-bb"
                             },
 
+                            pathMetrics: { marketShare: 42, nokiaShare: 35, appleShare: 15, googleShare: 8, bbShare: 0 },
+
                             consequences: {
                                 moments: [
-                                    { type: "verdict", headline: "Enterprise Mega-Merger", subline: "Combined Microsoft-RIM controls 70% of corporate mobile. Enterprise customers relieved — for now.", sentiment: "neutral" },
+                                    { type: "verdict", headline: "Enterprise Mega-Merger", subline: "Combined Microsoft-RIM controls 70% of corporate mobile. Enterprise customers relieved - for now.", sentiment: "neutral" },
                                     { type: "metrics", changes: [
                                         { metric: "Acquisition Cost", change: "$18B", direction: "down" },
                                         { metric: "Enterprise Share", change: "70%", direction: "up" },
@@ -3377,13 +3391,14 @@ But outside the demo room, the market keeps moving. iPhone 4 just launched—Ret
                                 immediate: {
                                     date: "NOV 2009",
                                     cash: -18.0,
+                                    acquisitionCost: 18,     // Full $18B BB acquisition — tracked in cumulativePL
                                     marketCap: -5.0,
                                     marketShare: 2,
                                     morale: "neutral",
                                     mobileRevenue: 0.4,      // RIM's enterprise licensing added
                                     mobileCosts: 0.3,        // RIM operating costs absorbed
                                     unlockedArtifacts: ["artifact-blackberry-bold-9000"],
-                                    narrative: `You fly to Waterloo in secret. Mike Lazaridis meets you in a conference room overlooking the snow-covered campus. Your pitch is simple: "Together we'd control enterprise mobile. Apple can have the consumers—we'll own every Fortune 500 device."
+                                    narrative: `You fly to Waterloo in secret. Mike Lazaridis meets you in a conference room overlooking the snow-covered campus. Your pitch is simple: "Together we'd control enterprise mobile. Apple can have the consumers, we'll own every Fortune 500 device."
 
 The brothers are skeptical but flattered. "We built this company," Mike says. "But we're not stupid. The market is shifting." After three weeks of negotiation, the board approves $18B. RIM shareholders get a 40% premium. The deal leaks on a Friday afternoon.
 
@@ -3399,7 +3414,7 @@ The press goes wild. Combined, you control 70% of corporate mobile deployments. 
                                     mobileCosts: 0.25,       // Duplicate R&D, integration costs
                                     narrative: `Integration is brutal. Two engineering cultures, two operating systems, two completely different visions of what mobile should be. The BlackBerry team wants to keep BES; your team wants Exchange dominance. Every technical decision becomes a political battle.
 
-Mike Lazaridis gives a legendary internal speech at a Waterloo all-hands: "We didn't sell to become a Windows shop." The video leaks. Key engineers are leaving—not for Apple or Google, but for startups. "I didn't spend ten years building BBM to watch it get merged into Messenger," one departing VP tells the press.
+Mike Lazaridis gives a legendary internal speech at a Waterloo all-hands: "We didn't sell to become a Windows shop." The video leaks. Key engineers are leaving, not for Apple or Google, but for startups. "I didn't spend ten years building BBM to watch it get merged into Messenger," one departing VP tells the press.
 
 Meanwhile, Android shipments just passed iPhone. Samsung's Galaxy S is everywhere. The combined Microsoft-RIM company is slower than either was alone. Your competitors are sprinting while you're arguing about org charts.`
                                 }
@@ -3408,7 +3423,7 @@ Meanwhile, Android shipments just passed iPhone. Samsung's Galaxy S is everywher
                         {
                             id: "d2a-option-4",
                             title: "Abandon Enterprise, Go Consumer",
-                            description: "The enterprise strategy was wrong. Admit it. Kill Windows Mobile, start fresh with a consumer-first platform. You're three years behind—but Microsoft doesn't lose platform wars.",
+                            description: "The enterprise strategy was wrong. Admit it. Kill Windows Mobile, start fresh with a consumer-first platform. You're three years behind, but Microsoft doesn't lose platform wars.",
                             risk: "Abandoning your base for a market you've never won",
                             upside: "Finally fighting where the battle actually is",
                             cost: "$500M pivot + reputation damage",
@@ -3419,6 +3434,8 @@ Meanwhile, Android shipments just passed iPhone. Samsung's Galaxy S is everywher
                                 d3Archetype: "platform-builder",
                                 d3Variant: "d3-p-standard"
                             },
+
+                            pathMetrics: { marketShare: 4, nokiaShare: 38, appleShare: 16, googleShare: 9, bbShare: 17 },
 
                             consequences: {
                                 moments: [
@@ -3435,7 +3452,7 @@ Meanwhile, Android shipments just passed iPhone. Samsung's Galaxy S is everywher
                                         { date: "JAN 2010", text: "First consumer prototype ships internally. Bold, different design. Cautious optimism.", mood: "positive" },
                                         { date: "FEB 2010", text: "App Store: 200K apps. Android Market: 80K. Your platform: 400 ports of desktop utilities.", mood: "warning" }
                                     ] },
-                                    { type: "emerging", icon: "ph-rocket-launch", headline: "The Insurmountable Gap", body: "The consumer prototype is genuinely fresh — nothing else looks like this. Internal testers are cautiously optimistic. But the app ecosystem gap is staggering.", closing: "\"We need something nobody else has. Something that makes developers want to wait for us.\"" }
+                                    { type: "emerging", icon: "ph-rocket-launch", headline: "The Insurmountable Gap", body: "The consumer prototype is genuinely fresh - nothing else looks like this. Internal testers are cautiously optimistic. But the app ecosystem gap is staggering.", closing: "\"We need something nobody else has. Something that makes developers want to wait for us.\"" }
                                 ],
                                 immediate: {
                                     date: "NOV 2009",
@@ -3447,7 +3464,7 @@ Meanwhile, Android shipments just passed iPhone. Samsung's Galaxy S is everywher
                                     mobileCosts: 0.2,        // Consumer pivot R&D costs
                                     narrative: `You announce the pivot at an all-hands in Building 37. "Windows Mobile served us well, but the market has moved. We're starting fresh." The room is silent. Some engineers are nodding; others look betrayed.
 
-The enterprise team is devastated. They built something customers loved—really loved. The Citibank CIO calls within the hour. "So you're abandoning us?" He sounds betrayed. "We're evolving," you say. It sounds hollow even to you.
+The enterprise team is devastated. They built something customers loved, really loved. The Citibank CIO calls within the hour. "So you're abandoning us?" He sounds betrayed. "We're evolving," you say. It sounds hollow even to you.
 
 But you've seen Microsoft lose platform wars before: Netscape, then Google Search. Losing mobile would be worse than both combined. "We're three years behind iPhone and two years behind Android," someone calculates. "The math doesn't work." Maybe not. But you have to try.`
                                 },
@@ -3461,7 +3478,7 @@ But you've seen Microsoft lose platform wars before: Netscape, then Google Searc
                                     mobileCosts: 0.15,       // Consumer platform development
                                     narrative: `The pivot is public now. Enterprise customers are furious. Your legal team is fielding calls about contract obligations. Two Fortune 100 accounts threaten lawsuits. The press coverage is brutal: "Microsoft Abandons Enterprise, Chases Apple's Shadow."
 
-Meanwhile, the consumer team ships their first prototype. It's... not bad. Different. Bold, even. The design is genuinely fresh—nothing else looks like this. Internal testers are cautiously optimistic.
+Meanwhile, the consumer team ships their first prototype. It's... not bad. Different. Bold, even. The design is genuinely fresh, nothing else looks like this. Internal testers are cautiously optimistic.
 
 But the App Store has 200,000 apps. Android Market has 80,000. You have 400, and most of them are ports of desktop utilities. The gap feels insurmountable. "We need something nobody else has," your product lead says. "Something that makes developers want to wait for us."`
                                 }
@@ -3477,12 +3494,12 @@ But the App Store has 200,000 apps. Android Market has 80,000. You have 400, and
                     date: "SEP 2009",
                     timeMarker: "SEP 2009",
                     title: "The Free Problem",
-                    storyImage: '<i class="ph ph-users" style="font-size: 4rem;"></i>',
-                    storyText: `The conference room goes silent when Robbie Bach finishes his presentation. Project Pink—your consumer phone initiative—is $200M over budget, eight months behind schedule, and the demos still crash.
+                    storyBg: 'assets/images/chapters/d2b-free-problem.jpg',
+                    storyText: `The conference room goes silent when Robbie Bach finishes his presentation. Project Pink (your consumer phone initiative) is $200M over budget, eight months behind schedule, and the demos still crash.
 
 "We can ship in Q2," Robbie says. "Maybe Q3 for the full lineup."
 
-You look at the market share charts on the wall. Windows Mobile was at 35% when you started this project. It's 22% now. Android—which didn't exist when you approved Pink—just hit 25% and climbing. Their secret weapon: the price.
+You look at the market share charts on the wall. Windows Mobile was at 42% when you approved this project. It's 34% now and falling fast. Android, which didn't exist when you approved Pink, just hit 25% and climbing. Their secret weapon: the price.
 
 "Android is free," says your head of OEM relations. "We charge $15-25 per device. Motorola just killed their entire Windows Mobile roadmap. Samsung's flagship next year is Android. HTC is 'evaluating options.' That's three of our top four partners."
 
@@ -3502,9 +3519,9 @@ Your phone buzzes. It's Peter Chou from HTC: "We need to talk about pricing. Soo
 
                     // ── NEW: Player position card ──
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
-                            { label: "Mobile OS Share", value: "~22%", color: "red" },
+                            { label: "Mobile OS Share", value: "~34%", color: "gold" },
                             { label: "Project Pink", value: "$200M over budget", color: "red" },
                             { label: "OEM Partners", value: "Defecting", color: "red" },
                             { label: "Android Price", value: "Free", color: "red" },
@@ -3550,7 +3567,7 @@ Your phone buzzes. It's Peter Chou from HTC: "We need to talk about pricing. Soo
                                     },
                                     {
                                         heading: "Hardware Status",
-                                        content: "Sharp manufacturing two prototypes: 'Turtle' (slider) and 'Pure' (candy bar). Both behind Apple/Android hardware by 18+ months. No capacitive touch — still using resistive screens."
+                                        content: "Sharp manufacturing two prototypes: 'Turtle' (slider) and 'Pure' (candy bar). Both behind Apple/Android hardware by 18+ months. No capacitive touch - still using resistive screens."
                                     }
                                 ],
                                 footnote: "If we ship Pink in current state, reviews will be devastating. If we delay further, market opportunity closes."
@@ -3585,7 +3602,7 @@ Your phone buzzes. It's Peter Chou from HTC: "We need to talk about pricing. Soo
                                     },
                                     {
                                         heading: "App Market Growth",
-                                        content: "Android Market: 70,000+ apps, growing 10,000/month. Developer interest accelerating. Java-based development attracts enterprise developers — ironic given Google's consumer focus."
+                                        content: "Android Market: 70,000+ apps, growing 10,000/month. Developer interest accelerating. Java-based development attracts enterprise developers - ironic given Google's consumer focus."
                                     },
                                     {
                                         heading: "Trajectory",
@@ -3602,7 +3619,7 @@ Your phone buzzes. It's Peter Chou from HTC: "We need to talk about pricing. Soo
                             type: "briefing",
                             thumb: {
                                 icon: "ph-handshake",
-                                label: "COMPETITOR INTEL",
+                                label: "MARKET REPORT",
                                 title: "OEM Partner Defections",
                                 subtitle: "3:1 Android outselling WinMo at HTC",
                                 accentColor: "#e07a5f"
@@ -3644,7 +3661,7 @@ Your phone buzzes. It's Peter Chou from HTC: "We need to talk about pricing. Soo
                     options: [
                         {
                             id: "d2b-option-1",
-                            title: "Match Free—Go Zero",
+                            title: "Match Free: Go Zero",
                             description: "Kill your licensing revenue to keep OEMs. Make Windows Mobile free, compete on integration with Office and Exchange. If the market is going to be free, lead the charge.",
                             risk: "$2B/year licensing revenue evaporates",
                             upside: "Stop OEM defection, remove Google's price advantage",
@@ -3657,13 +3674,15 @@ Your phone buzzes. It's Peter Chou from HTC: "We need to talk about pricing. Soo
                                 d3Variant: "d3-p-standard"
                             },
 
+                            pathMetrics: { marketShare: 4, nokiaShare: 37, appleShare: 16, googleShare: 9, bbShare: 18 },
+
                             consequences: {
                                 // ── NEW: Stepped consequence moments ──
                                 moments: [
                                     {
                                         type: "verdict",
-                                        headline: "A bold gamble — you just torched $2B in annual revenue.",
-                                        subline: "\"Did Microsoft just kill $2 billion in revenue?\" — Wall Street Journal",
+                                        headline: "A bold gamble - you just torched $2B in annual revenue.",
+                                        subline: "\"Did Microsoft just kill $2 billion in revenue?\" -- Wall Street Journal",
                                         sentiment: "neutral"
                                     },
                                     {
@@ -3679,16 +3698,16 @@ Your phone buzzes. It's Peter Chou from HTC: "We need to talk about pricing. Soo
                                         type: "timeline",
                                         events: [
                                             { date: "NOV 2009", text: "Free licensing announced. Stock drops 4%. CFO is furious. Peter Chou calls: 'You're serious?' HTC stays.", mood: "warning" },
-                                            { date: "JAN 2010", text: "Samsung keeps WinMo in lineup. Motorola doesn't return calls — already gone.", mood: "neutral" },
+                                            { date: "JAN 2010", text: "Samsung keeps WinMo in lineup. Motorola doesn't return calls - already gone.", mood: "neutral" },
                                             { date: "MAR 2010", text: "HTC ships WinMo devices again, but Android versions outsell them 4:1. Carriers merchandise Android at front of store.", mood: "negative" },
-                                            { date: "APR 2010", text: "Product lead admits: 'The problem isn't price — it's that our software isn't as good.'", mood: "negative" }
+                                            { date: "APR 2010", text: "Product lead admits: 'The problem isn't price - it's that our software isn't as good.'", mood: "negative" }
                                         ]
                                     },
                                     {
                                         type: "emerging",
                                         icon: "ph-clock-countdown",
                                         headline: "Free bought time, not victory.",
-                                        body: "You removed Google's price advantage overnight. But price was never the real problem — the product was. Android phones outsell WinMo 4:1 even at the same price. You have budget again, but you need to build something people actually want.",
+                                        body: "You removed Google's price advantage overnight. But price was never the real problem - the product was. Android phones outsell WinMo 4:1 even at the same price. You have budget again, but you need to build something people actually want.",
                                         closing: "Every month, Android extends its lead. The clock is still ticking."
                                     }
                                 ],
@@ -3703,9 +3722,9 @@ Your phone buzzes. It's Peter Chou from HTC: "We need to talk about pricing. Soo
                                     unlockedArtifacts: ["artifact-htc-dream-g1", "artifact-htc-hd2"],
                                     narrative: `You announce it at a press conference: "Windows Mobile is now free for all OEM partners." The room gasps. Reporters exchange confused looks. "Did Microsoft just kill $2 billion in revenue?" asks a WSJ journalist. Yes. Yes you did.
 
-Peter Chou calls within the hour: "You're serious?" He's staying—for now. Samsung agrees to keep Windows Mobile in their lineup. Motorola doesn't return your calls, but they were already gone.
+Peter Chou calls within the hour: "You're serious?" He's staying, for now. Samsung agrees to keep Windows Mobile in their lineup. Motorola doesn't return your calls, but they were already gone.
 
-The CFO is furious. Your stock drops 4% on "strategic confusion." But you've removed Google's price advantage overnight. Every OEM exec is doing the same math: free Windows or free Android—now it's about the product, not the price. The question is what you'll do with the time you've bought.`
+The CFO is furious. Your stock drops 4% on "strategic confusion." But you've removed Google's price advantage overnight. Every OEM exec is doing the same math: free Windows or free Android, now it's about the product, not the price. The question is what you'll do with the time you've bought.`
                                 },
                                 delayed: {
                                     date: "MAR 2010",
@@ -3715,17 +3734,17 @@ The CFO is furious. Your stock drops 4% on "strategic confusion." But you've rem
                                     morale: "neutral",
                                     mobileRevenue: -0.1,     // Still losing device share
                                     mobileCosts: 0.1,        // Platform improvements
-                                    narrative: `Free stopped the bleeding, but it didn't solve the product problem. HTC is shipping Windows Mobile devices again—but they're also shipping Android devices. The Android ones sell 4x better. Carriers are merchandising Android phones at the front of the store.
+                                    narrative: `Free stopped the bleeding, but it didn't solve the product problem. HTC is shipping Windows Mobile devices again, but they're also shipping Android devices. The Android ones sell 4x better. Carriers are merchandising Android phones at the front of the store.
 
 "The problem isn't price," admits your product lead in a painful quarterly review. "It's that our software isn't as good. Consumers pick up both phones and choose Android. Every time." The reviews agree: Windows Mobile feels dated, clunky, designed for a stylus in a finger-first world.
 
-The good news: you have budget again. The bad news: you need to build something people actually want to buy. And you need to build it fast—every month, Android extends its lead.`
+The good news: you have budget again. The bad news: you need to build something people actually want to buy. And you need to build it fast, every month, Android extends its lead.`
                                 }
                             }
                         },
                         {
                             id: "d2b-option-2",
-                            title: "Go Vertical—Build Your Own Phone",
+                            title: "Go Vertical: Build Your Own Phone",
                             description: "OEMs are unreliable. Do what Apple does: control hardware and software. Acquire a hardware partner or build your own devices. Own the whole stack.",
                             risk: "Alienate remaining OEMs, no hardware experience",
                             upside: "Full control over user experience, Apple-style margins",
@@ -3737,6 +3756,8 @@ The good news: you have budget again. The bad news: you need to build something 
                                 d3Archetype: "platform-builder",
                                 d3Variant: "d3-p-vertical"
                             },
+
+                            pathMetrics: { marketShare: 3, nokiaShare: 37, appleShare: 16, googleShare: 10, bbShare: 17 },
 
                             consequences: {
                                 // ── NEW: Stepped consequence moments ──
@@ -3760,7 +3781,7 @@ The good news: you have budget again. The bad news: you need to build something 
                                         type: "timeline",
                                         events: [
                                             { date: "NOV 2009", text: "HTC, Samsung, LG all announce Android flagships. OEM partnerships evaporate overnight.", mood: "negative" },
-                                            { date: "JAN 2010", text: "Project Pink becomes Project KIN. J Allard leads hardware. Early prototypes are bold — social-first, cloud-connected.", mood: "positive" },
+                                            { date: "JAN 2010", text: "Project Pink becomes Project KIN. J Allard leads hardware. Early prototypes are bold - social-first, cloud-connected.", mood: "positive" },
                                             { date: "APR 2010", text: "Apple announces iPhone 4 with Retina display. Android hits 100,000 apps. Your prototype has a few dozen.", mood: "warning" },
                                             { date: "JUN 2010", text: "KIN prototypes ready. Verizon committed shelf space and marketing dollars. The team believes. The window is closing.", mood: "neutral" }
                                         ]
@@ -3786,7 +3807,7 @@ The good news: you have budget again. The bad news: you need to build something 
 
 Your market share craters. But your team is energized for the first time in years. "Finally, we can build what we want," says J Allard, your head of hardware. No more compromising for partners who don't believe in you.
 
-Project Pink becomes Project KIN—your first Microsoft-branded phone. The early prototypes are different. Bold. Social-first, cloud-connected, nothing like anything else in the market. It might be brilliant. Or it might be the most expensive mistake in mobile history.`
+Project Pink becomes Project KIN, your first Microsoft-branded phone. The early prototypes are different. Bold. Social-first, cloud-connected, nothing like anything else in the market. It might be brilliant. Or it might be the most expensive mistake in mobile history.`
                                 },
                                 delayed: {
                                     date: "JUN 2010",
@@ -3796,18 +3817,18 @@ Project Pink becomes Project KIN—your first Microsoft-branded phone. The early
                                     morale: "high",
                                     mobileRevenue: 0.1,      // Some device sales starting
                                     mobileCosts: 0.3,        // Manufacturing ramp-up
-                                    narrative: `The first KIN prototypes are ready. The hardware team is proud—the design is unique. Social-first, cloud-connected, with a "Spot" feature that lets you share anything instantly. Nothing else in the market looks or feels like this.
+                                    narrative: `The first KIN prototypes are ready. The hardware team is proud, the design is unique. Social-first, cloud-connected, with a "Spot" feature that lets you share anything instantly. Nothing else in the market looks or feels like this.
 
-But while you were building, the market kept moving. Apple just announced iPhone 4—Retina display, video calling, gyroscope. Android has 100,000 apps and is shipping on dozens of devices. Your prototype has a few dozen apps, mostly built internally.
+But while you were building, the market kept moving. Apple just announced iPhone 4. Retina display, video calling, gyroscope. Android has 100,000 apps and is shipping on dozens of devices. Your prototype has a few dozen apps, mostly built internally.
 
-"We need to launch soon," says Allard, "or the window closes forever." Verizon is getting impatient—they've committed shelf space and marketing dollars. The team believes in what they've built. The question is whether the market will agree.`
+"We need to launch soon," says Allard, "or the window closes forever." Verizon is getting impatient, they've committed shelf space and marketing dollars. The team believes in what they've built. The question is whether the market will agree.`
                                 }
                             }
                         },
                         {
                             id: "d2b-option-3",
-                            title: "Premium Position—Hold the Line",
-                            description: "Android being free means Android is commoditized. Keep your premium pricing, focus on differentiation—better integration, better enterprise features, better developer tools.",
+                            title: "Premium Position: Hold the Line",
+                            description: "Android being free means Android is commoditized. Keep your premium pricing, focus on differentiation, better integration, better enterprise features, better developer tools.",
                             risk: "OEMs abandon you for the free alternative",
                             upside: "Maintain revenue, position as premium platform",
                             cost: "OEM relationships, market share",
@@ -3819,13 +3840,15 @@ But while you were building, the market kept moving. Apple just announced iPhone
                                 d3Variant: "d3-p-standard"
                             },
 
+                            pathMetrics: { marketShare: 4, nokiaShare: 37, appleShare: 17, googleShare: 8, bbShare: 17 },
+
                             consequences: {
                                 // ── NEW: Stepped consequence moments ──
                                 moments: [
                                     {
                                         type: "verdict",
                                         headline: "The CFO is relieved. Everyone else is nervous.",
-                                        subline: "\"We're watching our market walk away — and we're charging admission.\" — VP of Sales",
+                                        subline: "\"We're watching our market walk away - and we're charging admission.\" -- VP of Sales",
                                         sentiment: "negative"
                                     },
                                     {
@@ -3840,10 +3863,10 @@ But while you were building, the market kept moving. Apple just announced iPhone
                                     {
                                         type: "timeline",
                                         events: [
-                                            { date: "NOV 2009", text: "Motorola fully Android. Samsung hedging. LG 'exploring options.' HTC stays — wants differentiation from Android sea.", mood: "warning" },
+                                            { date: "NOV 2009", text: "Motorola fully Android. Samsung hedging. LG 'exploring options.' HTC stays - wants differentiation from Android sea.", mood: "warning" },
                                             { date: "DEC 2009", text: "Motorola Droid launches. 'Droid Does' is the catchphrase of the year. $100M Verizon marketing campaign.", mood: "negative" },
                                             { date: "JAN 2010", text: "Market share drops to 14%. Premium pricing looks less like strategy and more like denial.", mood: "negative" },
-                                            { date: "FEB 2010", text: "Samsung gone. LG gone. HTC's WinMo phones sell respectably to enterprise — steady, predictable, boring.", mood: "warning" }
+                                            { date: "FEB 2010", text: "Samsung gone. LG gone. HTC's WinMo phones sell respectably to enterprise - steady, predictable, boring.", mood: "warning" }
                                         ]
                                     },
                                     {
@@ -3863,9 +3886,9 @@ But while you were building, the market kept moving. Apple just announced iPhone
                                     mobileRevenue: 0.05,     // Premium pricing maintained
                                     mobileCosts: 0,          // No major new spending
                                     unlockedArtifacts: ["artifact-samsung-focus"],
-                                    narrative: `"We're not in a race to zero," you tell the board. "Android being free means Android is a commodity. We're going to be premium." The CFO looks relieved—someone finally speaking his language.
+                                    narrative: `"We're not in a race to zero," you tell the board. "Android being free means Android is a commodity. We're going to be premium." The CFO looks relieved, someone finally speaking his language.
 
-The OEM partners react predictably. Motorola's gone—fully Android. Samsung is hedging, splitting their bets. LG is "exploring options," which means they're interviewing with Google. But HTC stays. They want differentiation in a sea of identical Android phones.
+The OEM partners react predictably. Motorola's gone, fully Android. Samsung is hedging, splitting their bets. LG is "exploring options," which means they're interviewing with Google. But HTC stays. They want differentiation in a sea of identical Android phones.
 
 Your VP of sales is terrified. "We're watching our market walk away," she says after the board meeting. "And we're charging admission." She's right. But premium players don't win by racing to the bottom. You have to believe the product can justify the price.`
                                 },
@@ -3877,17 +3900,17 @@ Your VP of sales is terrified. "We're watching our market walk away," she says a
                                     morale: "neutral",
                                     mobileRevenue: -0.15,    // OEM defections reducing volume
                                     mobileCosts: 0.05,       // Modest platform updates
-                                    narrative: `The premium strategy has revenue but not momentum. HTC's Windows Mobile phones sell respectably to enterprise customers—steady, predictable, boring. Their Android phones are the ones getting reviewed, advertised, featured on magazine covers.
+                                    narrative: `The premium strategy has revenue but not momentum. HTC's Windows Mobile phones sell respectably to enterprise customers, steady, predictable, boring. Their Android phones are the ones getting reviewed, advertised, featured on magazine covers.
 
-Samsung's gone. LG's gone. Motorola launched the Droid and it's everywhere—"Droid Does" is the catchphrase of the year. Your market share is now 14% and falling. The premium pricing that seemed defensible six months ago now looks like denial.
+Samsung's gone. LG's gone. Motorola launched the Droid and it's everywhere, "Droid Does" is the catchphrase of the year. Your market share is now 14% and falling. The premium pricing that seemed defensible six months ago now looks like denial.
 
-But you have cash—more than Google's mobile division, more than any Android partner individually. "We have the resources to rebuild," you tell the team. "The question is what we build." And whether 14% is a floor or just a stop on the way down.`
+But you have cash, more than Google's mobile division, more than any Android partner individually. "We have the resources to rebuild," you tell the team. "The question is what we build." And whether 14% is a floor or just a stop on the way down.`
                                 }
                             }
                         },
                         {
                             id: "d2b-option-4",
-                            title: "Ship Pink Now—Beat the Clock",
+                            title: "Ship Pink Now: Beat the Clock",
                             description: "Project Pink isn't perfect, but waiting means losing. Ship what you have, iterate fast, learn from the market. Something is better than nothing.",
                             risk: "Shipping an unfinished product could destroy the brand",
                             upside: "Get in market before the window closes completely",
@@ -3900,13 +3923,15 @@ But you have cash—more than Google's mobile division, more than any Android pa
                                 d3Variant: "d3-p-standard"
                             },
 
+                            pathMetrics: { marketShare: 4, nokiaShare: 38, appleShare: 15, googleShare: 8, bbShare: 18 },
+
                             consequences: {
                                 // ── NEW: Stepped consequence moments ──
                                 moments: [
                                     {
                                         type: "verdict",
                                         headline: "You shipped it. The reviews are devastating.",
-                                        subline: "\"A phone for people who don't want smartphones.\" — Engadget",
+                                        subline: "\"A phone for people who don't want smartphones.\" -- Engadget",
                                         sentiment: "negative"
                                     },
                                     {
@@ -3931,7 +3956,7 @@ But you have cash—more than Google's mobile division, more than any Android pa
                                         type: "emerging",
                                         icon: "ph-warning-octagon",
                                         headline: "$400M lesson learned the hard way.",
-                                        body: "The post-mortem is worse than the reviews: wrong audience, wrong features, wrong timing, wrong everything. But amid the wreckage, one insight: consumers don't want a 'social phone' — they want a smartphone that does social.",
+                                        body: "The post-mortem is worse than the reviews: wrong audience, wrong features, wrong timing, wrong everything. But amid the wreckage, one insight: consumers don't want a 'social phone' -- they want a smartphone that does social.",
                                         closing: "The failure cost you $400M and a year of momentum. But at least you know what not to build next."
                                     }
                                 ],
@@ -3944,11 +3969,11 @@ But you have cash—more than Google's mobile division, more than any Android pa
                                     mobileRevenue: 0,        // Launch costs offset any early sales
                                     mobileCosts: 0.15,       // Accelerated launch investment
                                     unlockedArtifacts: ["artifact-kin"],
-                                    narrative: `"Ship it," you order. The team protests—there are known bugs, the app store is sparse, the hardware feels dated compared to iPhone 3GS. But Robbie Bach agrees: "Every month we wait, we lose another OEM." Perfect is the enemy of shipped.
+                                    narrative: `"Ship it," you order. The team protests, there are known bugs, the app store is sparse, the hardware feels dated compared to iPhone 3GS. But Robbie Bach agrees: "Every month we wait, we lose another OEM." Perfect is the enemy of shipped.
 
-Project Pink becomes the KIN—Microsoft's first consumer phone. Verizon agrees to a April 2010 launch with a major marketing push. The team pulls all-nighters to hit the date. They're exhausted but proud.
+Project Pink becomes the KIN. Microsoft's first consumer phone. Verizon agrees to a April 2010 launch with a major marketing push. The team pulls all-nighters to hit the date. They're exhausted but proud.
 
-The reviews are brutal. "A phone for people who don't want smartphones" (Engadget). "Confusingly positioned" (Gizmodo). "DOA" (TechCrunch). But you're in the market. You're learning. The question is whether you can learn fast enough—and whether Verizon's patience will last.`
+The reviews are brutal. "A phone for people who don't want smartphones" (Engadget). "Confusingly positioned" (Gizmodo). "DOA" (TechCrunch). But you're in the market. You're learning. The question is whether you can learn fast enough, and whether Verizon's patience will last.`
                                 },
                                 delayed: {
                                     date: "MAR 2010",
@@ -3962,7 +3987,7 @@ The reviews are brutal. "A phone for people who don't want smartphones" (Engadge
 
 The memes are brutal. "KIN: Killed In Nine weeks" trends on Twitter. Tech blogs compete to write the most savage obituary. Internally, the post-mortem is even worse: wrong audience, wrong features, wrong timing, wrong everything.
 
-But you've learned something valuable amid the wreckage: consumers don't want a "social phone"—they want a smartphone that does social. The failure cost you $400M and a year of momentum. But at least you know what not to build next.`
+But you've learned something valuable amid the wreckage: consumers don't want a "social phone", they want a smartphone that does social. The failure cost you $400M and a year of momentum. But at least you know what not to build next.`
                                 }
                             }
                         }
@@ -3976,12 +4001,12 @@ But you've learned something valuable amid the wreckage: consumers don't want a 
                     date: "SEP 2009",
                     timeMarker: "SEP 2009",
                     title: "The Platform War Within",
-                    storyImage: '<i class="ph ph-handshake" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d2c-platform-war-within.jpg',
                     storyText: `The quarterly review in Helsinki starts the way every meeting in Helsinki starts since the hostile takeover: badly.
 
 Nokia's engineering leads sit on one side of the table. Your Windows Mobile team sits on the other. Nobody's making eye contact. Two years in, and the building still feels occupied rather than integrated. The black flags may have come down from the headquarters, but the resentment hasn't.
 
-"We have 40,000 engineers working on Symbian," says Anssi Vanjoki, Nokia's EVP—one of the few senior Finns who didn't resign. "You want us to throw that away for an OS that's losing to Android? You bought Nokia for our platform. Now you want to kill it?"
+"We have 40,000 engineers working on Symbian," says Anssi Vanjoki, Nokia's EVP, one of the few senior Finns who didn't resign. "You want us to throw that away for an OS that's losing to Android? You bought Nokia for our platform. Now you want to kill it?"
 
 Your mobile VP fires back: "We bought Nokia for its hardware and distribution. Symbian is feature-phone code pretending to be a smartphone platform."
 
@@ -4004,14 +4029,14 @@ Your CFO slides you a note under the table: "Every month of dual-platform costs 
                         teaser: "You forced the Nokia acquisition. Two years in, you're running two competing platforms and 40,000 engineers who resent you."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft + Nokia",
+                        label: "Your Position: Microsoft + Nokia",
                         stats: [
-                            { label: "Combined Share", value: "~62%", color: "green" },
+                            { label: "Combined Share", value: "~52%", color: "green" },
                             { label: "Platforms Running", value: "2 (Symbian + WM)", color: "red" },
                             { label: "Integration Status", value: "18mo behind", color: "red" },
                             { label: "Duplicate R&D", value: "$400M/yr", color: "red" },
                             { label: "Engineer Departures", value: "23 senior/quarter", color: "red" },
-                            { label: "Revenue", value: "$3.8B/yr", color: "green" }
+                            { label: "Revenue", value: "$2.3B/yr", color: "green" }
                         ]
                     },
                     intelCards: [
@@ -4033,7 +4058,7 @@ Your CFO slides you a note under the table: "Every month of dual-platform costs 
                                 reliability: "MEDIUM",
                                 source: "Microsoft Integration Office",
                                 sections: [
-                                    { heading: "Integration Status", content: "32 months post-close. Integration is 18 months behind schedule. Original plan called for unified platform by Q3 2008. Now targeting Q4 2010 at earliest." },
+                                    { heading: "Integration Status", content: "24 months post-close. Integration is 18 months behind schedule. Original plan called for unified platform by Q3 2008. Now targeting Q4 2010 at earliest." },
                                     { heading: "Platform Conflict", content: "Two competing OS teams: Symbian (40,000 engineers in Finland) and Windows Mobile (8,000 in Redmond). Neither willing to deprecate their codebase. $400M/year in duplicate R&D." },
                                     { heading: "Cultural Issues", content: "Finnish engineers resist Redmond management. \"They don't understand mobile\" is common refrain. Key architects departing: 23 senior engineers lost to Apple/Google in past quarter." }
                                 ],
@@ -4094,7 +4119,7 @@ Your CFO slides you a note under the table: "Every month of dual-platform costs 
                     options: [
                         {
                             id: "d2c-option-1",
-                            title: "Kill Symbian—Windows Only",
+                            title: "Kill Symbian: Windows Only",
                             description: "End the debate. Shut down Symbian development, force Nokia's manufacturing onto Windows Mobile. One platform, one vision, unified execution.",
                             risk: "40,000 Symbian engineers lose their jobs or quit in protest",
                             upside: "Clear direction, unified resources, faster iteration",
@@ -4107,9 +4132,11 @@ Your CFO slides you a note under the table: "Every month of dual-platform costs 
                                 d3Variant: "d3-i-force-windows"
                             },
 
+                            pathMetrics: { marketShare: 38, nokiaShare: 0, appleShare: 14, googleShare: 10, bbShare: 16 },
+
                             consequences: {
                                 moments: [
-                                    { type: "verdict", headline: "Brutal but Clear", subline: "You killed Symbian. 3,000 resignations in a week. But for the first time in 32 months, one team, one platform, one goal.", sentiment: "negative" },
+                                    { type: "verdict", headline: "Brutal but Clear", subline: "You killed Symbian. 3,000 resignations in a week. But for the first time in 24 months, one team, one platform, one goal.", sentiment: "negative" },
                                     { type: "metrics", changes: [
                                         { metric: "Engineering Teams", change: "2 → 1", direction: "up" },
                                         { metric: "Duplicate R&D", change: "-$400M/yr", direction: "up" },
@@ -4118,11 +4145,11 @@ Your CFO slides you a note under the table: "Every month of dual-platform costs 
                                     ] },
                                     { type: "timeline", events: [
                                         { date: "NOV 2009", text: "Symbian shutdown announced at Espoo all-hands. Mass resignations begin.", mood: "negative" },
-                                        { date: "JAN 2010", text: "8,000 Nokia engineers departed — many to Google and Apple", mood: "negative" },
-                                        { date: "MAR 2010", text: "First Windows-only Nokia prototypes feel awkward — Windows in Nokia cases", mood: "warning" },
+                                        { date: "JAN 2010", text: "8,000 Nokia engineers departed - many to Google and Apple", mood: "negative" },
+                                        { date: "MAR 2010", text: "First Windows-only Nokia prototypes feel awkward - Windows in Nokia cases", mood: "warning" },
                                         { date: "APR 2010", text: "Android passes 30% share while you rebuild", mood: "negative" }
                                     ] },
-                                    { type: "emerging", icon: "ph-fire", headline: "The Destroyer of Nokia", body: "Finnish press brands you a cultural imperialist. Protesters gather outside the Espoo campus. But the endless platform debates are over. The question is whether you can rebuild faster than the market moves away.", closing: "You've lost what made Nokia special — but also what made Nokia slow." }
+                                    { type: "emerging", icon: "ph-fire", headline: "The Destroyer of Nokia", body: "Finnish press brands you a cultural imperialist. Protesters gather outside the Espoo campus. But the endless platform debates are over. The question is whether you can rebuild faster than the market moves away.", closing: "You've lost what made Nokia special - but also what made Nokia slow." }
                                 ],
                                 immediate: {
                                     date: "NOV 2009",
@@ -4136,7 +4163,7 @@ Your CFO slides you a note under the table: "Every month of dual-platform costs 
 
 By the end of the week, 3,000 have submitted resignation letters. Anssi Vanjoki gives an interview to Finnish media: "This is cultural imperialism. They bought us to destroy us." The clip plays on every news channel in Finland. Protesters gather outside the Espoo campus.
 
-The Finnish press calls you the "Destroyer of Nokia." But the debate is over. For the first time in 32 months, you have one team, one platform, one goal. It's brutal. It's ugly. But it's clarity.`
+The Finnish press calls you the "Destroyer of Nokia." But the debate is over. For the first time in 24 months, you have one team, one platform, one goal. It's brutal. It's ugly. But it's clarity.`
                                 },
                                 delayed: {
                                     date: "MAR 2010",
@@ -4146,17 +4173,17 @@ The Finnish press calls you the "Destroyer of Nokia." But the debate is over. Fo
                                     morale: "low",
                                     mobileRevenue: -0.25,    // Sales collapsing during transition
                                     mobileCosts: 0.15,       // Porting and development costs
-                                    narrative: `The exodus is worse than expected. 8,000 Nokia engineers have left—many to Google, Apple, and a wave of Finnish startups. The brain drain is visible: conference rooms that used to overflow now sit half-empty.
+                                    narrative: `The exodus is worse than expected. 8,000 Nokia engineers have left, many to Google, Apple, and a wave of Finnish startups. The brain drain is visible: conference rooms that used to overflow now sit half-empty.
 
-The remaining team is trying to port Windows Mobile to Nokia hardware. The fit is awkward. The first prototypes feel like Windows phones in Nokia cases—none of the elegance that made Nokia devices beloved. "We've lost what made Nokia special," admits one remaining engineer.
+The remaining team is trying to port Windows Mobile to Nokia hardware. The fit is awkward. The first prototypes feel like Windows phones in Nokia cases, none of the elegance that made Nokia devices beloved. "We've lost what made Nokia special," admits one remaining engineer.
 
-But you've also lost what made Nokia slow—the endless debates, the platform politics, the cultural resistance to change. The question is whether you can rebuild faster than the market moves away. Android just passed 30% share.`
+But you've also lost what made Nokia slow, the endless debates, the platform politics, the cultural resistance to change. The question is whether you can rebuild faster than the market moves away. Android just passed 30% share.`
                                 }
                             }
                         },
                         {
                             id: "d2c-option-2",
-                            title: "Run Both—Dual Platform",
+                            title: "Run Both: Dual Platform",
                             description: "Don't force a choice. Run Symbian for emerging markets (where it's still dominant) and Windows for premium markets (where enterprise matters). Cover all bases.",
                             risk: "Resources split, teams competing, integration never happens",
                             upside: "Keep both armies fighting, hedge all bets",
@@ -4169,6 +4196,8 @@ But you've also lost what made Nokia slow—the endless debates, the platform po
                                 d3Variant: "d3-i-dual"
                             },
 
+                            pathMetrics: { marketShare: 32, nokiaShare: 0, appleShare: 14, googleShare: 14, bbShare: 16 },
+
                             consequences: {
                                 moments: [
                                     { type: "verdict", headline: "The Compromise That Satisfies Nobody", subline: "Nobody gets fired. Nobody gets clarity either. Two platforms, two armies, zero alignment.", sentiment: "negative" },
@@ -4179,12 +4208,12 @@ But you've also lost what made Nokia slow—the endless debates, the platform po
                                         { metric: "Board Patience", change: "Running out", direction: "down" }
                                     ] },
                                     { type: "timeline", events: [
-                                        { date: "NOV 2009", text: "\"Best of both worlds\" announced. Teams exhale — briefly.", mood: "neutral" },
+                                        { date: "NOV 2009", text: "\"Best of both worlds\" announced. Teams exhale - briefly.", mood: "neutral" },
                                         { date: "JAN 2010", text: "Every resource meeting becomes a platform war. Marketing can't explain the strategy.", mood: "warning" },
                                         { date: "JUN 2010", text: "Symbian margins razor-thin ($8/device). Windows phones outsold 5-to-1 by Android.", mood: "negative" },
                                         { date: "JUL 2010", text: "Board demands a real strategy. \"Not a compromise. A decision.\"", mood: "negative" }
                                     ] },
-                                    { type: "emerging", icon: "ph-split-horizontal", headline: "Two Companies, One Cafeteria", body: "Neither platform has enough resources to match iPhone or Android. Combined R&D is higher than competitors, but split across two platforms, it's not enough for either. App developers have abandoned both.", closing: "You're not a platform company anymore — you're two platform companies sharing overhead." }
+                                    { type: "emerging", icon: "ph-split-horizontal", headline: "Two Companies, One Cafeteria", body: "Neither platform has enough resources to match iPhone or Android. Combined R&D is higher than competitors, but split across two platforms, it's not enough for either. App developers have abandoned both.", closing: "You're not a platform company anymore - you're two platform companies sharing overhead." }
                                 ],
                                 immediate: {
                                     date: "NOV 2009",
@@ -4194,7 +4223,7 @@ But you've also lost what made Nokia slow—the endless debates, the platform po
                                     morale: "neutral",
                                     mobileRevenue: 0,        // Status quo revenue
                                     mobileCosts: 0.2,        // Duplicate R&D spending
-                                    narrative: `You announce the "best of both worlds" strategy: Symbian for emerging markets, Windows for premium. The teams exhale—nobody's getting fired today. The Finnish media cautiously approves. Crisis averted.
+                                    narrative: `You announce the "best of both worlds" strategy: Symbian for emerging markets, Windows for premium. The teams exhale, nobody's getting fired today. The Finnish media cautiously approves. Crisis averted.
 
 But within weeks, the politics are suffocating. Every resource allocation meeting becomes a platform war. "Why does Windows get more engineers?" "Why does Symbian get the better hardware?" Marketing can't explain the strategy to carriers. Developers don't know which platform to target.
 
@@ -4208,17 +4237,17 @@ But within weeks, the politics are suffocating. Every resource allocation meetin
                                     morale: "low",
                                     mobileRevenue: -0.15,    // Both platforms losing share
                                     mobileCosts: 0.2,        // Continued duplicate R&D
-                                    narrative: `The dual strategy is failing slowly. Symbian phones sell okay in India and Africa, but the margins are razor-thin—$8 per device, barely covering logistics. Windows phones struggle everywhere, outsold 5-to-1 by Android devices at the same price points.
+                                    narrative: `The dual strategy is failing slowly. Symbian phones sell okay in India and Africa, but the margins are razor-thin, $8 per device, barely covering logistics. Windows phones struggle everywhere, outsold 5-to-1 by Android devices at the same price points.
 
-Neither team has enough resources to match iPhone or Android. The combined R&D spend is higher than either competitor, but split across two platforms, it's not enough for either. App developers have abandoned both—why build for two declining platforms when Android is one huge market?
+Neither team has enough resources to match iPhone or Android. The combined R&D spend is higher than either competitor, but split across two platforms, it's not enough for either. App developers have abandoned both, why build for two declining platforms when Android is one huge market?
 
-The board is restless. "You've had 32 months," the chairman says in a tense quarterly review. "We need a real strategy. Not a compromise. A decision."`
+The board is restless. "You've had 24 months," the chairman says in a tense quarterly review. "We need a real strategy. Not a compromise. A decision."`
                                 }
                             }
                         },
                         {
                             id: "d2c-option-3",
-                            title: "Let Nokia Lead—MeeGo Future",
+                            title: "Let Nokia Lead: MeeGo Future",
                             description: "Nokia knows mobile better than Microsoft ever will. Let them build a next-generation Linux-based platform (MeeGo). Windows becomes the services layer, not the OS.",
                             risk: "Ceding platform control to an acquired company",
                             upside: "Leverage Nokia's hardware and mobile expertise",
@@ -4230,6 +4259,8 @@ The board is restless. "You've had 32 months," the chairman says in a tense quar
                                 d3Archetype: "acquirer-integrator",
                                 d3Variant: "d3-i-nokia-leads"
                             },
+
+                            pathMetrics: { marketShare: 42, nokiaShare: 0, appleShare: 14, googleShare: 8, bbShare: 16 },
 
                             consequences: {
                                 moments: [
@@ -4243,7 +4274,7 @@ The board is restless. "You've had 32 months," the chairman says in a tense quar
                                     { type: "timeline", events: [
                                         { date: "NOV 2009", text: "\"Nokia will lead our mobile future.\" Standing ovation in Espoo. Stunned silence in Redmond.", mood: "neutral" },
                                         { date: "DEC 2009", text: "WM engineers updating LinkedIn profiles. Key talent departing to Apple and Google.", mood: "negative" },
-                                        { date: "JAN 2010", text: "MeeGo N900 prototype impresses reviewers — fluid, elegant, genuinely exciting.", mood: "positive" },
+                                        { date: "JAN 2010", text: "MeeGo N900 prototype impresses reviewers - fluid, elegant, genuinely exciting.", mood: "positive" },
                                         { date: "MAR 2010", text: "iPhone 4 and 100K Android apps approaching. MeeGo has a few hundred.", mood: "warning" }
                                     ] },
                                     { type: "emerging", icon: "ph-lightning", headline: "Great 2008 Phone in 2010", body: "The N900 prototype shows what Nokia can do unleashed. But Apple's about to announce the iPhone 4. Android has 100,000 apps. Your beautiful prototype has a few hundred, most ported from Maemo.", closing: "The platform is promising. The timeline isn't. Every month perfecting MeeGo is another month the competition extends their lead." }
@@ -4270,7 +4301,7 @@ But the logic is clear: Nokia has 40,000 mobile engineers. You have 8,000. They'
                                     morale: "neutral",
                                     mobileRevenue: -0.1,     // Slow transition, some sales lost
                                     mobileCosts: 0.2,        // Accelerated MeeGo investment
-                                    narrative: `MeeGo development accelerates. The first demos are impressive—fluid animations, genuine multitasking, elegant design. The N900 prototype shows what Nokia can do when they're not fighting internal platform wars. Reviewers who see early units are genuinely excited.
+                                    narrative: `MeeGo development accelerates. The first demos are impressive, fluid animations, genuine multitasking, elegant design. The N900 prototype shows what Nokia can do when they're not fighting internal platform wars. Reviewers who see early units are genuinely excited.
 
 But the market isn't waiting. Apple's about to announce the iPhone 4. Android has 100,000 apps and is shipping on sixty different devices. Your beautiful MeeGo prototype has a few hundred apps, most of them ports from Maemo.
 
@@ -4280,8 +4311,8 @@ But the market isn't waiting. Apple's about to announce the iPhone 4. Android ha
                         },
                         {
                             id: "d2c-option-4",
-                            title: "Fork Android—Join the Enemy",
-                            description: "The nuclear option. Take Android's open-source code, add Microsoft services, and ship Nokia Android phones. If you can't beat them, become them—but on your terms.",
+                            title: "Fork Android: Join the Enemy",
+                            description: "The nuclear option. Take Android's open-source code, add Microsoft services, and ship Nokia Android phones. If you can't beat them, become them, but on your terms.",
                             risk: "Internal revolt, admitting Windows Mobile failed",
                             upside: "Instant app ecosystem, competitive devices in months",
                             cost: "Windows Mobile team, corporate pride",
@@ -4292,6 +4323,8 @@ But the market isn't waiting. Apple's about to announce the iPhone 4. Android ha
                                 d3Archetype: "android-realist",
                                 d3Variant: "d3-a-nokia-android"
                             },
+
+                            pathMetrics: { marketShare: 28, nokiaShare: 0, appleShare: 14, googleShare: 18, bbShare: 14 },
 
                             consequences: {
                                 moments: [
@@ -4305,10 +4338,10 @@ But the market isn't waiting. Apple's about to announce the iPhone 4. Android ha
                                     { type: "timeline", events: [
                                         { date: "NOV 2009", text: "Leak hits TechCrunch: \"MICROSOFT SURRENDERS TO GOOGLE.\" Stock drops 8%.", mood: "negative" },
                                         { date: "DEC 2009", text: "WM team drafting resignations. Half depart within weeks.", mood: "negative" },
-                                        { date: "MAR 2010", text: "First Nokia Android phones ship. \"Best Android phone ever made\" — The Verge.", mood: "positive" },
-                                        { date: "JUN 2010", text: "Sales exceed projections. But now competing with Samsung, HTC, LG — all on Android.", mood: "warning" }
+                                        { date: "MAR 2010", text: "First Nokia Android phones ship. \"Best Android phone ever made\" -- The Verge.", mood: "positive" },
+                                        { date: "JUN 2010", text: "Sales exceed projections. But now competing with Samsung, HTC, LG - all on Android.", mood: "warning" }
                                     ] },
-                                    { type: "emerging", icon: "ph-atom", headline: "Best Android Phone — Among Many", body: "Nokia's hardware with Android's ecosystem is exactly what the market wanted. Camera praised, build quality \"unmatched.\" But you're now competing with every other Android OEM. Samsung's Galaxy line is right behind you.", closing: "You joined the winning ecosystem. The question is whether you can stand out inside it." }
+                                    { type: "emerging", icon: "ph-atom", headline: "Best Android Phone - Among Many", body: "Nokia's hardware with Android's ecosystem is exactly what the market wanted. Camera praised, build quality \"unmatched.\" But you're now competing with every other Android OEM. Samsung's Galaxy line is right behind you.", closing: "You joined the winning ecosystem. The question is whether you can stand out inside it." }
                                 ],
                                 immediate: {
                                     date: "NOV 2009",
@@ -4318,7 +4351,7 @@ But the market isn't waiting. Apple's about to announce the iPhone 4. Android ha
                                     morale: "low",
                                     mobileRevenue: -0.3,     // Licensing revenue abandoned
                                     mobileCosts: 0.1,        // Android port development
-                                    narrative: `The announcement leaks before you can make it official. "MICROSOFT SURRENDERS TO GOOGLE" reads the TechCrunch headline. The story spreads everywhere within hours. Your Windows Mobile team holds an emergency meeting—half of them are drafting resignation letters.
+                                    narrative: `The announcement leaks before you can make it official. "MICROSOFT SURRENDERS TO GOOGLE" reads the TechCrunch headline. The story spreads everywhere within hours. Your Windows Mobile team holds an emergency meeting, half of them are drafting resignation letters.
 
 The stock drops 8% in a single day. Analysts downgrade you across the board. "Strategic capitulation," Morgan Stanley calls it. The press coverage is merciless. You're the punchline on CNBC.
 
@@ -4332,11 +4365,11 @@ But in Finland, something unexpected happens. Nokia's engineers are energized fo
                                     morale: "neutral",
                                     mobileRevenue: 0.3,      // Nokia Android device sales strong
                                     mobileCosts: 0.15,       // Hardware manufacturing scale-up
-                                    narrative: `The first Nokia Android phones ship to surprising reviews. "The best Android phone ever made" (The Verge). "Nokia's hardware with Android's ecosystem—why didn't they do this sooner?" (Ars Technica). The camera is praised; the build quality is called "unmatched." Sales exceed projections.
+                                    narrative: `The first Nokia Android phones ship to surprising reviews. "The best Android phone ever made" (The Verge). "Nokia's hardware with Android's ecosystem, why didn't they do this sooner?" (Ars Technica). The camera is praised; the build quality is called "unmatched." Sales exceed projections.
 
-Your Windows Mobile team has mostly departed—some to Apple, some to Google, many to startups. The Redmond mobile division is a shadow of itself. But that loss is Nokia's gain. The Finnish engineers are shipping their best work in years.
+Your Windows Mobile team has mostly departed, some to Apple, some to Google, many to startups. The Redmond mobile division is a shadow of itself. But that loss is Nokia's gain. The Finnish engineers are shipping their best work in years.
 
-The combination of Nokia hardware and Android software is exactly what the market wanted. But now you're competing with Samsung, HTC, LG—all shipping Android too. The question is whether you can differentiate from every other Android OEM.`
+The combination of Nokia hardware and Android software is exactly what the market wanted. But now you're competing with Samsung, HTC, LG, all shipping Android too. The question is whether you can differentiate from every other Android OEM.`
                                 }
                             }
                         }
@@ -4350,10 +4383,10 @@ The combination of Nokia hardware and Android software is exactly what the marke
                     date: "SEP 2009",
                     timeMarker: "SEP 2009",
                     title: "The Reckoning",
-                    storyImage: '<i class="ph ph-hourglass" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d2d-reckoning.jpg',
                     storyText: `The board meeting feels like a trial. Thirty-two months of "strategic patience" are on the docket, and the numbers tell the story.
 
-"Windows Mobile market share: down from 42% to 20%," the CFO reads. "iPhone: zero to 14%. Android: zero to 25%. We now have clarity. The clarity is that we lost."
+"Windows Mobile market share: down from 42% to 32%," the CFO reads. "iPhone: zero to 14%. Android: zero to 25%. We're bleeding share while doing nothing."
 
 Nobody argues. The data is irrefutable. While you waited, Apple sold 30 million iPhones. Google signed 18 OEMs and shipped 50 Android devices. Your Windows Mobile 6.5 update was dismissed as "rearranging deck chairs on the Titanic" (Gizmodo).
 
@@ -4369,17 +4402,17 @@ The silence stretches. Someone has to answer the question you've been avoiding s
                         number: 2,
                         label: "Decision Two",
                         title: "The Reckoning",
-                        teaser: "32 months of 'strategic patience' produced perfect clarity — on exactly how far behind you've fallen."
+                        teaser: "32 months of 'strategic patience' produced perfect clarity - on exactly how far behind you've fallen."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
-                            { label: "Mobile OS Share", value: "~20%", color: "red" },
-                            { label: "Share Lost", value: "22 points", color: "red" },
+                            { label: "Mobile OS Share", value: "~32%", color: "gold" },
+                            { label: "Share Lost", value: "10 points", color: "red" },
                             { label: "Senior Engineers Lost", value: "47 in 18mo", color: "red" },
                             { label: "Team Morale", value: "34% satisfaction", color: "red" },
                             { label: "Strategy Clarity", value: "18% rating", color: "red" },
-                            { label: "Revenue", value: "$650M/yr", color: "gold" }
+                            { label: "Revenue", value: "$600M/yr", color: "gold" }
                         ]
                     },
                     intelCards: [
@@ -4390,7 +4423,7 @@ The silence stretches. Someone has to answer the question you've been avoiding s
                                 icon: "ph-chart-line",
                                 label: "MARKET REPORT",
                                 title: "Mobile Market Transformation",
-                                subtitle: "42% to 20% in 32 months",
+                                subtitle: "42% to 32% in 32 months",
                                 accentColor: "#7ab88e"
                             },
                             popup: {
@@ -4398,9 +4431,9 @@ The silence stretches. Someone has to answer the question you've been avoiding s
                                 source: "Gartner + IDC + Internal Analysis",
                                 date: "SEP 2009",
                                 reliability: "HIGH",
-                                heroStat: { value: "42% \u2192 20%", label: "Windows Mobile share lost in 32 months of waiting", attribution: "Gartner + IDC Combined Analysis, 2009" },
+                                heroStat: { value: "42% \u2192 32%", label: "Windows Mobile share eroded in 32 months of waiting", attribution: "Gartner + IDC Combined Analysis, 2009" },
                                 sections: [
-                                    { heading: "Market Share Reality", content: "Windows Mobile: 42% (2007) to 20% (2009). Lost more than half your share while \"waiting for clarity.\" The smartphone market has been completely restructured." },
+                                    { heading: "Market Share Reality", content: "Windows Mobile: 42% (2007) to 32% (2009). Lost 10 points while \"waiting for clarity.\" iPhone and Android growing fast. The smartphone market is being restructured around you." },
                                     { heading: "Competitor Growth", type: "list", items: [
                                         "iPhone: 0% to 14% (carrier expansion coming)",
                                         "Android: 0% to 25% (18 OEMs, 50+ devices)",
@@ -4467,7 +4500,7 @@ The silence stretches. Someone has to answer the question you've been avoiding s
                         {
                             id: "d2d-option-1",
                             title: "Acquire Nokia Now",
-                            description: "Nokia laughed at you in 2007. They're not laughing anymore. Their smartphone share is collapsing. Buy them while they're desperate—cheaper than 2007, and now they need you.",
+                            description: "Nokia laughed at you in 2007. They're not laughing anymore. Their smartphone share is collapsing. Buy them while they're desperate, cheaper than 2007, and now they need you.",
                             risk: "Buying a declining asset with integration challenges",
                             upside: "Instant hardware capability and global distribution",
                             cost: "$15B acquisition",
@@ -4478,6 +4511,8 @@ The silence stretches. Someone has to answer the question you've been avoiding s
                                 d3Archetype: "acquirer-integrator",
                                 d3Variant: "d3-i-nokia"
                             },
+
+                            pathMetrics: { marketShare: 15, nokiaShare: 0, appleShare: 16, googleShare: 16, bbShare: 16 },
 
                             consequences: {
                                 moments: [
@@ -4506,7 +4541,7 @@ The silence stretches. Someone has to answer the question you've been avoiding s
                                     mobileCosts: 0.6,        // Nokia's operations absorbed
                                     narrative: `You fly to Helsinki. This time, the reception is different. Olli-Pekka Kallasvuo looks exhausted, older than his years. "Two years ago we were the market leader," he says. "Now we're watching Android eat our lunch. What do you propose?"
 
-The negotiation takes three weeks. The deal closes at $15B—a third of what it would have cost in 2007. Nokia shareholders approve it almost unanimously. They're scared.
+The negotiation takes three weeks. The deal closes at $15B, a third of what it would have cost in 2007. Nokia shareholders approve it almost unanimously. They're scared.
 
 The press is brutal: "Microsoft Buys Yesterday's Winner" (WSJ). "Two Dinosaurs Join Forces" (TechCrunch). But Nokia still sells more phones than anyone on earth. The question is whether you can make them smartphones before the market moves on entirely.`
                                 },
@@ -4522,14 +4557,14 @@ The press is brutal: "Microsoft Buys Yesterday's Winner" (WSJ). "Two Dinosaurs J
 
 But the market isn't waiting for your integration challenges. iPhone 4 launches to unprecedented hype. Android is shipping on eighty different devices. Samsung's Galaxy S is selling faster than they can make it.
 
-Your first Nokia Windows Phone is still 12 months away. You're not building for today's market—you're building for 2011's. You just have to hope 2011's market still has room for a third platform.`
+Your first Nokia Windows Phone is still 12 months away. You're not building for today's market, you're building for 2011's. You just have to hope 2011's market still has room for a third platform.`
                                 }
                             }
                         },
                         {
                             id: "d2d-option-2",
                             title: "Build Windows Phone 7",
-                            description: "Start fresh. Throw away Windows Mobile and build something genuinely new—modern, touch-first, beautiful. You're late, but Microsoft has rebuilt platforms before.",
+                            description: "Start fresh. Throw away Windows Mobile and build something genuinely new, modern, touch-first, beautiful. You're late, but Microsoft has rebuilt platforms before.",
                             risk: "18+ months to ship, app ecosystem starts at zero",
                             upside: "Clean slate, no legacy baggage, full control",
                             cost: "$1B+ development",
@@ -4540,6 +4575,8 @@ Your first Nokia Windows Phone is still 12 months away. You're not building for 
                                 d3Archetype: "platform-builder",
                                 d3Variant: "d3-p-already-building"
                             },
+
+                            pathMetrics: { marketShare: 4, nokiaShare: 35, appleShare: 17, googleShare: 13, bbShare: 15 },
 
                             consequences: {
                                 moments: [
@@ -4568,7 +4605,7 @@ Your first Nokia Windows Phone is still 12 months away. You're not building for 
                                     mobileCosts: 0.4,        // Major new platform investment
                                     narrative: `You stand on stage at MIX and announce Windows Phone 7. The slides show something nobody expected: beautiful typography, fluid animations, a design language that's genuinely different from iOS and Android. "We're not copying anyone," you say. "We're rethinking mobile from scratch."
 
-The developer audience applauds—real applause, not polite applause. The tech press is cautiously optimistic. "Microsoft finally gets it," writes Engadget. Your team is energized for the first time in years. They're building something they believe in.
+The developer audience applauds, real applause, not polite applause. The tech press is cautiously optimistic. "Microsoft finally gets it," writes Engadget. Your team is energized for the first time in years. They're building something they believe in.
 
 But ship date is October 2010 at earliest. Apple has 200,000 apps. You'll ship with maybe 1,000. The math is daunting. You're asking developers and consumers to take a chance on a platform that doesn't exist yet, from a company that's failed in mobile repeatedly.`
                                 },
@@ -4580,7 +4617,7 @@ But ship date is October 2010 at earliest. Apple has 200,000 apps. You'll ship w
                                     morale: "high",
                                     mobileRevenue: -0.1,     // Legacy revenue gone, new not started
                                     mobileCosts: 0.3,        // Continued WP7 development
-                                    narrative: `The first WP7 devices boot up in the lab. They're fast. They're different. The Metro UI really is something new—live tiles updating with real information, hubs organizing content by activity rather than app. Testers who try it don't want to go back to their iPhones.
+                                    narrative: `The first WP7 devices boot up in the lab. They're fast. They're different. The Metro UI really is something new, live tiles updating with real information, hubs organizing content by activity rather than app. Testers who try it don't want to go back to their iPhones.
 
 But the launch is four months away and you have 1,200 apps committed. iPhone has 250,000. Android has 100,000. The app gap is enormous and growing every day. Instagram launched last week; they're not building for Windows Phone.
 
@@ -4602,6 +4639,8 @@ But the launch is four months away and you have 1,200 apps committed. iPhone has
                                 d3Archetype: "android-realist",
                                 d3Variant: "d3-a-fork-no-hardware"
                             },
+
+                            pathMetrics: { marketShare: 10, nokiaShare: 34, appleShare: 16, googleShare: 8, bbShare: 15 },
 
                             consequences: {
                                 moments: [
@@ -4628,7 +4667,7 @@ But the launch is four months away and you have 1,200 apps committed. iPhone has
                                     morale: "low",
                                     mobileRevenue: -0.3,     // Abandoned all licensing
                                     mobileCosts: 0.1,        // Android fork development
-                                    narrative: `The leak hits before you can announce it properly. "MICROSOFT SURRENDERS: PLANS ANDROID PHONES" reads the TechCrunch headline. It's trending on Twitter within an hour. Your Windows Mobile team holds an emergency all-hands—several senior engineers resign on the spot.
+                                    narrative: `The leak hits before you can announce it properly. "MICROSOFT SURRENDERS: PLANS ANDROID PHONES" reads the TechCrunch headline. It's trending on Twitter within an hour. Your Windows Mobile team holds an emergency all-hands, several senior engineers resign on the spot.
 
 The stock drops 6%. Bill calls: "Steve, what are you doing?" You explain the logic, but he sounds unconvinced. The board emergency session is brutal.
 
@@ -4642,7 +4681,7 @@ But in the engineering labs, a small team is already working. Android with Bing 
                                     morale: "neutral",
                                     mobileRevenue: 0.1,      // Early MS Android device sales
                                     mobileCosts: 0.15,       // OEM support and development
-                                    narrative: `The first Microsoft Android prototypes run surprisingly well. Apps from the Play Store mostly work, though Google is already sending threatening letters to your legal team. The Office integration is seamless—this is the first phone where Excel actually works properly.
+                                    narrative: `The first Microsoft Android prototypes run surprisingly well. Apps from the Play Store mostly work, though Google is already sending threatening letters to your legal team. The Office integration is seamless, this is the first phone where Excel actually works properly.
 
 Reviews of internal demos are positive. "This is what Android should have been," says one tester. The combination of Google's app ecosystem and Microsoft's productivity tools is compelling.
 
@@ -4652,12 +4691,14 @@ But Google is already moving to lock down Android. New versions will require Pla
                         },
                         {
                             id: "d2d-option-4",
-                            title: "Exit Mobile—Go Services",
+                            title: "Exit Mobile: Go Services",
                             description: "Admit defeat. Stop trying to build a phone platform. Focus on what you're good at: Office, Exchange, enterprise software. Build the best apps for iPhone and Android and let someone else own the platform.",
                             risk: "Surrendering platform ambitions forever",
                             upside: "Stop the bleeding, focus on winnable battles",
                             cost: "Pride and platform control",
                             investment: "$0",
+
+                            pathMetrics: { marketShare: 4, nokiaShare: 37, appleShare: 16, googleShare: 10, bbShare: 17 },
 
                             setsPathState: {
                                 d2Choice: "concede-services",
@@ -4689,11 +4730,11 @@ But Google is already moving to lock down Android. New versions will require Pla
                                     morale: "low",
                                     mobileRevenue: -0.4,     // All licensing abandoned
                                     mobileCosts: -0.2,       // Mobile division shrinking
-                                    narrative: `You announce it at an all-hands: "Microsoft will focus on being the best apps and services company for mobile—regardless of platform." The mobile team sits in stunned silence. A few people applaud the honesty. Most are already planning their exits.
+                                    narrative: `You announce it at an all-hands: "Microsoft will focus on being the best apps and services company for mobile, regardless of platform." The mobile team sits in stunned silence. A few people applaud the honesty. Most are already planning their exits.
 
 The press is savage: "White Flag at Microsoft" (Wired), "Ballmer Admits Mobile Defeat" (The Verge), "The End of an Era" (WSJ). Stock drops 4% before lunch.
 
-But there's also something else in the room: relief. You're not pretending anymore. The billion-dollar mobile bets are off the table. The question is what you'll build instead—and whether Microsoft can thrive in a world where someone else owns the mobile platform.`
+But there's also something else in the room: relief. You're not pretending anymore. The billion-dollar mobile bets are off the table. The question is what you'll build instead, and whether Microsoft can thrive in a world where someone else owns the mobile platform.`
                                 },
                                 delayed: {
                                     date: "JAN 2011",
@@ -4731,7 +4772,7 @@ The stock recovers. The board is cautiously optimistic. "We lost the platform wa
                     date: "JAN 2011",
                     timeMarker: "JAN 2011",
                     title: "The Platform Crossroads",
-                    storyImage: '<i class="ph ph-code" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d3-platform-crossroads.jpg',
                     objective: "Windows Phone 7 launched to praise and weak sales. What's next?",
                     availableInfo: ["d3-info-wp7-launch", "d3-info-nokia-talks", "d3-info-developer-sentiment"],
 
@@ -4742,7 +4783,7 @@ The stock recovers. The board is cautiously optimistic. "We lost the platform wa
                         teaser: "WP7 launched to critical praise and weak sales. The app gap is brutal, but Nokia may be your lifeline."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
                             { label: "Mobile OS Share", value: "~4%", color: "red" },
                             { label: "WP7 Sales", value: "2M units", color: "gold" },
@@ -4775,7 +4816,7 @@ The stock recovers. The board is cautiously optimistic. "We lost the platform wa
                                         "Metro UI praised as 'refreshingly different'",
                                         "Live Tiles concept resonating with users",
                                         "Integration with Xbox and Zune services",
-                                        "NPS of 8.2 — highest of any Microsoft consumer product"
+                                        "NPS of 8.2 - highest of any Microsoft consumer product"
                                     ] },
                                     { heading: "What Didn't", type: "list", items: [
                                         "No copy/paste (shipping in March update)",
@@ -4793,6 +4834,7 @@ The stock recovers. The board is cautiously optimistic. "We lost the platform wa
                             type: "entity",
                             thumb: {
                                 icon: "ph-handshake",
+                                headerImage: "assets/images/nokia-mwc.webp",
                                 label: "COMPETITOR",
                                 title: "NOKIA",
                                 subtitle: "Burning platform memo",
@@ -4802,6 +4844,7 @@ The stock recovers. The board is cautiously optimistic. "We lost the platform wa
                             popup: {
                                 name: "NOKIA",
                                 icon: "ph-handshake",
+                                headerImage: "assets/images/nokia-mwc.webp",
                                 category: "Potential Partner",
                                 gradient: "linear-gradient(135deg, #0f1f1a 0%, #1a2f25 50%, #0f1f1a 100%)",
                                 front: {
@@ -4868,37 +4911,37 @@ The stock recovers. The board is cautiously optimistic. "We lost the platform wa
 
                     framingByPath: {
                         "enterprise-consumer-hybrid": {
-                            storyText: `Windows Phone 7 launched three months ago. The reviews were surprisingly positive—"refreshingly different," "the most beautiful phone interface ever designed," "Microsoft finally gets it."
+                            storyText: `Windows Phone 7 launched three months ago. The reviews were surprisingly positive, "refreshingly different," "the most beautiful phone interface ever designed," "Microsoft finally gets it."
 
 But the sales? Two million devices in 90 days. iPhone 4 sold 1.7 million in three days.
 
-Your hybrid strategy—building for enterprise and consumer simultaneously—delivered a platform that impressed critics but confused buyers. Enterprise customers want the security features you promised. Consumer buyers don't understand what makes it different from Android.
+Your hybrid strategy (building for enterprise and consumer simultaneously) delivered a platform that impressed critics but confused buyers. Enterprise customers want the security features you promised. Consumer buyers don't understand what makes it different from Android.
 
 "We built something people like," says your product lead. "We need to build something people buy."
 
-The Nokia talks are getting serious. Stephen Elop's "burning platform" memo leaked last week. He's signaling hard for Windows Phone—probably because he used to work here. If Nokia commits, you instantly become a top-three platform. If they choose Android, you're finished.
+The Nokia talks are getting serious. Stephen Elop's "burning platform" memo leaked last week. He's signaling hard for Windows Phone, probably because he used to work here. If Nokia commits, you instantly become a top-three platform. If they choose Android, you're finished.
 
 But Nokia wants more than a partnership. They want a lifeline.`
                         },
                         "concede-pivot": {
                             storyText: `You made the hardest call of your career: abandoning enterprise to chase consumer. Your enterprise customers called it betrayal. Your board called it courage. The market called it "too late."
 
-Windows Phone 7 launched three months ago—three years after iPhone, two years after Android. The reviews acknowledged the pivot: "Microsoft finally stopped pretending enterprise phones were good enough for consumers."
+Windows Phone 7 launched three months ago, three years after iPhone, two years after Android. The reviews acknowledged the pivot: "Microsoft finally stopped pretending enterprise phones were good enough for consumers."
 
 But being late means playing catch-up in an ecosystem game. App Store has 350,000 apps. Android Market has 200,000. Windows Phone has 8,000. Developers won't build for a platform without users. Users won't buy a platform without apps.
 
-The Nokia talks could change everything. Stephen Elop wants Windows Phone—he's practically campaigning for it internally. If Nokia commits their 100 million annual smartphone sales, you might have a shot at critical mass.
+The Nokia talks could change everything. Stephen Elop wants Windows Phone, he's practically campaigning for it internally. If Nokia commits their 100 million annual smartphone sales, you might have a shot at critical mass.
 
 But the clock is ticking. Every month, the app gap widens.`
                         },
                         "match-free": {
-                            storyText: `You matched Android's price: free. It stopped the bleeding—HTC and Samsung didn't abandon you entirely. But free solved the wrong problem.
+                            storyText: `You matched Android's price: free. It stopped the bleeding. HTC and Samsung didn't abandon you entirely. But free solved the wrong problem.
 
 Windows Phone 7 launched three months ago with competitive hardware from partners who stuck around. The reviews praised the design: "Metro UI is genuinely innovative." The sales were modest but not disastrous.
 
 The real problem isn't price. It's apps. Android has 200,000 apps and counting. Windows Phone has 8,000. Users try your phones in stores, like them, then ask "does it have Instagram?" It doesn't. They walk away.
 
-Nokia's Stephen Elop is in talks. If Nokia—still the world's largest phone manufacturer—commits to Windows Phone exclusively, the app developers might follow. It's your best shot at breaking the chicken-and-egg cycle.
+Nokia's Stephen Elop is in talks. If Nokia, still the world's largest phone manufacturer, commits to Windows Phone exclusively, the app developers might follow. It's your best shot at breaking the chicken-and-egg cycle.
 
 But Nokia wants serious commitment: development support, marketing dollars, and a hardware acquisition option down the road.`
                         },
@@ -4909,17 +4952,17 @@ Windows Phone 7 launched three months ago. Premium partners, premium devices, pr
 
 The problem: premium doesn't build ecosystems. You have 8,000 apps. Android has 200,000 and growing. Developers build for market share, and yours is 4% and falling.
 
-Nokia could change the equation. They're desperate—Symbian is dying and MeeGo isn't ready. Nokia CEO, Stephen Elop is pushing hard for Windows Phone. If Nokia commits, you'd have hardware excellence plus your software differentiation. A genuine alternative to Android's race to the bottom.
+Nokia could change the equation. They're desperate. Symbian is dying and MeeGo isn't ready. Nokia CEO, Stephen Elop is pushing hard for Windows Phone. If Nokia commits, you'd have hardware excellence plus your software differentiation. A genuine alternative to Android's race to the bottom.
 
 But Nokia wants a real partnership. Multi-billion dollar support. Exclusive commitment. Potentially an acquisition path. They're asking you to bet big.`
                         }
                     },
 
-                    storyText: `Windows Phone 7 launched three months ago. The reviews were strong—Metro UI praised as genuinely innovative, the best design Microsoft has ever produced. But sales have been modest: two million devices while iPhone sells that in a weekend.
+                    storyText: `Windows Phone 7 launched three months ago. The reviews were strong. Metro UI praised as genuinely innovative, the best design Microsoft has ever produced. But sales have been modest: two million devices while iPhone sells that in a weekend.
 
 The app gap is brutal. 8,000 apps versus 350,000 on iOS. Developers won't commit to a 4% market share platform. Users won't buy a phone without their favorite apps.
 
-But there's an opportunity. Nokia is desperate. Stephen Elop's "burning platform" memo acknowledges that Symbian is dying. He's signaling strongly for Windows Phone—and Nokia still ships 100 million smartphones a year.
+But there's an opportunity. Nokia is desperate. Stephen Elop's "burning platform" memo acknowledges that Symbian is dying. He's signaling strongly for Windows Phone, and Nokia still ships 100 million smartphones a year.
 
 If Nokia commits, you might achieve the critical mass that attracts developers. If they choose Android instead, Windows Phone becomes irrelevant.
 
@@ -4938,6 +4981,7 @@ What's your move?`,
                             setsPathState: {
                                 d4State: "still-fighting"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 25, appleShare: 16, googleShare: 38, bbShare: 7 },
 
                             consequences: {
 
@@ -4962,7 +5006,7 @@ What's your move?`,
                                 events: [
                                     { date: "FEB 2011", text: "Nokia-Microsoft partnership signed in London. Nokia goes Windows Phone exclusively.", mood: "positive" },
                                     { date: "APR 2011", text: "Nokia engineers begin porting WP to Lumia hardware. Camera tech integration begins.", mood: "positive" },
-                                    { date: "SEP 2011", text: "First Lumia phones ship. Beautiful hardware, praised reviews. Sales modest — app gap persists.", mood: "warning" },
+                                    { date: "SEP 2011", text: "First Lumia phones ship. Beautiful hardware, praised reviews. Sales modest - app gap persists.", mood: "warning" },
                                     { date: "NOV 2011", text: "Developer incentive program launches. $100K checks to port major apps. Most say 'call us when you have users.'", mood: "warning" }
                                 ]
                             },
@@ -4983,7 +5027,7 @@ What's your move?`,
                                     mobileRevenue: 0.2,      // Nokia licensing + device revenue
                                     mobileCosts: 0.35,       // Platform support payments to Nokia
                                     unlockedArtifacts: ["artifact-nokia-lumia-800"],
-                                    narrative: `The deal closes on February 11th. Nokia will make Windows Phones—only Windows Phones—for the foreseeable future. Stephen Elop stands beside you at the press conference in London, declaring it "two companies coming together to build a new global ecosystem."
+                                    narrative: `The deal closes on February 11th. Nokia will make Windows Phones (only Windows Phones) for the foreseeable future. Stephen Elop stands beside you at the press conference in London, declaring it "two companies coming together to build a new global ecosystem."
 
 You're committing $1 billion annually in platform support payments. In return, Nokia brings 100 million units of manufacturing capacity, global distribution, and the best camera technology in mobile. For the first time, you have a hardware partner who's betting everything on you.
 
@@ -4994,22 +5038,23 @@ The Finnish press calls it "surrender to Microsoft." Your stock rises 4%. Nokia'
                                     cash: -0.5,
                                     marketCap: 0,
                                     marketShare: -2,
-                                    marketShareOverride: 3,
                                     morale: "high",
                                     mobileRevenue: 0.15,     // Lumia sales growing
                                     mobileCosts: 0.2,        // Developer incentives, marketing
-                                    narrative: `The first Nokia Lumia phones ship. The hardware is beautiful—vibrant colors, premium build, cameras that outshoot iPhone. Finally, Windows Phone on devices worthy of the software. Reviews praise everything except the app selection.
+                                    narrative: `The first Nokia Lumia phones ship. The hardware is beautiful, vibrant colors, premium build, cameras that outshoot iPhone. Finally, Windows Phone on devices worthy of the software. Reviews praise everything except the app selection.
 
-But sales remain modest. The Lumia 800 sells respectably in Europe but struggles in the US market. The app gap hasn't closed—Instagram still says no. Snapchat won't return calls. Angry Birds is there, but the hot new apps aren't.
+But sales remain modest. The Lumia 800 sells respectably in Europe but struggles in the US market. The app gap hasn't closed. Instagram still says no. Snapchat won't return calls. Angry Birds is there, but the hot new apps aren't.
 
-"Nokia brought us hardware credibility," your product lead says in a strategy review. "Now we need to buy developer credibility." Literally. Your team starts writing $100,000 checks to port major apps. Some say yes. Most say "call us when you have more users."`
+"Nokia brought us hardware credibility," your product lead says in a strategy review. "Now we need to buy developer credibility." Literally. Your team starts writing $100,000 checks to port major apps. Some say yes. Most say "call us when you have more users."
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         },
                         {
                             id: "d3p-option-2",
                             title: "Acquire Platform Innovation",
-                            description: "HP just bought Palm for webOS. Similar innovators are available—maybe webOS itself if HP stumbles. Acquire the UI innovation you need rather than building it.",
+                            description: "HP just bought Palm for webOS. Similar innovators are available, maybe webOS itself if HP stumbles. Acquire the UI innovation you need rather than building it.",
                             risk: "Integration always harder than expected",
                             upside: "Proven innovation, existing team",
                             cost: "$1-2B acquisition",
@@ -5018,6 +5063,7 @@ But sales remain modest. The Lumia 800 sells respectably in Europe but struggles
                             setsPathState: {
                                 d4State: "still-fighting"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 25, appleShare: 16, googleShare: 38, bbShare: 7 },
 
                             consequences: {
 
@@ -5063,9 +5109,9 @@ But sales remain modest. The Lumia 800 sells respectably in Europe but struggles
                                     mobileRevenue: 0,        // No immediate revenue impact
                                     mobileCosts: 0.3,        // Acquisition integration costs
                                     unlockedArtifacts: ["artifact-danger-sidekick"],
-                                    narrative: `HP's webOS experiment is already faltering—the TouchPad lasted 49 days before being killed. You make an offer: $1.5 billion for the webOS team and intellectual property. HP accepts within a week. They want this off their books.
+                                    narrative: `HP's webOS experiment is already faltering, the TouchPad lasted 49 days before being killed. You make an offer: $1.5 billion for the webOS team and intellectual property. HP accepts within a week. They want this off their books.
 
-The tech press is confused: "Microsoft buying a platform they compete with?" But you're not buying the product. The webOS team built genuinely innovative multi-tasking, notifications, and gestures—things Windows Phone lacks. You want their brains, not their brand.
+The tech press is confused: "Microsoft buying a platform they compete with?" But you're not buying the product. The webOS team built genuinely innovative multi-tasking, notifications, and gestures, things Windows Phone lacks. You want their brains, not their brand.
 
 The plan: integrate webOS innovations into Windows Phone 8. "We're buying a brain trust," you tell the board. "Not a product." The webOS engineers are cautiously optimistic. They've been through hell. They just want to build something people will actually use.`
                                 },
@@ -5074,21 +5120,22 @@ The plan: integrate webOS innovations into Windows Phone 8. "We're buying a brai
                                     cash: -0.5,
                                     marketCap: -0.5,
                                     marketShare: -5,
-                                    marketShareOverride: 3,
                                     morale: "low",
                                     mobileRevenue: -0.1,     // Integration delays hurting sales
                                     mobileCosts: 0.2,        // Retention bonuses, integration
-                                    narrative: `Integration is brutal. The webOS team and Windows Phone team have different philosophies—webOS was built for experimentation, Windows Phone for consistency. Every design meeting becomes a debate about fundamental principles.
+                                    narrative: `Integration is brutal. The webOS team and Windows Phone team have different philosophies, webOS was built for experimentation, Windows Phone for consistency. Every design meeting becomes a debate about fundamental principles.
 
 The best webOS engineers start leaving for Google. They didn't sign up to spend eighteen months merging codebases. By fall, half the acquisition team is gone. The ones who remain are frustrated, caught between two cultures that don't mesh.
 
-"We bought innovation and turned it into bureaucracy," admits one PM during a tense retrospective. The platform is getting better—webOS-style cards and gestures are coming in WP8—but the team is demoralized and you've lost nine months to integration hell while Android keeps shipping.`
+"We bought innovation and turned it into bureaucracy," admits one PM during a tense retrospective. The platform is getting better (webOS-style cards and gestures are coming in WP8) but the team is demoralized and you've lost nine months to integration hell while Android keeps shipping.
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         },
                         {
                             id: "d3p-option-3",
-                            title: "Fork Android—Join the Ecosystem",
+                            title: "Fork Android: Join the Ecosystem",
                             description: "The nuclear option. Take Android's open-source code, replace Google services with Microsoft services, and ship devices with app compatibility but Bing/Outlook/OneDrive defaults.",
                             risk: "Internal revolt, strategic humiliation, Google retaliation",
                             upside: "Instant app ecosystem, competitive overnight",
@@ -5098,13 +5145,14 @@ The best webOS engineers start leaving for Google. They didn't sign up to spend 
                             setsPathState: {
                                 d4State: "differentiated"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 25, appleShare: 16, googleShare: 38, bbShare: 7 },
 
                             consequences: {
 
                         moments: [
                             {
                                 type: "verdict",
-                                headline: "Microsoft embraces Android — on its own terms.",
+                                headline: "Microsoft embraces Android - on its own terms.",
                                 subline: "Two senior executives resign within 48 hours. Headlines read 'Microsoft Surrenders to Google.'",
                                 sentiment: "negative"
                             },
@@ -5142,24 +5190,23 @@ The best webOS engineers start leaving for Google. They didn't sign up to spend 
                                     morale: "low",
                                     mobileRevenue: -0.2,     // Abandoned WP licensing
                                     mobileCosts: 0.15,       // Android fork development
-                                    narrative: `You announce it at a hastily called press conference: "Microsoft is embracing Android—on our terms." The plan: take AOSP, strip out Google services, integrate Microsoft services, and ship phones that run Android apps but default to Bing, Outlook, and OneDrive.
+                                    narrative: `You announce it at a hastily called press conference: "Microsoft is embracing Android, on our terms." The plan: take AOSP, strip out Google services, integrate Microsoft services, and ship phones that run Android apps but default to Bing, Outlook, and OneDrive.
 
 The Windows Phone team is devastated. Two senior executives resign within 48 hours. The stock drops 5%. Headlines read "Microsoft Surrenders to Google" and "The End of Windows Phone."
 
-But the engineering team—the pragmatists who've watched app developers ignore you for four years—start building immediately. Within weeks, they have a working prototype. It runs every Android app. It defaults to Microsoft services. It's Android, but it's yours.`
+But the engineering team, the pragmatists who've watched app developers ignore you for four years, start building immediately. Within weeks, they have a working prototype. It runs every Android app. It defaults to Microsoft services. It's Android, but it's yours.`
                                 },
                                 delayed: {
                                     date: "SEP 2011",
                                     cash: -0.3,
                                     marketCap: 1.0,
                                     marketShare: -3,
-                                    marketShareOverride: 8,
                                     morale: "neutral",
                                     mobileRevenue: 0.25,     // MS Android device sales
                                     mobileCosts: 0.1,        // Platform maintenance
                                     narrative: `The first "Microsoft Android" phones ship to surprising reception. "Everything you love about Android without Google tracking you," reads one review. "Privacy-focused Android with real productivity," writes another. The enterprise angle is working.
 
-The app story is instant—200,000 apps on day one. No more begging developers. No more app gap. For the first time, your phones have the same apps as everyone else, plus better Office and Outlook integration.
+The app story is instant, 200,000 apps on day one. No more begging developers. No more app gap. For the first time, your phones have the same apps as everyone else, plus better Office and Outlook integration.
 
 But Google is fighting back. They're tightening Play Store requirements, pressuring OEMs to avoid you, threatening to cut off partners who ship your devices. "We're building on hostile ground," warns your strategy lead. "Google will try to cut off our oxygen." The question is whether you can grow fast enough that they can't stop you.`
                                 }
@@ -5175,16 +5222,16 @@ But Google is fighting back. They're tightening Play Store requirements, pressur
                     date: "JAN 2011",
                     timeMarker: "JAN 2011",
                     title: "The Hardware Gambit",
-                    storyImage: '<i class="ph ph-stack" style="font-size: 4rem;"></i>',
-                    storyText: `Your gamble is paying off—sort of. When you announced Microsoft would build its own phones, the OEMs fled to Android. Samsung called it "betrayal." HTC said you'd "never succeed in hardware."
+                    storyBg: 'assets/images/chapters/d3-hardware-gambit.jpg',
+                    storyText: `Your gamble is paying off, sort of. When you announced Microsoft would build its own phones, the OEMs fled to Android. Samsung called it "betrayal." HTC said you'd "never succeed in hardware."
 
-But the KIN disaster taught you something. The first Microsoft phones—rushed, confused, trying to be too many things—sold a few hundred units before being killed. The failure was clarifying: you needed to be more like Apple, not less.
+But the KIN disaster taught you something. The first Microsoft phones (rushed, confused, trying to be too many things) sold a few hundred units before being killed. The failure was clarifying: you needed to be more like Apple, not less.
 
-Now, eighteen months later, the second generation of Microsoft phones is ready. Your hardware team—bolstered by acquisitions and poached Apple engineers—has built something genuinely premium. The software-hardware integration is seamless in a way OEM partnerships never achieved.
+Now, eighteen months later, the second generation of Microsoft phones is ready. Your hardware team (bolstered by acquisitions and poached Apple engineers) has built something genuinely premium. The software-hardware integration is seamless in a way OEM partnerships never achieved.
 
-The question is scale. Apple sells 20 million iPhones per quarter. Samsung is approaching that with Galaxy phones. You have the capacity to build maybe 2 million per quarter—enough for a premium niche, not enough for a platform.
+The question is scale. Apple sells 20 million iPhones per quarter. Samsung is approaching that with Galaxy phones. You have the capacity to build maybe 2 million per quarter, enough for a premium niche, not enough for a platform.
 
-Nokia just announced they're abandoning Symbian. They might be looking for a partner—or they might go all-in on Android. If you could combine your software with Nokia's manufacturing scale...
+Nokia just announced they're abandoning Symbian. They might be looking for a partner, or they might go all-in on Android. If you could combine your software with Nokia's manufacturing scale...
 
 But that would mean abandoning the vertical integration vision. Picking partners again.`,
                     objective: "Your hardware bet is showing promise. Do you stay vertical or seek scale through partners?",
@@ -5197,7 +5244,7 @@ But that would mean abandoning the vertical integration vision. Picking partners
                         teaser: "Your vertical integration bet is showing promise, but scale remains elusive. Nokia might be the answer."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
                             { label: "Mobile OS Share", value: "~3%", color: "red" },
                             { label: "Surface Phone", value: "Premium niche", color: "gold" },
@@ -5247,6 +5294,7 @@ But that would mean abandoning the vertical integration vision. Picking partners
                             type: "entity",
                             thumb: {
                                 icon: "ph-handshake",
+                                headerImage: "assets/images/nokia-mwc.webp",
                                 label: "COMPETITOR",
                                 title: "NOKIA",
                                 subtitle: "Burning platform memo",
@@ -5256,6 +5304,7 @@ But that would mean abandoning the vertical integration vision. Picking partners
                             popup: {
                                 name: "NOKIA",
                                 icon: "ph-handshake",
+                                headerImage: "assets/images/nokia-mwc.webp",
                                 category: "Potential Partner",
                                 gradient: "linear-gradient(135deg, #0f1f1a 0%, #1a2f25 50%, #0f1f1a 100%)",
                                 front: {
@@ -5331,7 +5380,7 @@ But that would mean abandoning the vertical integration vision. Picking partners
                     options: [
                         {
                             id: "d3v-option-1",
-                            title: "Stay Vertical—Premium Niche",
+                            title: "Stay Vertical: Premium Niche",
                             description: "Accept limited scale. Build the best Microsoft phone possible and sell it to customers who value quality over ecosystem. Be the Porsche, not the Toyota.",
                             risk: "Niche market, app developers ignore you",
                             upside: "Highest margins, complete brand control",
@@ -5341,6 +5390,7 @@ But that would mean abandoning the vertical integration vision. Picking partners
                             setsPathState: {
                                 d4State: "differentiated"
                             },
+                            pathMetrics: { marketShare: 6, nokiaShare: 24, appleShare: 17, googleShare: 40, bbShare: 7 },
 
                             consequences: {
 
@@ -5384,9 +5434,9 @@ But that would mean abandoning the vertical integration vision. Picking partners
                                     morale: "high",
                                     mobileRevenue: 0.1,      // Premium device sales, small volume
                                     mobileCosts: 0.25,       // Hardware R&D and manufacturing
-                                    narrative: `You launch the Microsoft Surface Phone at a special event in New York. Premium aluminum construction. 4.5-inch AMOLED display. The best camera in any phone. Priced at $699—iPhone territory. The tech press is invited to touch and hold it. The room falls quiet.
+                                    narrative: `You launch the Microsoft Surface Phone at a special event in New York. Premium aluminum construction. 4.5-inch AMOLED display. The best camera in any phone. Priced at $699, iPhone territory. The tech press is invited to touch and hold it. The room falls quiet.
 
-Reviews are exceptional: "The phone Microsoft should have built from the start." "Finally, a Windows Phone worth buying." "This changes everything—if enough people buy it." The hardware is unimpeachable.
+Reviews are exceptional: "The phone Microsoft should have built from the start." "Finally, a Windows Phone worth buying." "This changes everything, if enough people buy it." The hardware is unimpeachable.
 
 Sales are modest but margins are strong. You're selling 500,000 per quarter to customers who really want them. "We're building a cult," says your product lead. "Small, passionate, committed. Cults can change the world."`
                                 },
@@ -5395,11 +5445,10 @@ Sales are modest but margins are strong. You're selling 500,000 per quarter to c
                                     cash: -0.4,
                                     marketCap: 0.5,
                                     marketShare: -2,
-                                    marketShareOverride: 6,
                                     morale: "high",
                                     mobileRevenue: 0.12,     // Growing cult following
                                     mobileCosts: 0.15,       // Continued hardware investment
-                                    narrative: `Surface Phone has a following—small, passionate, vocal. They create fan sites, advocacy groups, petition developers to build Windows Phone apps. They defend the platform in every comment section. They're true believers.
+                                    narrative: `Surface Phone has a following, small, passionate, vocal. They create fan sites, advocacy groups, petition developers to build Windows Phone apps. They defend the platform in every comment section. They're true believers.
 
 But the numbers don't lie: 2 million units sold total. iPhone sells that in a week. Android sells that in two days. The cult is devoted, but it's not growing fast enough to matter.
 
@@ -5409,16 +5458,17 @@ But the numbers don't lie: 2 million units sold total. iPhone sells that in a we
                         },
                         {
                             id: "d3v-option-2",
-                            title: "Hybrid Model—Premium In-House + Nokia Scale",
+                            title: "Hybrid Model: Premium In-House + Nokia Scale",
                             description: "Keep building Surface phones for premium segment. Partner with Nokia for mainstream volume. Two tracks: Microsoft for showcase, Nokia for scale.",
                             risk: "Complexity, channel conflict, mixed brand",
-                            upside: "Best of both worlds—quality and scale",
+                            upside: "Best of both worlds, quality and scale",
                             cost: "$2B (hardware + Nokia partnership)",
                             investment: "$2B",
 
                             setsPathState: {
                                 d4State: "still-fighting"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 25, appleShare: 16, googleShare: 38, bbShare: 7 },
 
                             consequences: {
 
@@ -5473,21 +5523,22 @@ But retailers are confused. Carriers don't know which to promote. "You're compet
                                     cash: -1.0,
                                     marketCap: -0.5,
                                     marketShare: -3,
-                                    marketShareOverride: 3,
                                     morale: "neutral",
                                     mobileRevenue: 0.1,      // Cannibalization reducing totals
                                     mobileCosts: 0.35,       // Dual team overhead
-                                    narrative: `The hybrid strategy is showing cracks. Surface phones get the best reviews but modest sales—too expensive for mass market. Nokia Lumias sell more units but reviewers keep comparing them unfavorably to Surface. "Why would I buy the Nokia when the Microsoft version is better?" asks The Verge.
+                                    narrative: `The hybrid strategy is showing cracks. Surface phones get the best reviews but modest sales, too expensive for mass market. Nokia Lumias sell more units but reviewers keep comparing them unfavorably to Surface. "Why would I buy the Nokia when the Microsoft version is better?" asks The Verge.
 
 Internally, the teams are at odds. Surface wants premium features that Nokia can't afford. Nokia wants cost reductions that hurt Surface's premium positioning. Marketing can't decide which brand to push. Every campaign seems to undermine the other.
 
-"We built two good things that make each other worse," admits your strategy lead during a painful quarterly review. "Classic Microsoft."`
+"We built two good things that make each other worse," admits your strategy lead during a painful quarterly review. "Classic Microsoft."
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         },
                         {
                             id: "d3v-option-3",
-                            title: "Abandon Hardware—All-In on Nokia",
+                            title: "Abandon Hardware: All-In on Nokia",
                             description: "Sell the hardware division (or shut it). Go all-in on Nokia as your exclusive hardware partner. One message, one partner, unified strategy.",
                             risk: "Giving up hardware control, dependent on Nokia",
                             upside: "Clarity, scale, and focused investment",
@@ -5497,6 +5548,7 @@ Internally, the teams are at odds. Surface wants premium features that Nokia can
                             setsPathState: {
                                 d4State: "still-fighting"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 25, appleShare: 16, googleShare: 38, bbShare: 7 },
 
                             consequences: {
 
@@ -5540,7 +5592,7 @@ Internally, the teams are at odds. Surface wants premium features that Nokia can
                                     morale: "neutral",
                                     mobileRevenue: 0.15,     // Nokia partnership ramping
                                     mobileCosts: 0.2,        // Nokia support + write-offs
-                                    narrative: `You wind down the hardware division—transferring some engineers to Nokia, letting others go. The Surface Phone becomes "the phone Microsoft built once"—a proof of concept, not a product line. It's a painful decision. Your team built something beautiful.
+                                    narrative: `You wind down the hardware division, transferring some engineers to Nokia, letting others go. The Surface Phone becomes "the phone Microsoft built once", a proof of concept, not a product line. It's a painful decision. Your team built something beautiful.
 
 Nokia becomes your exclusive partner. The announcement is clean: "Nokia brings hardware excellence. Microsoft brings platform innovation. Together, we'll challenge the duopoly." One partner, one message, one goal.
 
@@ -5551,15 +5603,16 @@ Wall Street is cautiously optimistic. Nokia's stock actually rises for the first
                                     cash: -0.5,
                                     marketCap: 0.5,
                                     marketShare: -2,
-                                    marketShareOverride: 3,
                                     morale: "high",
                                     mobileRevenue: 0.25,     // Strong Lumia sales
                                     mobileCosts: 0.15,       // Focused Nokia investment
-                                    narrative: `Nokia delivers. The Lumia 800 and 900 are genuinely excellent—the best Windows Phones ever made. Nokia's camera technology produces images that rival (and sometimes beat) iPhone. The build quality is unmistakably premium. The colors pop on store shelves.
+                                    narrative: `Nokia delivers. The Lumia 800 and 900 are genuinely excellent, the best Windows Phones ever made. Nokia's camera technology produces images that rival (and sometimes beat) iPhone. The build quality is unmistakably premium. The colors pop on store shelves.
 
 The message is clear and simple: "If you want Windows Phone, get a Nokia." No confusion. No competing brands. One partner, one story, one phone to recommend.
 
-It's working. Market share stabilizes. Developers are taking notice—not because of the numbers yet, but because of the trajectory. "Maybe there's a third ecosystem after all," writes a prominent app developer. "Maybe Nokia makes this real."`
+It's working. Market share stabilizes. Developers are taking notice, not because of the numbers yet, but because of the trajectory. "Maybe there's a third ecosystem after all," writes a prominent app developer. "Maybe Nokia makes this real."
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         }
@@ -5573,16 +5626,16 @@ It's working. Market share stabilizes. Developers are taking notice—not becaus
                     date: "JAN 2011",
                     timeMarker: "JAN 2011",
                     title: "The Mango Question",
-                    storyImage: '<i class="ph ph-hammer" style="font-size: 4rem;"></i>',
-                    storyText: `Windows Phone 7 launched three months ago. You started building it from scratch after years of waiting—and the results are promising. Reviews praised the Metro UI as "genuinely innovative." Users who bought it mostly love it.
+                    storyBg: 'assets/images/chapters/d3-mango-question.jpg',
+                    storyText: `Windows Phone 7 launched three months ago. You started building it from scratch after years of waiting, and the results are promising. Reviews praised the Metro UI as "genuinely innovative." Users who bought it mostly love it.
 
 But "mostly" isn't enough, and "promising" isn't winning.
 
-The phone is missing features users expect: no copy-paste, no multitasking, no custom ringtones. The app marketplace has 8,000 apps versus iPhone's 350,000. Sales hit 2 million units—respectable, but iPhone 4 sold that in a weekend.
+The phone is missing features users expect: no copy-paste, no multitasking, no custom ringtones. The app marketplace has 8,000 apps versus iPhone's 350,000. Sales hit 2 million units, respectable, but iPhone 4 sold that in a weekend.
 
-Your team has been working around the clock on the next major update: "Mango" (Windows Phone 7.5). It fixes everything—500+ new features, multitasking, IE9, better app APIs. Developers who've seen previews say it's what Windows Phone should have been from day one.
+Your team has been working around the clock on the next major update: "Mango" (Windows Phone 7.5). It fixes everything, 500+ new features, multitasking, IE9, better app APIs. Developers who've seen previews say it's what Windows Phone should have been from day one.
 
-The question is timing. Mango is ready for a summer release, but Nokia is asking for a delay. They want to launch their first Windows Phone—the Lumia 800—with Mango built-in. A fall launch would let Nokia's hardware and your software debut together.
+The question is timing. Mango is ready for a summer release, but Nokia is asking for a delay. They want to launch their first Windows Phone (the Lumia 800) with Mango built-in. A fall launch would let Nokia's hardware and your software debut together.
 
 Six more months. Six more months of losing ground while you polish something that's already better than what you shipped.`,
                     objective: "Mango is ready. Do you ship now or wait for Nokia?",
@@ -5595,7 +5648,7 @@ Six more months. Six more months of losing ground while you polish something tha
                         teaser: "Mango is ready and fixes everything. But Nokia wants you to wait for a coordinated launch."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
                             { label: "Mobile OS Share", value: "~4%", color: "red" },
                             { label: "WP7 Reception", value: "Praised", color: "green" },
@@ -5628,7 +5681,7 @@ Six more months. Six more months of losing ground while you polish something tha
                                         "Metro UI praised as 'refreshingly different'",
                                         "Live Tiles concept resonating with users",
                                         "Integration with Xbox and Zune services",
-                                        "NPS of 8.2 — highest of any Microsoft consumer product"
+                                        "NPS of 8.2 - highest of any Microsoft consumer product"
                                     ] },
                                     { heading: "What Didn't", type: "list", items: [
                                         "No copy/paste (shipping in March update)",
@@ -5646,6 +5699,7 @@ Six more months. Six more months of losing ground while you polish something tha
                             type: "entity",
                             thumb: {
                                 icon: "ph-handshake",
+                                headerImage: "assets/images/nokia-mwc.webp",
                                 label: "COMPETITOR",
                                 title: "NOKIA",
                                 subtitle: "Burning platform memo",
@@ -5655,6 +5709,7 @@ Six more months. Six more months of losing ground while you polish something tha
                             popup: {
                                 name: "NOKIA",
                                 icon: "ph-handshake",
+                                headerImage: "assets/images/nokia-mwc.webp",
                                 category: "Potential Partner",
                                 gradient: "linear-gradient(135deg, #0f1f1a 0%, #1a2f25 50%, #0f1f1a 100%)",
                                 front: {
@@ -5732,6 +5787,7 @@ Six more months. Six more months of losing ground while you polish something tha
                             setsPathState: {
                                 d4State: "crisis-mode"
                             },
+                            pathMetrics: { marketShare: 2, nokiaShare: 24, appleShare: 17, googleShare: 42, bbShare: 8 },
 
                             consequences: {
 
@@ -5739,7 +5795,7 @@ Six more months. Six more months of losing ground while you polish something tha
                             {
                                 type: "verdict",
                                 headline: "Mango ships in May. Existing users are thrilled.",
-                                subline: "\"Microsoft actually listening to customers.\" But Nokia is furious — you undermined their launch.",
+                                subline: "\"Microsoft actually listening to customers.\" But Nokia is furious - you undermined their launch.",
                                 sentiment: "neutral"
                             },
                             {
@@ -5776,7 +5832,7 @@ Six more months. Six more months of losing ground while you polish something tha
                                     morale: "high",
                                     mobileRevenue: 0.1,      // Increased device sales from hype
                                     mobileCosts: 0.05,       // Final development push
-                                    narrative: `You announce Mango for May release. Existing users are thrilled—the update transforms their phones. Copy-paste! Real multitasking! Better app APIs! The tech press praises your speed: "Microsoft actually listening to customers."
+                                    narrative: `You announce Mango for May release. Existing users are thrilled, the update transforms their phones. Copy-paste! Real multitasking! Better app APIs! The tech press praises your speed: "Microsoft actually listening to customers."
 
 The app situation improves immediately. Developers who were waiting for multitasking start building. The momentum feels real for the first time.
 
@@ -5787,7 +5843,6 @@ But Nokia is furious. Elop calls directly: "We agreed to coordinate. You've unde
                                     cash: -0.3,
                                     marketCap: -2.0,
                                     marketShare: -4,
-                                    marketShareOverride: 2,
                                     morale: "low",
                                     mobileRevenue: -0.1,     // Nokia launch underperformed
                                     mobileCosts: 0.15,       // Marketing fixes, damage control
@@ -5801,7 +5856,7 @@ Nokia sales missed targets by 40%. The Lumia 800 that was supposed to be the "fr
                         },
                         {
                             id: "d3ab-option-2",
-                            title: "Wait for Nokia—Coordinated Launch",
+                            title: "Wait for Nokia: Coordinated Launch",
                             description: "Delay Mango six months. Launch simultaneously with Nokia's Lumia lineup. One unified story: the best Windows Phone software on the best Windows Phone hardware.",
                             risk: "Six months of losing market share to iOS/Android",
                             upside: "Coherent launch story, Nokia goodwill",
@@ -5811,6 +5866,7 @@ Nokia sales missed targets by 40%. The Lumia 800 that was supposed to be the "fr
                             setsPathState: {
                                 d4State: "still-fighting"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 25, appleShare: 16, googleShare: 38, bbShare: 7 },
 
                             consequences: {
 
@@ -5855,7 +5911,7 @@ Nokia sales missed targets by 40%. The Lumia 800 that was supposed to be the "fr
                                     morale: "neutral",
                                     mobileRevenue: -0.1,     // Sales stagnating during wait
                                     mobileCosts: 0.15,       // Extended development costs
-                                    narrative: `You tell your team: "Hold for Nokia." The groans are audible—they've been working around the clock on Mango and now they have to wait six more months. The best engineers threaten to quit out of frustration.
+                                    narrative: `You tell your team: "Hold for Nokia." The groans are audible, they've been working around the clock on Mango and now they have to wait six more months. The best engineers threaten to quit out of frustration.
 
 But the coordinated launch plan is compelling: October 2011, Nokia and Microsoft together, the first true "third ecosystem" debut. One story. One moment. Maximum impact.
 
@@ -5866,22 +5922,23 @@ The interim months are painful. iPhone 4S rumors swirl. Android passes 50% marke
                                     cash: -0.3,
                                     marketCap: 1.5,
                                     marketShare: -2,
-                                    marketShareOverride: 3,
                                     morale: "high",
                                     mobileRevenue: 0.2,      // Strong coordinated launch
                                     mobileCosts: 0.1,        // Efficient joint marketing
                                     narrative: `The coordinated launch works. October arrives: Nokia Lumia 800 with Mango built-in, simultaneously in 12 countries. Stephen Elop and you stand together on stage in London. The press coverage is unified: "Microsoft and Nokia: The Third Ecosystem Emerges."
 
-Reviews praise both the hardware and software. The Lumia's camera gets called the best in mobile. Mango's features get a fresh spotlight. Holiday sales beat expectations—Nokia sells 3 million Lumias in Q4.
+Reviews praise both the hardware and software. The Lumia's camera gets called the best in mobile. Mango's features get a fresh spotlight. Holiday sales beat expectations. Nokia sells 3 million Lumias in Q4.
 
-"Finally," writes one analyst, "a coherent Windows Phone story." Developers notice the momentum. App submissions triple in sixty days. It's still a distant third place, but it's third place with trajectory. The six-month wait was worth it.`
+"Finally," writes one analyst, "a coherent Windows Phone story." Developers notice the momentum. App submissions triple in sixty days. It's still a distant third place, but it's third place with trajectory. The six-month wait was worth it.
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         },
                         {
                             id: "d3ab-option-3",
-                            title: "Staged Release—Enthusiasts Then Nokia",
-                            description: "Ship Mango to enthusiasts and developers in June. But hold the marketing push for Nokia's October launch. Best of both worlds—or worst?",
+                            title: "Staged Release: Enthusiasts Then Nokia",
+                            description: "Ship Mango to enthusiasts and developers in June. But hold the marketing push for Nokia's October launch. Best of both worlds, or worst?",
                             risk: "Complicated message, potential leaks",
                             upside: "Developer momentum plus Nokia coordination",
                             cost: "$200M dual marketing",
@@ -5890,6 +5947,7 @@ Reviews praise both the hardware and software. The Lumia's camera gets called th
                             setsPathState: {
                                 d4State: "still-fighting"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 25, appleShare: 16, googleShare: 38, bbShare: 7 },
 
                             consequences: {
 
@@ -5921,7 +5979,7 @@ Reviews praise both the hardware and software. The Lumia's camera gets called th
                                 type: "emerging",
                                 icon: "ph-strategy",
                                 headline: "Inelegant but effective. Classic Microsoft.",
-                                body: "Developers built apps over summer so Nokia launch had substance. Nobody quite knows when WP 'launched' — the timeline is confusing to explain.",
+                                body: "Developers built apps over summer so Nokia launch had substance. Nobody quite knows when WP 'launched' -- the timeline is confusing to explain.",
                                 closing: "The product is strong, apps are growing, and Nokia is happy."
                             }
                         ],
@@ -5933,18 +5991,19 @@ Reviews praise both the hardware and software. The Lumia's camera gets called th
                                     morale: "high",
                                     mobileRevenue: 0.05,     // Modest enthusiast uptake
                                     mobileCosts: 0.1,        // Dual launch prep
-                                    narrative: `You thread the needle: Mango releases in June as a "developer preview and enthusiast update." No TV ads, no carrier push—just an update for people who want it. Then in October, the "official" launch with Nokia. Your team is skeptical. "We're launching the same thing twice?" But developers love it. They get early access to new APIs. The enthusiast community buzzes with Mango reviews. And Nokia gets their coordinated October debut. It's complicated, but it might work.`
+                                    narrative: `You thread the needle: Mango releases in June as a "developer preview and enthusiast update." No TV ads, no carrier push, just an update for people who want it. Then in October, the "official" launch with Nokia. Your team is skeptical. "We're launching the same thing twice?" But developers love it. They get early access to new APIs. The enthusiast community buzzes with Mango reviews. And Nokia gets their coordinated October debut. It's complicated, but it might work.`
                                 },
                                 delayed: {
                                     date: "SEP 2011",
                                     cash: -0.3,
                                     marketCap: 0.5,
                                     marketShare: -3,
-                                    marketShareOverride: 3,
                                     morale: "high",
                                     mobileRevenue: 0.15,     // Nokia launch sales
                                     mobileCosts: 0.12,       // Dual marketing campaigns
-                                    narrative: `The staged approach works better than expected. Developers built Mango apps over the summer, so the October Nokia launch has a genuine app story. Reviews mention "months of refinement" positively. Nokia sales start strong. The only downside: marketing complexity. Nobody quite knows when Windows Phone "launched" and your timeline is confusing to explain. But the product is strong, the apps are growing, and Nokia is happy. "Inelegant but effective," summarizes your marketing lead. "Classic Microsoft."`
+                                    narrative: `The staged approach works better than expected. Developers built Mango apps over the summer, so the October Nokia launch has a genuine app story. Reviews mention "months of refinement" positively. Nokia sales start strong. The only downside: marketing complexity. Nobody quite knows when Windows Phone "launched" and your timeline is confusing to explain. But the product is strong, the apps are growing, and Nokia is happy. "Inelegant but effective," summarizes your marketing lead. "Classic Microsoft."
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         }
@@ -5958,14 +6017,14 @@ Reviews praise both the hardware and software. The Lumia's camera gets called th
                     date: "JAN 2011",
                     timeMarker: "JAN 2011",
                     title: "The Shrinking Fortress",
-                    storyImage: '<i class="ph ph-shield" style="font-size: 4rem;"></i>',
-                    storyText: `The quarterly review opens with a chart you've been dreading. Your enterprise market share has held—78% of Fortune 500 companies still mandate Windows Mobile for corporate devices. But the fine print tells a different story.
+                    storyBg: 'assets/images/chapters/d3-shrinking-fortress.jpg',
+                    storyText: `The quarterly review opens with a chart you've been dreading. Your enterprise market share has held, 78% of Fortune 500 companies still mandate Windows Mobile for corporate devices. But the fine print tells a different story.
 
 "Active devices are down 34%," your VP of Enterprise reports. "Companies are keeping the mandate but employees are ignoring it. They're using personal iPhones for work email through webmail. IT can't stop them."
 
-The Citibank CIO—the one who called you two years ago about iPhones in his boardroom—sends a follow-up. "We're switching to BYOD. I can't fight this anymore. But I still need device management, security, compliance. Can you help me manage the devices I don't control?"
+The Citibank CIO, the one who called you two years ago about iPhones in his boardroom, sends a follow-up. "We're switching to BYOD. I can't fight this anymore. But I still need device management, security, compliance. Can you help me manage the devices I don't control?"
 
-It's a strange pivot: from selling phones to managing other people's phones. But the MDM market is real—$1.2 billion this year, projected to hit $6 billion by 2015. And you have something the MDM startups don't: Exchange integration, Active Directory, the whole enterprise stack.
+It's a strange pivot: from selling phones to managing other people's phones. But the MDM market is real, $1.2 billion this year, projected to hit $6 billion by 2015. And you have something the MDM startups don't: Exchange integration, Active Directory, the whole enterprise stack.
 
 The question is whether managing the decline is the same as surrendering to it.`,
                     objective: "Your enterprise fortress is being emptied from within. Defend the walls or change the game?",
@@ -5978,7 +6037,7 @@ The question is whether managing the decline is the same as surrendering to it.`
                         teaser: "Your enterprise fortress held the mandate, but employees are ignoring it. BYOD is overwhelming your walls."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
                             { label: "Enterprise Share", value: "78% F500", color: "green" },
                             { label: "Active Devices", value: "Down 34%", color: "red" },
@@ -6023,7 +6082,7 @@ The question is whether managing the decline is the same as surrendering to it.`
                                     ] },
                                     { heading: "MDM Market", content: "Mobile Device Management spending: $1.2B in 2010, projected $5.8B by 2015. iOS and Android MDM solutions maturing rapidly. Our security advantage is eroding.", isHighlighted: true }
                                 ],
-                                footnote: "Enterprise is no longer a fortress — it's a market segment that uses consumer devices."
+                                footnote: "Enterprise is no longer a fortress - it's a market segment that uses consumer devices."
                             }
                         },
                         {
@@ -6101,7 +6160,7 @@ The question is whether managing the decline is the same as surrendering to it.`
                         {
                             id: "d3e-option-1",
                             title: "Become the Security Fortress",
-                            description: "Accept a smaller market but own it completely. Target government, defense, healthcare—industries where security mandates are law, not policy. Become the only choice for high-security mobile.",
+                            description: "Accept a smaller market but own it completely. Target government, defense, healthcare, industries where security mandates are law, not policy. Become the only choice for high-security mobile.",
                             risk: "Shrinking addressable market, niche positioning",
                             upside: "Unassailable position in regulated industries",
                             cost: "$300M security certification push",
@@ -6110,6 +6169,7 @@ The question is whether managing the decline is the same as surrendering to it.`
                             setsPathState: {
                                 d4State: "differentiated"
                             },
+                            pathMetrics: { marketShare: 5, nokiaShare: 22, appleShare: 18, googleShare: 40, bbShare: 8 },
 
                             consequences: {
 
@@ -6117,7 +6177,7 @@ The question is whether managing the decline is the same as surrendering to it.`
                             {
                                 type: "verdict",
                                 headline: "Microsoft pivots to security fortress: government, defense, healthcare.",
-                                subline: "\"When security is mandatory, not optional, Windows Phone becomes the only choice.\" — Jane's Defence Weekly",
+                                subline: "\"When security is mandatory, not optional, Windows Phone becomes the only choice.\" -- Jane's Defence Weekly",
                                 sentiment: "neutral"
                             },
                             {
@@ -6155,7 +6215,7 @@ The question is whether managing the decline is the same as surrendering to it.`
                                     mobileCosts: 0.2,        // Security certification push
                                     narrative: `You announce the pivot at RSA Conference: "Windows Phone will be the most secure mobile platform ever built." FIPS 140-2 certification. NSA-grade encryption. Hardware security modules. The Pentagon is interested. The CIA sends a delegation.
 
-Government contracts start flowing—not huge, but stable. Your market share craters in consumer and general enterprise, but in the corridors of power, you're the only game in town. The trade press calls it "retreat to the bunker." You call it "strategic focus."
+Government contracts start flowing, not huge, but stable. Your market share craters in consumer and general enterprise, but in the corridors of power, you're the only game in town. The trade press calls it "retreat to the bunker." You call it "strategic focus."
 
 Defense industry analysts upgrade Microsoft's positioning. "They've found a niche no one else can touch," writes Jane's Defense Weekly. "When security is mandatory, not optional, Windows Phone becomes the only choice." It's a smaller market, but it's yours.`
                                 },
@@ -6164,11 +6224,10 @@ Defense industry analysts upgrade Microsoft's positioning. "They've found a nich
                                     cash: 0,
                                     marketCap: 0,
                                     marketShare: -4,
-                                    marketShareOverride: 4,
                                     morale: "neutral",
                                     mobileRevenue: 0.15,     // Steady government revenue
                                     mobileCosts: 0.1,        // Focused security team
-                                    narrative: `The security strategy is working—for security. DoD signs a five-year contract. Intelligence agencies standardize on your platform. But the consumer market is gone, and the general enterprise market is following.
+                                    narrative: `The security strategy is working, for security. DoD signs a five-year contract. Intelligence agencies standardize on your platform. But the consumer market is gone, and the general enterprise market is following.
 
 Your team builds brilliant security features that 99% of the world will never see. Hardware-backed encryption, secure boot chains, zero-trust architecture. "We're the Humvee of phones," jokes one engineer. "Nobody wants one for their commute, but when you need one, there's no substitute."
 
@@ -6178,7 +6237,7 @@ Wall Street is lukewarm. "Microsoft found a profitable niche in government secur
                         },
                         {
                             id: "d3e-option-2",
-                            title: "Pivot to MDM—Manage All Devices",
+                            title: "Pivot to MDM: Manage All Devices",
                             description: "If you can't beat BYOD, manage it. Build the best Mobile Device Management platform for iOS and Android. Keep enterprise customers even if they're using competitors' phones.",
                             risk: "Admitting your phones lost, dependent on competitors' platforms",
                             upside: "Revenue from every device, not just yours",
@@ -6188,6 +6247,7 @@ Wall Street is lukewarm. "Microsoft found a profitable niche in government secur
                             setsPathState: {
                                 d4State: "still-fighting"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 24, appleShare: 17, googleShare: 38, bbShare: 7 },
 
                             consequences: {
 
@@ -6195,7 +6255,7 @@ Wall Street is lukewarm. "Microsoft found a profitable niche in government secur
                             {
                                 type: "verdict",
                                 headline: "Intune launches: manage any device your employees bring to work.",
-                                subline: "\"Finally, someone who understands what I actually need.\" — Citibank CIO",
+                                subline: "\"Finally, someone who understands what I actually need.\" -- Citibank CIO",
                                 sentiment: "positive"
                             },
                             {
@@ -6210,7 +6270,7 @@ Wall Street is lukewarm. "Microsoft found a profitable niche in government secur
                             {
                                 type: "timeline",
                                 events: [
-                                    { date: "MAR 2011", text: "Intune announced. iPhone, Android, WP — all managed. CIOs respond immediately.", mood: "positive" },
+                                    { date: "MAR 2011", text: "Intune announced. iPhone, Android, WP - all managed. CIOs respond immediately.", mood: "positive" },
                                     { date: "JUN 2011", text: "Gartner adds Intune to MDM Magic Quadrant. 'Microsoft pivoted faster than expected.'", mood: "positive" },
                                     { date: "SEP 2011", text: "10,000 enterprise customers. Azure and Office 365 integration makes MS indispensable even on iOS.", mood: "positive" }
                                 ]
@@ -6219,7 +6279,7 @@ Wall Street is lukewarm. "Microsoft found a profitable niche in government secur
                                 type: "emerging",
                                 icon: "ph-buildings",
                                 headline: "If we can't own the device, we'll own the experience on it.",
-                                body: "Phone business is dying. Enterprise mobile business is being born. Making money helping companies use competitors' phones — the irony isn't lost on anyone.",
+                                body: "Phone business is dying. Enterprise mobile business is being born. Making money helping companies use competitors' phones - the irony isn't lost on anyone.",
                                 closing: "Fortune 500 IT directors nod approvingly. The pivot is working."
                             }
                         ],
@@ -6231,7 +6291,7 @@ Wall Street is lukewarm. "Microsoft found a profitable niche in government secur
                                     morale: "high",
                                     mobileRevenue: 0.05,     // MDM subscriptions starting
                                     mobileCosts: 0.15,       // MDM development investment
-                                    narrative: `You announce Intune—Microsoft's Mobile Device Management platform. "We'll manage any device your employees bring to work. iPhone, Android, Windows Phone—it doesn't matter. If it connects to Exchange, we'll secure it."
+                                    narrative: `You announce Intune. Microsoft's Mobile Device Management platform. "We'll manage any device your employees bring to work. iPhone, Android, Windows Phone, it doesn't matter. If it connects to Exchange, we'll secure it."
 
 The enterprise team is energized. This is playing to your strengths: identity, directory services, compliance. CIOs respond immediately. "Finally," says the Citibank CIO, "someone who understands what I actually need."
 
@@ -6242,21 +6302,22 @@ Your phone market share keeps falling, but your enterprise relevance is rising. 
                                     cash: 0,
                                     marketCap: 0.5,
                                     marketShare: -2,
-                                    marketShareOverride: 3,
                                     morale: "high",
                                     mobileRevenue: 0.2,      // MDM/Intune growing fast
                                     mobileCosts: 0.1,        // Platform scaling efficiently
-                                    narrative: `Intune is gaining traction. 10,000 enterprise customers in the first six months. IT departments love it—one console to manage everything. The irony isn't lost on anyone: you're making money helping companies use your competitors' phones.
+                                    narrative: `Intune is gaining traction. 10,000 enterprise customers in the first six months. IT departments love it, one console to manage everything. The irony isn't lost on anyone: you're making money helping companies use your competitors' phones.
 
-But it's working. Azure and Office 365 integration makes you indispensable even on iOS. Conditional access policies, app management, compliance reporting—all the things enterprises actually need, regardless of what device their employees carry.
+But it's working. Azure and Office 365 integration makes you indispensable even on iOS. Conditional access policies, app management, compliance reporting, all the things enterprises actually need, regardless of what device their employees carry.
 
-"If we can't own the device," your strategy lead says, "we'll own the experience on the device." Fortune 500 IT directors nod approvingly. Your phone business is dying. Your enterprise mobile business is being born.`
+"If we can't own the device," your strategy lead says, "we'll own the experience on the device." Fortune 500 IT directors nod approvingly. Your phone business is dying. Your enterprise mobile business is being born.
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         },
                         {
                             id: "d3e-option-3",
-                            title: "Acquire Nokia—Go Big or Go Home",
+                            title: "Acquire Nokia: Go Big or Go Home",
                             description: "Nokia is desperate. Their platform is dying. Stephen Elop is signaling Windows Phone openness. Buy the manufacturing expertise you need and take one last shot at the consumer market.",
                             risk: "Massive bet on a declining asset, integration challenges",
                             upside: "Instant hardware capability, global distribution, critical mass",
@@ -6266,6 +6327,7 @@ But it's working. Azure and Office 365 integration makes you indispensable even 
                             setsPathState: {
                                 d4State: "still-fighting"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 24, appleShare: 17, googleShare: 38, bbShare: 7 },
 
                             consequences: {
 
@@ -6290,7 +6352,7 @@ But it's working. Azure and Office 365 integration makes you indispensable even 
                                 events: [
                                     { date: "MAR 2011", text: "Deal closed in Helsinki. Nokia goes Windows Phone exclusively. $1B annual support.", mood: "neutral" },
                                     { date: "JUN 2011", text: "Nokia engineers porting WP to Lumia hardware. Finnish press furious. Engineers stunned.", mood: "warning" },
-                                    { date: "SEP 2011", text: "Lumia 800 ships. Best Windows Phone ever. Camera rivals iPhone. Sales modest — no Instagram.", mood: "warning" }
+                                    { date: "SEP 2011", text: "Lumia 800 ships. Best Windows Phone ever. Camera rivals iPhone. Sales modest - no Instagram.", mood: "warning" }
                                 ]
                             },
                             {
@@ -6309,7 +6371,7 @@ But it's working. Azure and Office 365 integration makes you indispensable even 
                                     morale: "high",
                                     mobileRevenue: 0.1,      // Partnership ramping up
                                     mobileCosts: 0.4,        // Nokia support payments
-                                    narrative: `You fly to Helsinki and close the deal. Not an acquisition—not yet—but a partnership that's effectively exclusive. Nokia will build Windows Phones, only Windows Phones, for the next five years. You're paying $1B annually for platform support.
+                                    narrative: `You fly to Helsinki and close the deal. Not an acquisition (not yet) but a partnership that's effectively exclusive. Nokia will build Windows Phones, only Windows Phones, for the next five years. You're paying $1B annually for platform support.
 
 Stephen Elop announces it at Nokia's headquarters: "We're choosing Windows Phone because it's the only platform that gives us differentiation." The Finnish press is furious. Nokia engineers are stunned. "We built Symbian. Now we're abandoning it for an American OS?"
 
@@ -6320,15 +6382,16 @@ But you finally have a hardware partner who's all-in. The question is whether al
                                     cash: -1.0,
                                     marketCap: 1.0,
                                     marketShare: -2,
-                                    marketShareOverride: 3,
                                     morale: "high",
                                     mobileRevenue: 0.2,      // Lumia sales starting
                                     mobileCosts: 0.25,       // Marketing and dev support
-                                    narrative: `The first Nokia Windows Phone ships: the Lumia 800. Reviews are strong—"the best Windows Phone ever made," "gorgeous hardware finally matching the software." The polycarbonate design is distinctive; the camera is excellent; the Metro UI finally has hardware worthy of it.
+                                    narrative: `The first Nokia Windows Phone ships: the Lumia 800. Reviews are strong, "the best Windows Phone ever made," "gorgeous hardware finally matching the software." The polycarbonate design is distinctive; the camera is excellent; the Metro UI finally has hardware worthy of it.
 
-But sales are modest. Nokia's brand helps in Europe, hurts in the US. The app gap is still brutal—no Instagram, no Snapchat, limited banking apps. "We're building beautiful devices for an ecosystem that doesn't exist yet," admits one Nokia PM.
+But sales are modest. Nokia's brand helps in Europe, hurts in the US. The app gap is still brutal, no Instagram, no Snapchat, limited banking apps. "We're building beautiful devices for an ecosystem that doesn't exist yet," admits one Nokia PM.
 
-For the first time, you have competitive hardware. Now you need to fill it with apps. Developer outreach intensifies. The chicken-and-egg problem remains: developers want users, users want apps. Breaking the cycle will define whether this partnership succeeds or fails.`
+For the first time, you have competitive hardware. Now you need to fill it with apps. Developer outreach intensifies. The chicken-and-egg problem remains: developers want users, users want apps. Breaking the cycle will define whether this partnership succeeds or fails.
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         }
@@ -6342,12 +6405,12 @@ For the first time, you have competitive hardware. Now you need to fill it with 
                     date: "JAN 2011",
                     timeMarker: "JAN 2011",
                     title: "The Waterloo Problem",
-                    storyImage: '<i class="ph ph-puzzle-piece" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d3-waterloo-problem.jpg',
                     storyText: `The integration meeting in Waterloo starts badly. Again.
 
 "You want us to port BBM to Windows Phone?" Mike Lazaridis sounds incredulous. "BBM is our only differentiator left. You'd have us give it away to a platform with no users?"
 
-It's been eighteen months since the acquisition closed. You paid $18 billion for BlackBerry—for BBM, for the enterprise relationships, for the combined market share. What you got was two warring tribes.
+It's been eighteen months since the acquisition closed. You paid $18 billion for BlackBerry, for BBM, for the enterprise relationships, for the combined market share. What you got was two warring tribes.
 
 The Waterloo engineers worship their keyboard. They see Windows Phone's touch interface as a betrayal of everything BlackBerry stood for. The Redmond team thinks BlackBerry's software is a decade behind.
 
@@ -6355,7 +6418,7 @@ Both are right. Neither will work together.
 
 Meanwhile, the combined entity has bled market share. iPhone and Android didn't slow down while you fought internally. Your "combined 70% enterprise share" is now 30% and falling. The synergies you promised the board haven't materialized. The costs have.
 
-Something has to give. You can force unity—pick a platform, pick a leader, accept the casualties. Or you can cut your losses—spin off BlackBerry, take the write-down, and start clean.
+Something has to give. You can force unity, pick a platform, pick a leader, accept the casualties. Or you can cut your losses, spin off BlackBerry, take the write-down, and start clean.
 
 Neither option is good. But continuing like this is worse.`,
                     objective: "The BlackBerry acquisition is failing. Force integration or cut losses?",
@@ -6368,7 +6431,7 @@ Neither option is good. But continuing like this is worse.`,
                         teaser: "The BlackBerry acquisition produced two warring tribes. Combined market share is bleeding. Something has to give."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
                             { label: "Combined Share", value: "~30%", color: "gold" },
                             { label: "Integration", value: "Failed", color: "red" },
@@ -6413,7 +6476,7 @@ Neither option is good. But continuing like this is worse.`,
                                     ] },
                                     { heading: "MDM Market", content: "Mobile Device Management spending: $1.2B in 2010, projected $5.8B by 2015. iOS and Android MDM solutions maturing rapidly. Our security advantage is eroding.", isHighlighted: true }
                                 ],
-                                footnote: "Enterprise is no longer a fortress — it's a market segment that uses consumer devices."
+                                footnote: "Enterprise is no longer a fortress - it's a market segment that uses consumer devices."
                             }
                         },
                         {
@@ -6490,7 +6553,7 @@ Neither option is good. But continuing like this is worse.`,
                     options: [
                         {
                             id: "d3ibb-option-1",
-                            title: "Force the Merger—One Platform",
+                            title: "Force the Merger: One Platform",
                             description: "End the debate. Pick Windows Phone. Migrate BBM. Integrate BES with Exchange. Layoffs will be massive, but you'll finally have one company instead of two.",
                             risk: "Key talent leaves, BBM users defect, brand damage",
                             upside: "Finally unified, clear direction, focused investment",
@@ -6500,6 +6563,7 @@ Neither option is good. But continuing like this is worse.`,
                             setsPathState: {
                                 d4State: "crisis-mode"
                             },
+                            pathMetrics: { marketShare: 2, nokiaShare: 24, appleShare: 18, googleShare: 42, bbShare: 0 },
 
                             consequences: {
 
@@ -6531,7 +6595,7 @@ Neither option is good. But continuing like this is worse.`,
                                 type: "emerging",
                                 icon: "ph-sword",
                                 headline: "Clarity through casualties.",
-                                body: "The debate is over. One roadmap. But 40% of Waterloo is gone — many to Apple and Google. The brain drain is worse than expected.",
+                                body: "The debate is over. One roadmap. But 40% of Waterloo is gone - many to Apple and Google. The brain drain is worse than expected.",
                                 closing: "You bought a company and got a building. The synergies are real but smaller than promised."
                             }
                         ],
@@ -6545,7 +6609,7 @@ Neither option is good. But continuing like this is worse.`,
                                     mobileCosts: 0.3,        // Restructuring costs
                                     narrative: `You fly to Waterloo and deliver the news yourself: "Windows Phone is the platform. BBM will be ported. BES will integrate with Exchange. Anyone who can't commit to this vision should find another opportunity." The room is stunned.
 
-Within a week, resignation letters pile up—2,000 in the first month. Mike Lazaridis gives an interview calling the decision "cultural vandalism." The Canadian press runs stories about "Microsoft destroying a Canadian icon."
+Within a week, resignation letters pile up, 2,000 in the first month. Mike Lazaridis gives an interview calling the decision "cultural vandalism." The Canadian press runs stories about "Microsoft destroying a Canadian icon."
 
 But the debate is over. For the first time, you have one roadmap. "It's bloody, but it's clarity," you tell your board. The integration team gets to work. Whether the clarity was worth the casualties will take months to determine.`
                                 },
@@ -6554,11 +6618,10 @@ But the debate is over. For the first time, you have one roadmap. "It's bloody, 
                                     cash: -0.5,
                                     marketCap: -1.0,
                                     marketShare: -4,
-                                    marketShareOverride: 2,
                                     morale: "low",
                                     mobileRevenue: -0.1,     // Continued customer losses
                                     mobileCosts: 0.2,        // Integration overhead
-                                    narrative: `The forced integration is proceeding—slowly, painfully. BBM on Windows Phone works but feels like a port, not a native experience. The BES engineers who stayed are building Exchange integration, but progress is slower than projected.
+                                    narrative: `The forced integration is proceeding, slowly, painfully. BBM on Windows Phone works but feels like a port, not a native experience. The BES engineers who stayed are building Exchange integration, but progress is slower than projected.
 
 The brain drain is worse than expected: 40% of the Waterloo team is gone. Many went to Apple and Google; some started competing messaging apps. "We bought a company and got a building," observes one exec grimly.
 
@@ -6568,7 +6631,7 @@ The merged product is better than either separate product, but worse than what t
                         },
                         {
                             id: "d3ibb-option-2",
-                            title: "Spin Off BlackBerry—Cut Losses",
+                            title: "Spin Off BlackBerry: Cut Losses",
                             description: "Admit defeat. The acquisition isn't working. Spin BlackBerry back out as an independent company, take the write-down, and refocus Microsoft on Windows Phone alone.",
                             risk: "Massive write-off, public admission of failure",
                             upside: "Freedom to move fast, end the internal war",
@@ -6578,13 +6641,14 @@ The merged product is better than either separate product, but worse than what t
                             setsPathState: {
                                 d4State: "still-fighting"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 24, appleShare: 17, googleShare: 40, bbShare: 0 },
 
                             consequences: {
 
                         moments: [
                             {
                                 type: "verdict",
-                                headline: "BlackBerry spun off. $10 billion write-off — largest in Microsoft history.",
+                                headline: "BlackBerry spun off. $10 billion write-off - largest in Microsoft history.",
                                 subline: "Wall Street rallies: \"Finally, strategic clarity. The acquisition was a mistake. Admitting it is wisdom.\"",
                                 sentiment: "positive"
                             },
@@ -6600,7 +6664,7 @@ The merged product is better than either separate product, but worse than what t
                             {
                                 type: "timeline",
                                 events: [
-                                    { date: "MAR 2011", text: "Spin-off announced. $10B write-off. Wall Street actually rallies — 'finally, clarity.'", mood: "positive" },
+                                    { date: "MAR 2011", text: "Spin-off announced. $10B write-off. Wall Street actually rallies - 'finally, clarity.'", mood: "positive" },
                                     { date: "JUN 2011", text: "Freedom feels good. Nokia partnership accelerates. Engineering velocity doubles.", mood: "positive" },
                                     { date: "SEP 2011", text: "First post-spinoff quarter: Nokia Lumias launching, developer momentum building, coherent story.", mood: "positive" }
                                 ]
@@ -6621,26 +6685,27 @@ The merged product is better than either separate product, but worse than what t
                                     morale: "neutral",
                                     mobileRevenue: -0.3,     // Lost RIM revenue in spinoff
                                     mobileCosts: -0.25,      // Also shed RIM costs
-                                    narrative: `You announce the spin-off at a somber press conference: "The acquisition didn't achieve the integration we hoped for. BlackBerry will return to independence, and Microsoft will focus on Windows Phone." The write-off is $10 billion—the largest in Microsoft history.
+                                    narrative: `You announce the spin-off at a somber press conference: "The acquisition didn't achieve the integration we hoped for. BlackBerry will return to independence, and Microsoft will focus on Windows Phone." The write-off is $10 billion, the largest in Microsoft history.
 
 Wall Street actually rallies on the news. "Finally, strategic clarity," writes one analyst. "The acquisition was a mistake. Admitting it is wisdom." Microsoft stock rises 3% on the announcement.
 
-The Waterloo team is relieved—they get their independence back. The Redmond team is energized—they get to focus on Windows Phone. You're smaller but focused. Now you can actually build something without the integration drama consuming every meeting.`
+The Waterloo team is relieved, they get their independence back. The Redmond team is energized, they get to focus on Windows Phone. You're smaller but focused. Now you can actually build something without the integration drama consuming every meeting.`
                                 },
                                 delayed: {
                                     date: "SEP 2011",
                                     cash: 0,
                                     marketCap: 1.5,
                                     marketShare: -3,
-                                    marketShareOverride: 3,
                                     morale: "high",
                                     mobileRevenue: 0.1,      // WP focused growth
                                     mobileCosts: 0.15,       // Lean focused team
-                                    narrative: `Freedom feels good. Without the Waterloo integration distracting everyone, the Windows Phone team is shipping faster. The Nokia partnership—put on hold during the BlackBerry chaos—accelerates.
+                                    narrative: `Freedom feels good. Without the Waterloo integration distracting everyone, the Windows Phone team is shipping faster. The Nokia partnership (put on hold during the BlackBerry chaos) accelerates.
 
 Your first post-spinoff quarter shows real progress: Nokia Lumias launching, developer momentum building, a coherent story for the first time in years. Engineering velocity has doubled since the spin-off.
 
-"We wasted two years and ten billion dollars learning that acquisitions don't solve strategy problems," reflects your VP of strategy. "Expensive lesson. But we finally learned it." The board seems relieved. The company feels lighter. Now the real work begins.`
+"We wasted two years and ten billion dollars learning that acquisitions don't solve strategy problems," reflects your VP of strategy. "Expensive lesson. But we finally learned it." The board seems relieved. The company feels lighter. Now the real work begins.
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         }
@@ -6654,16 +6719,16 @@ Your first post-spinoff quarter shows real progress: Nokia Lumias launching, dev
                     date: "JAN 2011",
                     timeMarker: "JAN 2011",
                     title: "The Osborne Effect",
-                    storyImage: '<i class="ph ph-flag" style="font-size: 4rem;"></i>',
-                    storyText: `The numbers from Helsinki are catastrophic. Since you announced the Symbian shutdown, Nokia smartphone sales have collapsed—down 40% in six months. Customers stopped buying Symbian phones the moment you said they were dead. Carriers cancelled orders. Retailers cleared shelf space.
+                    storyBg: 'assets/images/chapters/d3-osborne-effect.jpg',
+                    storyText: `The numbers from Helsinki are catastrophic. Since you announced the Symbian shutdown, Nokia smartphone sales have collapsed, down 40% in six months. Customers stopped buying Symbian phones the moment you said they were dead. Carriers cancelled orders. Retailers cleared shelf space.
 
 They call it the Osborne Effect, after the computer company that announced a successor and accidentally killed itself. You just did it to Nokia.
 
-"We have nothing to sell," reports your Nokia integration lead. "Symbian is dying on schedule—faster than schedule, actually. But Windows Phone isn't ready for Nokia devices. There's a twelve-month gap where we have no competitive product."
+"We have nothing to sell," reports your Nokia integration lead. "Symbian is dying on schedule, faster than schedule, actually. But Windows Phone isn't ready for Nokia devices. There's a twelve-month gap where we have no competitive product."
 
-The talent exodus is accelerating. 8,000 Nokia engineers have left. Most went to Apple and Google. The ones who stayed are demoralized—they're porting Windows Phone to Nokia hardware, not building anything new.
+The talent exodus is accelerating. 8,000 Nokia engineers have left. Most went to Apple and Google. The ones who stayed are demoralized, they're porting Windows Phone to Nokia hardware, not building anything new.
 
-You can accelerate the transition—ship Windows Phones faster, with fewer features. Or you can build a bridge—keep releasing Symbian devices nobody wants while Windows Phone catches up.
+You can accelerate the transition, ship Windows Phones faster, with fewer features. Or you can build a bridge, keep releasing Symbian devices nobody wants while Windows Phone catches up.
 
 Neither option is good. The Osborne Effect has trapped you in a death spiral.`,
                     objective: "You killed Symbian before Windows Phone was ready. Now what?",
@@ -6676,7 +6741,7 @@ Neither option is good. The Osborne Effect has trapped you in a death spiral.`,
                         teaser: "You killed Symbian before Windows Phone was ready. Nokia sales collapsed 40%. The death spiral is real."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
                             { label: "Nokia Sales", value: "Down 40%", color: "red" },
                             { label: "Symbian Status", value: "Dying (faster)", color: "red" },
@@ -6725,40 +6790,42 @@ Neither option is good. The Osborne Effect has trapped you in a death spiral.`,
                             id: "d3ifw-intel-nokia",
                             type: "entity",
                             thumb: {
-                                icon: "ph-handshake",
-                                label: "COMPETITOR",
+                                icon: "ph-buildings",
+                                headerImage: "assets/images/nokia-mwc.webp",
+                                label: "YOUR DIVISION",
                                 title: "NOKIA",
-                                subtitle: "Burning platform memo",
-                                sentiment: "DESPERATE\nSEEKING PARTNER",
-                                sentimentColor: "#c45c4d"
+                                subtitle: "Integration status report",
+                                sentiment: "OWNED\nINTEGRATING",
+                                sentimentColor: "#3A6B8C"
                             },
                             popup: {
-                                name: "NOKIA",
-                                icon: "ph-handshake",
-                                category: "Potential Partner",
+                                name: "NOKIA DIVISION",
+                                icon: "ph-buildings",
+                                headerImage: "assets/images/nokia-mwc.webp",
+                                category: "Owned Subsidiary",
                                 gradient: "linear-gradient(135deg, #0f1f1a 0%, #1a2f25 50%, #0f1f1a 100%)",
                                 front: {
-                                    shortStat: "100M smartphones/yr · Symbian dying",
-                                    sentiment: "DESPERATE / SEEKING PARTNER",
-                                    sentimentKey: "desperate",
+                                    shortStat: "40,000 employees · 4 years into integration",
+                                    sentiment: "OWNED / INTEGRATING",
+                                    sentimentKey: "defensive",
                                     quickStats: [
-                                        { label: "Annual devices", value: "100M+", color: "green" },
-                                        { label: "Platform", value: "Symbian (dying)", color: "red" },
-                                        { label: "CEO", value: "Elop (ex-MSFT)", color: "green" },
-                                        { label: "Decision", value: "30 days", color: "gold" }
+                                        { label: "Employees", value: "~40,000", color: "gold" },
+                                        { label: "Symbian status", value: "Dying", color: "red" },
+                                        { label: "CEO", value: "Elop (your pick)", color: "green" },
+                                        { label: "Integration", value: "Ongoing", color: "gold" }
                                     ],
-                                    source: "BD team + Industry Sources",
-                                    reliability: "MEDIUM"
+                                    source: "Internal Nokia Division Review",
+                                    reliability: "HIGH"
                                 },
                                 back: {
-                                    keySignal: "Elop's 'burning platform' memo leaked. Nokia evaluating Windows Phone, Android, or MeeGo. Decision expected within 30 days.",
+                                    keySignal: "Four years since the hostile acquisition. Nokia hardware remains world-class but Symbian is collapsing. Your platform decision for Nokia will define the next era.",
                                     details: [
-                                        { label: "Deal ask", value: "$1B+/yr support", color: "red" },
-                                        { label: "Exclusivity", value: "5-year WP only", color: "green" },
-                                        { label: "Acquisition path", value: "3-5 years", color: "gold" },
-                                        { label: "If Nokia picks Android", value: "WP is finished", color: "red" }
+                                        { label: "Acquisition cost", value: "$54B", color: "red" },
+                                        { label: "Annual losses", value: "$1.8B/yr", color: "red" },
+                                        { label: "Hardware quality", value: "Best-in-class", color: "green" },
+                                        { label: "Engineer retention", value: "68%", color: "gold" }
                                     ],
-                                    analysisNote: "Nokia still ships 100M smartphones annually. Partnership would instantly make WP a top-three platform. This is the hardware partner we've been looking for."
+                                    analysisNote: "You own the world's largest phone manufacturer. The hardware is excellent. The platform question — Windows Phone, Android, or something new — is yours to decide. Nobody else's."
                                 }
                             }
                         },
@@ -6802,7 +6869,7 @@ Neither option is good. The Osborne Effect has trapped you in a death spiral.`,
                     options: [
                         {
                             id: "d3ifw-option-1",
-                            title: "Accelerate Windows—Ship Now",
+                            title: "Accelerate Windows: Ship Now",
                             description: "Ship Windows Phones on Nokia hardware immediately, even if they're not perfect. Something is better than nothing. Accept quality compromises to close the product gap.",
                             risk: "Quality issues damage both Nokia and Windows Phone brands",
                             upside: "End the death spiral, get product to market",
@@ -6812,6 +6879,7 @@ Neither option is good. The Osborne Effect has trapped you in a death spiral.`,
                             setsPathState: {
                                 d4State: "crisis-mode-nokia-owned"
                             },
+                            pathMetrics: { marketShare: 15, nokiaShare: 0, appleShare: 16, googleShare: 40, bbShare: 5 },
 
                             consequences: {
 
@@ -6844,7 +6912,7 @@ Neither option is good. The Osborne Effect has trapped you in a death spiral.`,
                                 icon: "ph-first-aid",
                                 headline: "Survived the Osborne Effect, but the scar tissue is permanent.",
                                 body: "Customers remember the rushed 710. Carriers remember the returns. Tech bloggers keep referencing 'the botched launch.'",
-                                closing: "Market share stabilizes in single digits — better than dead, worse than hoped."
+                                closing: "Market share stabilizes in single digits - better than dead, worse than hoped."
                             }
                         ],
                                 immediate: {
@@ -6855,32 +6923,31 @@ Neither option is good. The Osborne Effect has trapped you in a death spiral.`,
                                     morale: "low",
                                     mobileRevenue: 0.05,     // Some rushed sales
                                     mobileCosts: 0.25,       // Emergency development costs
-                                    narrative: `You force the launch. The first Nokia Windows Phone—a hastily ported Lumia 710—ships six months early. Reviews are mixed: "Nokia build quality with half-baked software" (Engadget). "Better than no phone at all" (The Verge).
+                                    narrative: `You force the launch. The first Nokia Windows Phone (a hastily ported Lumia 710) ships six months early. Reviews are mixed: "Nokia build quality with half-baked software" (Engadget). "Better than no phone at all" (The Verge).
 
 Sales are modest but existent. The death spiral slows. Carriers have something to put on shelves. The narrative shifts from "Nokia has nothing" to "Nokia has something early."
 
-But the damage to brand perception is real—this is supposed to be the flagship launch of the Microsoft-Nokia partnership, and it feels rushed. "We had to stop the bleeding," you tell the board. "Bleeding is stopping. Now we need to heal."`
+But the damage to brand perception is real, this is supposed to be the flagship launch of the Microsoft-Nokia partnership, and it feels rushed. "We had to stop the bleeding," you tell the board. "Bleeding is stopping. Now we need to heal."`
                                 },
                                 delayed: {
                                     date: "SEP 2011",
                                     cash: -0.3,
                                     marketCap: -0.5,
                                     marketShare: -4,
-                                    marketShareOverride: 2,
                                     morale: "low",
                                     mobileRevenue: 0.1,      // Better products, some recovery
                                     mobileCosts: 0.15,       // Continued development
-                                    narrative: `The second wave of Nokia Windows Phones is better—Lumia 800 and 900 ship with proper optimization. Reviews improve. "Nokia finally delivered what they promised" (Ars Technica). The camera quality stands out; the design is distinctive.
+                                    narrative: `The second wave of Nokia Windows Phones is better. Lumia 800 and 900 ship with proper optimization. Reviews improve. "Nokia finally delivered what they promised" (Ars Technica). The camera quality stands out; the design is distinctive.
 
 But the early damage lingers. Customers remember the rushed 710. Carriers remember the stockouts and returns. Tech bloggers keep referencing "the botched launch" every time they review a new Lumia.
 
-"We survived the Osborne Effect," reflects your integration lead, "but the scar tissue is permanent." Market share stabilizes in single digits—better than dead, worse than hoped. The foundation is laid, but the reputation will take years to rebuild.`
+"We survived the Osborne Effect," reflects your integration lead, "but the scar tissue is permanent." Market share stabilizes in single digits, better than dead, worse than hoped. The foundation is laid, but the reputation will take years to rebuild.`
                                 }
                             }
                         },
                         {
                             id: "d3ifw-option-2",
-                            title: "Build the Bridge—Symbian Lives",
+                            title: "Build the Bridge: Symbian Lives",
                             description: "Keep selling Symbian devices with aggressive discounting. Position them as 'value' phones while Windows Phone goes premium. Buy time for a proper Windows Phone launch.",
                             risk: "Confusing message, Symbian brand drags down Nokia",
                             upside: "Revenue continuity, time for proper Windows Phone",
@@ -6888,8 +6955,9 @@ But the early damage lingers. Customers remember the rushed 710. Carriers rememb
                             investment: "$300M",
 
                             setsPathState: {
-                                d4State: "still-fighting"
+                                d4State: "still-fighting-nokia-owned"
                             },
+                            pathMetrics: { marketShare: 20, nokiaShare: 0, appleShare: 16, googleShare: 38, bbShare: 5 },
 
                             consequences: {
 
@@ -6922,7 +6990,7 @@ But the early damage lingers. Customers remember the rushed 710. Carriers rememb
                                 icon: "ph-bridge",
                                 headline: "Not elegant. Not graceful. But survived.",
                                 body: "The bridge strategy kept revenue flowing while Lumia matured. Emerging market sales funded the transition.",
-                                closing: "Market share still down, but trajectory finally improving. The worst is over — probably."
+                                closing: "Market share still down, but trajectory finally improving. The worst is over - probably."
                             }
                         ],
                                 immediate: {
@@ -6933,26 +7001,27 @@ But the early damage lingers. Customers remember the rushed 710. Carriers rememb
                                     morale: "neutral",
                                     mobileRevenue: 0.1,      // Symbian bridge revenue
                                     mobileCosts: 0.15,       // Dual platform support
-                                    narrative: `You announce the "Symbian Bridge"—continued support for Symbian devices as "affordable smartphones" while Windows Phone targets premium. The messaging is complicated: "Buy Symbian if you want value. Buy Lumia if you want the future."
+                                    narrative: `You announce the "Symbian Bridge", continued support for Symbian devices as "affordable smartphones" while Windows Phone targets premium. The messaging is complicated: "Buy Symbian if you want value. Buy Lumia if you want the future."
 
 Customers are confused. "So you're selling phones you say are dead?" asks one retailer. The marketing team struggles to explain the transition without undermining either product line.
 
-But the revenue helps. Symbian devices at $99 move volume. The twelve-month gap shrinks. Nokia employees stop fleeing—there's actually something to sell. The bridge is ugly, but it's holding weight.`
+But the revenue helps. Symbian devices at $99 move volume. The twelve-month gap shrinks. Nokia employees stop fleeing, there's actually something to sell. The bridge is ugly, but it's holding weight.`
                                 },
                                 delayed: {
                                     date: "DEC 2011",
                                     cash: -0.3,
                                     marketCap: 0.5,
                                     marketShare: -2,
-                                    marketShareOverride: 3,
                                     morale: "neutral",
                                     mobileRevenue: 0.15,     // Transition stabilizing
                                     mobileCosts: 0.1,        // Symbian winding down
-                                    narrative: `The bridge strategy worked—barely. Symbian devices kept revenue flowing while the Lumia lineup matured. Emerging market sales stayed strong enough to fund the transition.
+                                    narrative: `The bridge strategy worked, barely. Symbian devices kept revenue flowing while the Lumia lineup matured. Emerging market sales stayed strong enough to fund the transition.
 
 By Q4, Nokia Windows Phones are ready: Lumia 800 and 900 launch to strong reviews. The transition from "bridge" to "destination" is awkward but manageable. Symbian quietly phases out of marketing materials.
 
-"We survived the Osborne Effect," reports your integration lead. "Not elegantly. Not gracefully. But we survived." Market share is still down, but the trajectory is finally improving. The worst is over—probably.`
+"We survived the Osborne Effect," reports your integration lead. "Not elegantly. Not gracefully. But we survived." Market share is still down, but the trajectory is finally improving. The worst is over, probably.
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         }
@@ -6966,14 +7035,14 @@ By Q4, Nokia Windows Phones are ready: Lumia 800 and 900 launch to strong review
                     date: "JAN 2011",
                     timeMarker: "JAN 2011",
                     title: "The Decision That Never Came",
-                    storyImage: '<i class="ph ph-git-fork" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d3-decision-never-came.jpg',
                     storyText: `Four years of dual platforms. Four years of "we'll decide later." The bill has come due.
 
-Symbian still powers 100 million Nokia devices annually—mostly in emerging markets where $50 phones dominate. Windows Phone runs the premium Lumia lineup—beautiful devices that sell in the millions, not tens of millions.
+Symbian still powers 100 million Nokia devices annually, mostly in emerging markets where $50 phones dominate. Windows Phone runs the premium Lumia lineup, beautiful devices that sell in the millions, not tens of millions.
 
 Your quarterly reviews have become a ritual: Symbian team argues their volume justifies continued investment. Windows team argues their trajectory justifies killing Symbian. Neither side wins. Both sides lose a little more budget each quarter.
 
-Meanwhile, the market has moved decisively. Android owns 50% globally. iOS owns premium. Your combined Nokia/Microsoft platform sits at 15% and shrinking—Symbian declining faster than Windows Phone grows.
+Meanwhile, the market has moved decisively. Android owns 50% globally. iOS owns premium. Your combined Nokia/Microsoft platform sits at 15% and shrinking. Symbian declining faster than Windows Phone grows.
 
 "Every engineering hour we spend on Symbian is an hour not spent on Windows Phone," argues your platform lead. "Every Symbian sale is a customer who might have bought a Lumia."
 
@@ -6992,7 +7061,7 @@ Time's up.`,
                         teaser: "Four years of dual platforms. Four years of 'we'll decide later.' The bill has come due."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
                             { label: "Combined Share", value: "~15%", color: "gold" },
                             { label: "Symbian", value: "100M devices (declining)", color: "gold" },
@@ -7104,7 +7173,7 @@ Time's up.`,
                                     ] },
                                     { heading: "MDM Market", content: "Mobile Device Management spending: $1.2B in 2010, projected $5.8B by 2015. iOS and Android MDM solutions maturing rapidly. Our security advantage is eroding.", isHighlighted: true }
                                 ],
-                                footnote: "Enterprise is no longer a fortress — it's a market segment that uses consumer devices."
+                                footnote: "Enterprise is no longer a fortress - it's a market segment that uses consumer devices."
                             }
                         }
                     ],
@@ -7114,7 +7183,7 @@ Time's up.`,
                     options: [
                         {
                             id: "d3id-option-1",
-                            title: "Finally Kill Symbian—All Windows",
+                            title: "Finally Kill Symbian: All Windows",
                             description: "End the debate. Announce Symbian end-of-life. Redirect all engineering to Windows Phone. Accept the short-term revenue hit for long-term platform clarity.",
                             risk: "Revenue gap in emerging markets, Finnish political fallout",
                             upside: "Unified platform, focused investment, clear story",
@@ -7122,8 +7191,9 @@ Time's up.`,
                             investment: "$500M",
 
                             setsPathState: {
-                                d4State: "still-fighting"
+                                d4State: "still-fighting-nokia-owned"
                             },
+                            pathMetrics: { marketShare: 20, nokiaShare: 0, appleShare: 16, googleShare: 38, bbShare: 5 },
 
                             consequences: {
 
@@ -7178,21 +7248,22 @@ But in Redmond and among the Windows Phone faithful, there's relief. "Finally," 
                                     cash: -0.2,
                                     marketCap: 0.5,
                                     marketShare: -3,
-                                    marketShareOverride: 3,
                                     morale: "high",
                                     mobileRevenue: 0.1,      // Unified platform gaining traction
                                     mobileCosts: 0.05,       // Efficient focused spending
-                                    narrative: `The unified focus is working. Windows Phone development accelerates—features that took six months now ship in three. The Lumia lineup expands to cover more price points. Engineers who had been spread across two platforms are now concentrated on one.
+                                    narrative: `The unified focus is working. Windows Phone development accelerates, features that took six months now ship in three. The Lumia lineup expands to cover more price points. Engineers who had been spread across two platforms are now concentrated on one.
 
 Developers notice the commitment. "Nokia betting everything on Windows Phone makes us more confident," says one major app developer who'd been hedging. App submissions tick upward for the first time in months.
 
-Market share is still shrinking—you're fighting Android's momentum—but the rate of decline is slowing. For the first time in four years, you have one platform, one roadmap, one team pulling in the same direction. It feels like progress, even if the numbers don't show it yet.`
+Market share is still shrinking, you're fighting Android's momentum, but the rate of decline is slowing. For the first time in four years, you have one platform, one roadmap, one team pulling in the same direction. It feels like progress, even if the numbers don't show it yet.
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         },
                         {
                             id: "d3id-option-2",
-                            title: "Keep Both—Managed Decline",
+                            title: "Keep Both: Managed Decline",
                             description: "Symbian for emerging markets, Windows Phone for premium. Gradual transition as Windows Phone matures. Avoid the political explosion of killing Symbian outright.",
                             risk: "Continued split focus, neither platform gets full resources",
                             upside: "Revenue continuity, avoided political crisis",
@@ -7202,14 +7273,15 @@ Market share is still shrinking—you're fighting Android's momentum—but the r
                             setsPathState: {
                                 d4State: "crisis-mode-nokia-owned"
                             },
+                            pathMetrics: { marketShare: 15, nokiaShare: 0, appleShare: 16, googleShare: 40, bbShare: 5 },
 
                             consequences: {
 
                         moments: [
                             {
                                 type: "verdict",
-                                headline: "'Platform rationalization' — corporate speak for 'we're not deciding.'",
-                                subline: "\"Microsoft-Nokia can't decide what business they're in.\" — Bloomberg",
+                                headline: "'Platform rationalization' -- corporate speak for 'we're not deciding.'",
+                                subline: "\"Microsoft-Nokia can't decide what business they're in.\" -- Bloomberg",
                                 sentiment: "negative"
                             },
                             {
@@ -7245,7 +7317,7 @@ Market share is still shrinking—you're fighting Android's momentum—but the r
                                     morale: "low",
                                     mobileRevenue: -0.1,     // Both platforms struggling
                                     mobileCosts: 0.2,        // Duplicate R&D continuing
-                                    narrative: `You announce "platform rationalization"—corporate speak for "we're not deciding." Symbian gets "maintenance mode" budget. Windows Phone gets "growth investment." Both teams feel underfunded. Neither feels prioritized.
+                                    narrative: `You announce "platform rationalization", corporate speak for "we're not deciding." Symbian gets "maintenance mode" budget. Windows Phone gets "growth investment." Both teams feel underfunded. Neither feels prioritized.
 
 The press coverage is brutal: "Microsoft-Nokia can't decide what business they're in" (Bloomberg). "The platform strategy that isn't" (Ars Technica). Investors openly question the leadership's conviction.
 
@@ -7256,11 +7328,10 @@ Internally, the best engineers start interviewing elsewhere. "If leadership won'
                                     cash: -0.5,
                                     marketCap: -1.0,
                                     marketShare: -5,
-                                    marketShareOverride: 2,
                                     morale: "low",
                                     mobileRevenue: -0.2,     // Accelerating decline
                                     mobileCosts: 0.15,       // Can't cut fast enough
-                                    narrative: `The managed decline becomes unmanaged chaos. Symbian sales collapse faster than projected—even emerging market customers want Android now. Windows Phone can't fill the gap fast enough. The revenue charts look like a staircase going down.
+                                    narrative: `The managed decline becomes unmanaged chaos. Symbian sales collapse faster than projected, even emerging market customers want Android now. Windows Phone can't fill the gap fast enough. The revenue charts look like a staircase going down.
 
 Talent exodus accelerates: 2,000 engineers leave in Q2 alone. LinkedIn profiles update en masse with Google, Apple, and Amazon as new employers. Institutional knowledge walks out the door daily.
 
@@ -7278,16 +7349,16 @@ The board demands answers. "We tried to optimize for revenue and strategy simult
                     date: "JAN 2011",
                     timeMarker: "JAN 2011",
                     title: "The MeeGo Moment",
-                    storyImage: '<i class="ph ph-users-three" style="font-size: 4rem;"></i>',
-                    storyText: `The Nokia N9 prototype sits on the conference table. It's beautiful—curved glass, no buttons, swipe navigation that feels almost magical. The Finnish engineers are beaming.
+                    storyBg: 'assets/images/chapters/d3-meego-moment.jpg',
+                    storyText: `The Nokia N9 prototype sits on the conference table. It's beautiful, curved glass, no buttons, swipe navigation that feels almost magical. The Finnish engineers are beaming.
 
 "This is MeeGo," says Nokia's product lead. "Linux-based. True multitasking. Developer-friendly. And it's ready."
 
-You let Nokia lead the platform strategy, and they delivered something genuinely innovative. MeeGo isn't a Windows Phone clone or an Android fork—it's a third way, built by people who've been doing mobile longer than anyone.
+You let Nokia lead the platform strategy, and they delivered something genuinely innovative. MeeGo isn't a Windows Phone clone or an Android fork, it's a third way, built by people who've been doing mobile longer than anyone.
 
 The reviews from early testers are exceptional: "The phone Nokia should have built three years ago." "MeeGo makes iOS feel dated." "Why didn't they do this sooner?"
 
-But there's a catch. MeeGo is Nokia's baby, not Microsoft's. The app ecosystem is tiny—a few thousand apps, mostly Finnish developers and hobbyists. The N9 is a showcase device, not a platform.
+But there's a catch. MeeGo is Nokia's baby, not Microsoft's. The app ecosystem is tiny, a few thousand apps, mostly Finnish developers and hobbyists. The N9 is a showcase device, not a platform.
 
 Your team in Redmond is skeptical. "MeeGo is great technology. But technology doesn't win. Ecosystems win. And MeeGo has no ecosystem."
 
@@ -7304,7 +7375,7 @@ Time. The one thing the smartphone market doesn't give.`,
                         teaser: "Nokia built something genuinely innovative with MeeGo. The N9 is beautiful. But ecosystems win, not technology."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
                             { label: "MeeGo Status", value: "Ready to ship", color: "green" },
                             { label: "N9 Reviews", value: "Exceptional", color: "green" },
@@ -7431,7 +7502,7 @@ Time. The one thing the smartphone market doesn't give.`,
                         {
                             id: "d3inl-option-1",
                             title: "Full Commitment to MeeGo",
-                            description: "Nokia built something special. Trust them. Pour resources into MeeGo—app developer subsidies, marketing, carrier deals. Bet that great products attract great ecosystems.",
+                            description: "Nokia built something special. Trust them. Pour resources into MeeGo, app developer subsidies, marketing, carrier deals. Bet that great products attract great ecosystems.",
                             risk: "Betting against the iOS/Android ecosystem juggernaut",
                             upside: "Genuinely differentiated platform, energized Nokia team",
                             cost: "$500M MeeGo investment",
@@ -7440,6 +7511,7 @@ Time. The one thing the smartphone market doesn't give.`,
                             setsPathState: {
                                 d4State: "differentiated"
                             },
+                            pathMetrics: { marketShare: 18, nokiaShare: 0, appleShare: 16, googleShare: 39, bbShare: 5 },
 
                             consequences: {
 
@@ -7488,20 +7560,19 @@ Time. The one thing the smartphone market doesn't give.`,
 
 You announce a $500M developer fund, exclusive carrier partnerships for the N9, and a MeeGo tablet roadmap. The tech press is surprised: "Microsoft betting on Linux-based platform" makes headlines worldwide.
 
-The N9 launches to rave reviews. "The most innovative phone in years" (Wired). "Gesture navigation that makes iPhone feel dated" (The Verge). Sales start strong in Europe—not iPhone numbers, but real momentum. The underdog has believers.`
+The N9 launches to rave reviews. "The most innovative phone in years" (Wired). "Gesture navigation that makes iPhone feel dated" (The Verge). Sales start strong in Europe, not iPhone numbers, but real momentum. The underdog has believers.`
                                 },
                                 delayed: {
                                     date: "SEP 2011",
                                     cash: -0.3,
                                     marketCap: 0.5,
                                     marketShare: -1,
-                                    marketShareOverride: 7,
                                     morale: "high",
                                     mobileRevenue: 0.15,     // Cult following revenue
                                     mobileCosts: 0.15,       // Continued MeeGo investment
                                     narrative: `MeeGo is developing a cult following. The N9 has passionate fans who evangelize the platform relentlessly. Online forums buzz with MeeGo development tips and customization guides.
 
-Developers are starting to notice—the framework is elegant, the tools are good, and the enthusiast base is engaged. Qt development attracts talent. The platform feels genuinely different, not a knockoff.
+Developers are starting to notice, the framework is elegant, the tools are good, and the enthusiast base is engaged. Qt development attracts talent. The platform feels genuinely different, not a knockoff.
 
 But the numbers tell a different story: 3 million N9s sold against iPhone's 20 million per quarter. "We're building something great for a small audience," admits Nokia's product lead. "The question is whether small can become big, or whether we're just the premium niche that never scaled."`
                                 }
@@ -7510,15 +7581,16 @@ But the numbers tell a different story: 3 million N9s sold against iPhone's 20 m
                         {
                             id: "d3inl-option-2",
                             title: "Redirect to Windows Phone",
-                            description: "MeeGo is impressive but the ecosystem battle is already lost. Redirect Nokia to Windows Phone—the platform with Microsoft services integration and a real app strategy. Kill MeeGo before it consumes more resources.",
+                            description: "MeeGo is impressive but the ecosystem battle is already lost. Redirect Nokia to Windows Phone, the platform with Microsoft services integration and a real app strategy. Kill MeeGo before it consumes more resources.",
                             risk: "Betraying Nokia team, killing genuine innovation",
                             upside: "Platform unification, ecosystem focus",
                             cost: "Trust with Nokia team, MeeGo write-off",
                             investment: "MeeGo write-off",
 
                             setsPathState: {
-                                d4State: "still-fighting"
+                                d4State: "still-fighting-nokia-owned"
                             },
+                            pathMetrics: { marketShare: 20, nokiaShare: 0, appleShare: 16, googleShare: 38, bbShare: 5 },
 
                             consequences: {
 
@@ -7566,22 +7638,23 @@ But the numbers tell a different story: 3 million N9s sold against iPhone's 20 m
 
 Three key architects resign within the week. The Finnish press calls it "Microsoft's betrayal of Nokia innovation." Social media fills with #SaveMeeGo hashtags and angry open letters.
 
-The N9 launches as planned—a single device, no future roadmap—and sells surprisingly well on pure enthusiasm. "The best phone we ever made," says a departing Nokia engineer, "and the last." It becomes a collector's item before it's even discontinued.`
+The N9 launches as planned (a single device, no future roadmap) and sells surprisingly well on pure enthusiasm. "The best phone we ever made," says a departing Nokia engineer, "and the last." It becomes a collector's item before it's even discontinued.`
                                 },
                                 delayed: {
                                     date: "SEP 2011",
                                     cash: -0.2,
                                     marketCap: 0,
                                     marketShare: -3,
-                                    marketShareOverride: 3,
                                     morale: "neutral",
                                     mobileRevenue: 0.1,      // Lumia sales beginning
                                     mobileCosts: 0.15,       // WP development costs
-                                    narrative: `The pivot to Windows Phone is proceeding, but the scars remain. The MeeGo team largely departed—many to Jolla, a Finnish startup building their own MeeGo successor. Nokia engineers still resent the redirect.
+                                    narrative: `The pivot to Windows Phone is proceeding, but the scars remain. The MeeGo team largely departed, many to Jolla, a Finnish startup building their own MeeGo successor. Nokia engineers still resent the redirect.
 
-But the Windows Phone devices are coming: Lumia 800 and 900, Nokia hardware with Microsoft software. Reviews are positive—the build quality is excellent, the cameras are sharp. The unified message is clearer: one platform, one direction.
+But the Windows Phone devices are coming: Lumia 800 and 900, Nokia hardware with Microsoft software. Reviews are positive, the build quality is excellent, the cameras are sharp. The unified message is clearer: one platform, one direction.
 
-"We killed something beautiful to build something practical," reflects your integration lead. "That's the nature of platforms. Practical wins." Whether it was the right call will take years to determine. The decision is made. Now you live with it.`
+"We killed something beautiful to build something practical," reflects your integration lead. "That's the nature of platforms. Practical wins." Whether it was the right call will take years to determine. The decision is made. Now you live with it.
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         }
@@ -7595,18 +7668,18 @@ But the Windows Phone devices are coming: Lumia 800 and 900, Nokia hardware with
                     date: "JAN 2011",
                     timeMarker: "JAN 2011",
                     title: "The Bargain Price",
-                    storyImage: '<i class="ph ph-shopping-cart" style="font-size: 4rem;"></i>',
-                    storyText: `You bought Nokia for $15 billion—a third of what it would have cost in 2007. Everyone called it a bargain. Now you understand why it was cheap.
+                    storyBg: 'assets/images/chapters/d3-bargain-price.jpg',
+                    storyText: `You bought Nokia for $15 billion, a third of what it would have cost in 2007. Everyone called it a bargain. Now you understand why it was cheap.
 
 The company you acquired is not the company you researched. The Nokia that dominated mobile for a decade has been hollowed out. The best engineers left during the three years you waited. The carrier relationships frayed. The brand cachet faded.
 
 "We bought the name," reports your integration lead, "not the capability. The hardware team is still excellent. Everything else is a reconstruction project."
 
-The good news: Nokia is grateful to have a lifeline. Unlike the early acquisition scenario—where Nokia was arrogant and resistant—this Nokia is humble and cooperative. They want the partnership to work because the alternative is extinction.
+The good news: Nokia is grateful to have a lifeline. Unlike the early acquisition scenario (where Nokia was arrogant and resistant) this Nokia is humble and cooperative. They want the partnership to work because the alternative is extinction.
 
 The bad news: you're integrating a company that's already been through a near-death experience. Morale is fragile. Talent is depleted. The institutional knowledge walked out the door.
 
-You can move fast—rip off the bandage, integrate aggressively, and accept that some things will break. Or you can move carefully—preserve what remains, build trust, and hope time isn't the enemy.`,
+You can move fast, rip off the bandage, integrate aggressively, and accept that some things will break. Or you can move carefully, preserve what remains, build trust, and hope time isn't the enemy.`,
                     objective: "You bought a weakened Nokia. Integrate fast and risk breaking it, or go slow and risk missing the market?",
                     availableInfo: ["d3-info-nokia-talks", "d3-info-market-state", "d3-info-wp7-launch"],
 
@@ -7617,7 +7690,7 @@ You can move fast—rip off the bandage, integrate aggressively, and accept that
                         teaser: "You bought Nokia at a third of peak price. Now you understand why it was cheap. The capability walked out the door."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
                             { label: "Acquisition Cost", value: "$15B", color: "gold" },
                             { label: "Nokia Capability", value: "Hollowed out", color: "red" },
@@ -7632,40 +7705,42 @@ You can move fast—rip off the bandage, integrate aggressively, and accept that
                             id: "d3in-intel-nokia",
                             type: "entity",
                             thumb: {
-                                icon: "ph-handshake",
-                                label: "COMPETITOR",
+                                icon: "ph-buildings",
+                                headerImage: "assets/images/nokia-mwc.webp",
+                                label: "YOUR DIVISION",
                                 title: "NOKIA",
-                                subtitle: "Burning platform memo",
-                                sentiment: "DESPERATE\nSEEKING PARTNER",
-                                sentimentColor: "#c45c4d"
+                                subtitle: "Integration status report",
+                                sentiment: "OWNED\nINTEGRATING",
+                                sentimentColor: "#3A6B8C"
                             },
                             popup: {
-                                name: "NOKIA",
-                                icon: "ph-handshake",
-                                category: "Potential Partner",
+                                name: "NOKIA DIVISION",
+                                icon: "ph-buildings",
+                                headerImage: "assets/images/nokia-mwc.webp",
+                                category: "Owned Subsidiary",
                                 gradient: "linear-gradient(135deg, #0f1f1a 0%, #1a2f25 50%, #0f1f1a 100%)",
                                 front: {
-                                    shortStat: "100M smartphones/yr · Symbian dying",
-                                    sentiment: "DESPERATE / SEEKING PARTNER",
-                                    sentimentKey: "desperate",
+                                    shortStat: "40,000 employees · 4 years into integration",
+                                    sentiment: "OWNED / INTEGRATING",
+                                    sentimentKey: "defensive",
                                     quickStats: [
-                                        { label: "Annual devices", value: "100M+", color: "green" },
-                                        { label: "Platform", value: "Symbian (dying)", color: "red" },
-                                        { label: "CEO", value: "Elop (ex-MSFT)", color: "green" },
-                                        { label: "Decision", value: "30 days", color: "gold" }
+                                        { label: "Employees", value: "~40,000", color: "gold" },
+                                        { label: "Symbian status", value: "Dying", color: "red" },
+                                        { label: "CEO", value: "Elop (your pick)", color: "green" },
+                                        { label: "Integration", value: "Ongoing", color: "gold" }
                                     ],
-                                    source: "BD team + Industry Sources",
-                                    reliability: "MEDIUM"
+                                    source: "Internal Nokia Division Review",
+                                    reliability: "HIGH"
                                 },
                                 back: {
-                                    keySignal: "Elop's 'burning platform' memo leaked. Nokia evaluating Windows Phone, Android, or MeeGo. Decision expected within 30 days.",
+                                    keySignal: "Four years since the hostile acquisition. Nokia hardware remains world-class but Symbian is collapsing. The integration approach you choose now will define whether the $54B investment pays off.",
                                     details: [
-                                        { label: "Deal ask", value: "$1B+/yr support", color: "red" },
-                                        { label: "Exclusivity", value: "5-year WP only", color: "green" },
-                                        { label: "Acquisition path", value: "3-5 years", color: "gold" },
-                                        { label: "If Nokia picks Android", value: "WP is finished", color: "red" }
+                                        { label: "Acquisition cost", value: "$54B", color: "red" },
+                                        { label: "Annual losses", value: "$1.8B/yr", color: "red" },
+                                        { label: "Hardware quality", value: "Best-in-class", color: "green" },
+                                        { label: "Engineer retention", value: "68%", color: "gold" }
                                     ],
-                                    analysisNote: "Nokia still ships 100M smartphones annually. Partnership would instantly make WP a top-three platform. This is the hardware partner we've been looking for."
+                                    analysisNote: "You own the world's largest phone manufacturer. The hardware is excellent. The integration approach — rapid or gradual — will determine whether Nokia's talent stays or leaves."
                                 }
                             }
                         },
@@ -7725,7 +7800,7 @@ You can move fast—rip off the bandage, integrate aggressively, and accept that
                                         "Metro UI praised as 'refreshingly different'",
                                         "Live Tiles concept resonating with users",
                                         "Integration with Xbox and Zune services",
-                                        "NPS of 8.2 — highest of any Microsoft consumer product"
+                                        "NPS of 8.2 - highest of any Microsoft consumer product"
                                     ] },
                                     { heading: "What Didn't", type: "list", items: [
                                         "No copy/paste (shipping in March update)",
@@ -7745,7 +7820,7 @@ You can move fast—rip off the bandage, integrate aggressively, and accept that
                     options: [
                         {
                             id: "d3in-option-1",
-                            title: "Aggressive Integration—Speed Over Care",
+                            title: "Aggressive Integration: Speed Over Care",
                             description: "Move fast. Merge the organizations, unify the platforms, accept the breakage. Every month of 'gradual integration' is a month Android extends its lead.",
                             risk: "Destroying what capability remains, alienating Nokia loyalists",
                             upside: "Fast unification, immediate platform focus",
@@ -7753,8 +7828,9 @@ You can move fast—rip off the bandage, integrate aggressively, and accept that
                             investment: "$800M",
 
                             setsPathState: {
-                                d4State: "crisis-mode"
+                                d4State: "crisis-mode-nokia-owned"
                             },
+                            pathMetrics: { marketShare: 15, nokiaShare: 0, appleShare: 16, googleShare: 40, bbShare: 5 },
 
                             consequences: {
 
@@ -7779,7 +7855,7 @@ You can move fast—rip off the bandage, integrate aggressively, and accept that
                                 events: [
                                     { date: "MAR 2011", text: "Project Unify announced. Dual structures end. Symbian end-of-life Q2. 5,000 laid off.", mood: "negative" },
                                     { date: "JUN 2011", text: "Finnish government protests. Nokia employees walk out. Press runs 'death of Finnish innovation.'", mood: "negative" },
-                                    { date: "SEP 2011", text: "Integration worked — operationally. First Nokia WP ships on time. But Nokia feels like a subsidiary.", mood: "neutral" }
+                                    { date: "SEP 2011", text: "Integration worked - operationally. First Nokia WP ships on time. But Nokia feels like a subsidiary.", mood: "neutral" }
                                 ]
                             },
                             {
@@ -7798,7 +7874,7 @@ You can move fast—rip off the bandage, integrate aggressively, and accept that
                                     morale: "low",
                                     mobileRevenue: -0.15,    // Integration disrupting sales
                                     mobileCosts: 0.35,       // Heavy restructuring costs
-                                    narrative: `You announce "Project Unify"—a 90-day integration blitz. Dual reporting structures end immediately. Platform decision made: Windows Phone only, Symbian end-of-life Q2. Redundancies announced: 5,000 positions eliminated.
+                                    narrative: `You announce "Project Unify", a 90-day integration blitz. Dual reporting structures end immediately. Platform decision made: Windows Phone only, Symbian end-of-life Q2. Redundancies announced: 5,000 positions eliminated.
 
 The Finnish government protests. Nokia employees stage a walkout in Espoo. The European press runs stories about "American corporate raiders" and "the death of Finnish innovation."
 
@@ -7809,11 +7885,10 @@ But the clarity is immediate. For the first time, there's one roadmap, one leade
                                     cash: -0.5,
                                     marketCap: -0.5,
                                     marketShare: -4,
-                                    marketShareOverride: 2,
                                     morale: "low",
                                     mobileRevenue: 0.05,     // Early WP Nokia sales
                                     mobileCosts: 0.2,        // Continued integration
-                                    narrative: `The aggressive integration worked—for integration. The companies are unified. The platform is clear. The first Nokia Windows Phones ship on time. Operationally, it's a success.
+                                    narrative: `The aggressive integration worked, for integration. The companies are unified. The platform is clear. The first Nokia Windows Phones ship on time. Operationally, it's a success.
 
 But the human cost is evident. The Nokia that emerges feels like a subsidiary, not a partnership. The Finnish spirit that made Nokia innovative is largely gone. Water cooler conversations happen in English now, not Finnish.
 
@@ -7823,7 +7898,7 @@ But the human cost is evident. The Nokia that emerges feels like a subsidiary, n
                         },
                         {
                             id: "d3in-option-2",
-                            title: "Gradual Merge—Preserve the Asset",
+                            title: "Gradual Merge: Preserve the Asset",
                             description: "Move carefully. Respect Nokia's identity. Maintain Finnish operations. Trust that the best acquisition outcomes come from patience and cultural sensitivity.",
                             risk: "Taking too long while market shifts further",
                             upside: "Preserved Nokia capability and goodwill",
@@ -7831,8 +7906,9 @@ But the human cost is evident. The Nokia that emerges feels like a subsidiary, n
                             investment: "$300M",
 
                             setsPathState: {
-                                d4State: "still-fighting"
+                                d4State: "still-fighting-nokia-owned"
                             },
+                            pathMetrics: { marketShare: 22, nokiaShare: 0, appleShare: 16, googleShare: 38, bbShare: 5 },
 
                             consequences: {
 
@@ -7876,26 +7952,27 @@ But the human cost is evident. The Nokia that emerges feels like a subsidiary, n
                                     morale: "neutral",
                                     mobileRevenue: 0,        // Transition period
                                     mobileCosts: 0.15,       // Integration investment
-                                    narrative: `You announce a "partnership integration"—separate organizations collaborating rather than merging. Nokia keeps its headquarters, its brand, its product autonomy. Windows Phone becomes the shared platform, but Nokia retains hardware decision-making.
+                                    narrative: `You announce a "partnership integration", separate organizations collaborating rather than merging. Nokia keeps its headquarters, its brand, its product autonomy. Windows Phone becomes the shared platform, but Nokia retains hardware decision-making.
 
-The Finnish government applauds. Nokia employees exhale. "Microsoft respects our heritage," says Nokia's acting CEO. The press coverage is surprisingly positive—"a merger that doesn't feel like a takeover."
+The Finnish government applauds. Nokia employees exhale. "Microsoft respects our heritage," says Nokia's acting CEO. The press coverage is surprisingly positive, "a merger that doesn't feel like a takeover."
 
-The pace is slower—first Windows Phones won't ship until Q4—but the relationship is healthier. You're building trust, not imposing authority. The long game requires patience.`
+The pace is slower, first Windows Phones won't ship until Q4, but the relationship is healthier. You're building trust, not imposing authority. The long game requires patience.`
                                 },
                                 delayed: {
                                     date: "DEC 2011",
                                     cash: -0.2,
                                     marketCap: 0.5,
                                     marketShare: -2,
-                                    marketShareOverride: 3,
                                     morale: "neutral",
                                     mobileRevenue: 0.15,     // Healthy Lumia launch
                                     mobileCosts: 0.1,        // Efficient collaboration
                                     narrative: `The gradual approach is paying off. Nokia engineers who stayed through the acquisition are engaged and productive. The culture feels collaborative, not colonial. Ideas flow both directions.
 
-The Lumia devices ship with genuine Nokia design DNA—camera excellence, build quality, the small touches that made Nokia phones feel premium. PureView technology. Carl Zeiss optics. Details that matter to people who care about phones.
+The Lumia devices ship with genuine Nokia design DNA, camera excellence, build quality, the small touches that made Nokia phones feel premium. PureView technology. Carl Zeiss optics. Details that matter to people who care about phones.
 
-"We integrated the companies without destroying the company," reports your integration lead. Market share is still declining, but the trajectory is improving. More importantly, you have a partner that wants to be here. That matters more than any org chart.`
+"We integrated the companies without destroying the company," reports your integration lead. Market share is still declining, but the trajectory is improving. More importantly, you have a partner that wants to be here. That matters more than any org chart.
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         }
@@ -7909,16 +7986,16 @@ The Lumia devices ship with genuine Nokia design DNA—camera excellence, build 
                     date: "JAN 2011",
                     timeMarker: "JAN 2011",
                     title: "The Android Paradox",
-                    storyImage: '<i class="ph ph-android-logo" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d3-android-paradox.jpg',
                     storyText: `The Nokia Android phone is selling. That's the problem.
 
-The N900A launched three months ago—Nokia's first Android device, built with Microsoft services deeply integrated. Reviews called it "the best Android phone ever made." Nokia's legendary hardware—camera excellence, build quality, signal strength—combined with Android's ecosystem. It's working. Too well.
+The N900A launched three months ago. Nokia's first Android device, built with Microsoft services deeply integrated. Reviews called it "the best Android phone ever made." Nokia's legendary hardware (camera excellence, build quality, signal strength) combined with Android's ecosystem. It's working. Too well.
 
 Your Windows Phone team is in open revolt. "You're funding our competitor," says the WP7 lead, barely concealing his fury. "Every N900A that sells is a customer who will never try Windows Phone. You're paying Nokia to kill us."
 
 He's not entirely wrong. Nokia Android phones are cannibalizing Windows Phone sales in Europe. Why would a consumer choose the Microsoft platform when Microsoft itself is selling something better on Android?
 
-But the numbers don't lie. Nokia Android devices have 8% market share and growing. Windows Phone has 3% and shrinking. The strategy that's winning is the one your own company hates.
+But the numbers don't lie. Nokia Android devices have 12% market share and growing. Windows Phone has 8% and stalling. The strategy that's winning is the one your own company hates.
 
 Stephen Elop calls from Helsinki with the question you've been avoiding: "Do we commit fully to Android, or do we keep Windows Phone alive?"
 
@@ -7933,7 +8010,7 @@ The Windows Phone team built something beautiful. The Nokia partnership is makin
                         teaser: "Nokia Android is selling too well. It's cannibalizing Windows Phone. You can't have both."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
                             { label: "Nokia Android Share", value: "8% and growing", color: "green" },
                             { label: "Windows Phone Share", value: "3% and shrinking", color: "red" },
@@ -8015,40 +8092,42 @@ The Windows Phone team built something beautiful. The Nokia partnership is makin
                             id: "d3ana-intel-nokia",
                             type: "entity",
                             thumb: {
-                                icon: "ph-handshake",
-                                label: "COMPETITOR",
+                                icon: "ph-buildings",
+                                headerImage: "assets/images/nokia-mwc.webp",
+                                label: "YOUR DIVISION",
                                 title: "NOKIA",
-                                subtitle: "Burning platform memo",
-                                sentiment: "DESPERATE\nSEEKING PARTNER",
-                                sentimentColor: "#c45c4d"
+                                subtitle: "Android dual-track status",
+                                sentiment: "OWNED\nDUAL-TRACK",
+                                sentimentColor: "#3A6B8C"
                             },
                             popup: {
-                                name: "NOKIA",
-                                icon: "ph-handshake",
-                                category: "Potential Partner",
+                                name: "NOKIA DIVISION",
+                                icon: "ph-buildings",
+                                headerImage: "assets/images/nokia-mwc.webp",
+                                category: "Owned Subsidiary",
                                 gradient: "linear-gradient(135deg, #0f1f1a 0%, #1a2f25 50%, #0f1f1a 100%)",
                                 front: {
-                                    shortStat: "100M smartphones/yr · Symbian dying",
-                                    sentiment: "DESPERATE / SEEKING PARTNER",
-                                    sentimentKey: "desperate",
+                                    shortStat: "Nokia Android thriving · WP team in revolt",
+                                    sentiment: "OWNED / DUAL-TRACK TENSION",
+                                    sentimentKey: "defensive",
                                     quickStats: [
-                                        { label: "Annual devices", value: "100M+", color: "green" },
-                                        { label: "Platform", value: "Symbian (dying)", color: "red" },
-                                        { label: "CEO", value: "Elop (ex-MSFT)", color: "green" },
-                                        { label: "Decision", value: "30 days", color: "gold" }
+                                        { label: "Nokia Android", value: "{{marketShare}}% share", color: "green" },
+                                        { label: "Windows Phone", value: "Stalling", color: "red" },
+                                        { label: "Internal conflict", value: "Critical", color: "red" },
+                                        { label: "Hardware quality", value: "Best-in-class", color: "green" }
                                     ],
-                                    source: "BD team + Industry Sources",
-                                    reliability: "MEDIUM"
+                                    source: "Internal Nokia Division Review",
+                                    reliability: "HIGH"
                                 },
                                 back: {
-                                    keySignal: "Elop's 'burning platform' memo leaked. Nokia evaluating Windows Phone, Android, or MeeGo. Decision expected within 30 days.",
+                                    keySignal: "Nokia's Android phones are cannibalizing Windows Phone sales. The WP team is in open revolt. You own both platforms — but running both is tearing the division apart.",
                                     details: [
-                                        { label: "Deal ask", value: "$1B+/yr support", color: "red" },
-                                        { label: "Exclusivity", value: "5-year WP only", color: "green" },
-                                        { label: "Acquisition path", value: "3-5 years", color: "gold" },
-                                        { label: "If Nokia picks Android", value: "WP is finished", color: "red" }
+                                        { label: "Acquisition cost", value: "$54B", color: "red" },
+                                        { label: "Nokia Android", value: "Growing", color: "green" },
+                                        { label: "Windows Phone", value: "Shrinking", color: "red" },
+                                        { label: "Team morale", value: "Split", color: "gold" }
                                     ],
-                                    analysisNote: "Nokia still ships 100M smartphones annually. Partnership would instantly make WP a top-three platform. This is the hardware partner we've been looking for."
+                                    analysisNote: "The Android experiment worked too well. Nokia's hardware excellence combined with Android's ecosystem is outselling your own platform. You need to choose: commit to Android, save Windows Phone, or keep running both."
                                 }
                             }
                         }
@@ -8060,7 +8139,7 @@ The Windows Phone team built something beautiful. The Nokia partnership is makin
                         {
                             id: "d3ana-option-1",
                             title: "Commit Fully to Nokia Android",
-                            description: "End the internal war. Nokia Android is winning—double down on it. Wind down Windows Phone development and redirect those resources to making Nokia Android the best it can be.",
+                            description: "End the internal war. Nokia Android is winning, double down on it. Wind down Windows Phone development and redirect those resources to making Nokia Android the best it can be.",
                             risk: "Windows Phone team exodus, years of platform investment abandoned",
                             upside: "United strategy, clear market position, immediate market share",
                             cost: "$300M transition + political capital",
@@ -8069,6 +8148,7 @@ The Windows Phone team built something beautiful. The Nokia partnership is makin
                             setsPathState: {
                                 d4State: "differentiated"
                             },
+                            pathMetrics: { marketShare: 18, nokiaShare: 0, appleShare: 16, googleShare: 40, bbShare: 5 },
 
                             consequences: {
 
@@ -8076,7 +8156,7 @@ The Windows Phone team built something beautiful. The Nokia partnership is makin
                             {
                                 type: "verdict",
                                 headline: "Windows Phone killed. Full commitment to Nokia Android.",
-                                subline: "All-hands feels like a funeral. 30% of WP team resigns within a week. But Wall Street loves it — MSFT +8%.",
+                                subline: "All-hands feels like a funeral. 30% of WP team resigns within a week. But Wall Street loves it - MSFT +8%.",
                                 sentiment: "neutral"
                             },
                             {
@@ -8101,7 +8181,7 @@ The Windows Phone team built something beautiful. The Nokia partnership is makin
                                 icon: "ph-android-logo",
                                 headline: "Didn't win the platform war. Found a way to thrive in someone else's ecosystem.",
                                 body: "Outlook, OneDrive, Office all work better on Nokia Android than on Samsung or Pixel. You're not beating Google, but you're differentiated.",
-                                closing: "The WP refugees build something new at Apple and Google — that hurts. But what remains is profitable."
+                                closing: "The WP refugees build something new at Apple and Google - that hurts. But what remains is profitable."
                             }
                         ],
                                 immediate: {
@@ -8114,7 +8194,7 @@ The Windows Phone team built something beautiful. The Nokia partnership is makin
                                     mobileCosts: 0.1,        // Lean, focused costs
                                     narrative: `You announce the decision at an all-hands meeting that feels like a funeral. "Windows Phone represented extraordinary work by extraordinary people. But Nokia Android is what customers want, and we must follow the market."
 
-The Windows Phone team sits in stunned silence. Within a week, 30% have resigned—many going to Apple or Google. Joe Belfiore, the face of Windows Phone, leaves without a public statement. LinkedIn updates multiply.
+The Windows Phone team sits in stunned silence. Within a week, 30% have resigned, many going to Apple or Google. Joe Belfiore, the face of Windows Phone, leaves without a public statement. LinkedIn updates multiply.
 
 But Wall Street loves it. "Finally, strategic clarity," writes one analyst. Microsoft stock jumps 8% on the news. Nokia shares surge 15%. The market is telling you: the war is over. You picked the right side.`
                                 },
@@ -8123,15 +8203,14 @@ But Wall Street loves it. "Finally, strategic clarity," writes one analyst. Micr
                                     cash: 0.5,
                                     marketCap: 2.0,
                                     marketShare: -2,
-                                    marketShareOverride: 12,
                                     morale: "neutral",
                                     mobileRevenue: 0.4,      // Growing Android revenue
                                     mobileCosts: 0.15,       // Scaling operations
-                                    narrative: `The Nokia Android lineup expands: N900A, N950A, the stunning N9A flagship. Each device earns rapturous reviews. "Nokia is back," declares Wired. "The cameras, the build quality, the software polish—this is what happens when Nokia has access to real apps."
+                                    narrative: `The Nokia Android lineup expands: N900A, N950A, the stunning N9A flagship. Each device earns rapturous reviews. "Nokia is back," declares Wired. "The cameras, the build quality, the software polish, this is what happens when Nokia has access to real apps."
 
-Market share hits 14%—still third place, but competitive. The Microsoft services integration deepens: Outlook, OneDrive, Office all work better on Nokia Android than on Samsung or Pixel. You're not beating Google's platform, but you're differentiated on it.
+Market share hits 5%, carving a real niche. The Microsoft services integration deepens: Outlook, OneDrive, Office all work better on Nokia Android than on Samsung or Pixel. You're not beating Google's platform, but you're differentiated on it.
 
-The Windows Phone refugees are building something new at Apple and Google—that hurts—but the ones who stayed are building something profitable here. "We didn't win the platform war," you tell the board. "But we found a way to thrive in someone else's ecosystem."`
+The Windows Phone refugees are building something new at Apple and Google (that hurts) but the ones who stayed are building something profitable here. "We didn't win the platform war," you tell the board. "But we found a way to thrive in someone else's ecosystem."`
                                 }
                             }
                         },
@@ -8145,8 +8224,9 @@ The Windows Phone refugees are building something new at Apple and Google—that
                             investment: "$600M",
 
                             setsPathState: {
-                                d4State: "still-fighting"
+                                d4State: "still-fighting-nokia-owned"
                             },
+                            pathMetrics: { marketShare: 22, nokiaShare: 0, appleShare: 16, googleShare: 38, bbShare: 5 },
 
                             consequences: {
 
@@ -8154,7 +8234,7 @@ The Windows Phone refugees are building something new at Apple and Google—that
                             {
                                 type: "verdict",
                                 headline: "Dual-track: Nokia Android for today, Windows Phone for tomorrow.",
-                                subline: "\"Microsoft is funding its own competition. This can't last.\" — The Verge",
+                                subline: "\"Microsoft is funding its own competition. This can't last.\" -- The Verge",
                                 sentiment: "neutral"
                             },
                             {
@@ -8170,7 +8250,7 @@ The Windows Phone refugees are building something new at Apple and Google—that
                                 type: "timeline",
                                 events: [
                                     { date: "MAR 2011", text: "Dual-track announced. 'Nokia Android for Google. Nokia Lumia for Microsoft. Choice is good.'", mood: "neutral" },
-                                    { date: "JUN 2011", text: "Both teams grumble about split resources. Grudging relief — nobody lost completely.", mood: "neutral" },
+                                    { date: "JUN 2011", text: "Both teams grumble about split resources. Grudging relief - nobody lost completely.", mood: "neutral" },
                                     { date: "SEP 2011", text: "Nokia Android 12%, Nokia Lumia 4%. Together competitive; apart neither has critical mass.", mood: "warning" }
                                 ]
                             },
@@ -8194,22 +8274,23 @@ The Windows Phone refugees are building something new at Apple and Google—that
 
 The press is skeptical. "Microsoft is funding its own competition," writes The Verge. "This can't last." Analysts question the resource allocation and brand coherence.
 
-Internally, both teams grumble about split resources. But there's grudging relief—nobody lost completely. The Windows Phone team gets to keep building. The Nokia Android team gets to keep shipping. Whether you're being strategic or just avoiding a hard decision depends on who you ask.`
+Internally, both teams grumble about split resources. But there's grudging relief, nobody lost completely. The Windows Phone team gets to keep building. The Nokia Android team gets to keep shipping. Whether you're being strategic or just avoiding a hard decision depends on who you ask.`
                                 },
                                 delayed: {
                                     date: "SEP 2011",
                                     cash: -0.4,
                                     marketCap: 0,
                                     marketShare: -3,
-                                    marketShareOverride: 3,
                                     morale: "neutral",
                                     mobileRevenue: 0.25,     // Combined platform revenue
                                     mobileCosts: 0.25,       // Continued dual investment
-                                    narrative: `The dual-track approach is working—sort of. Nokia Android devices have 12% market share; Nokia Lumias have 4%. Together, you're competitive. Apart, neither platform has critical mass.
+                                    narrative: `The dual-track approach is working, sort of. Nokia Android devices have 5% market share; Nokia Lumias have 2%. Together, you're relevant. Apart, neither platform has critical mass.
 
 "We're the confused company," admits one PM. "Customers don't know what we stand for." Carrier reps struggle to explain the difference. Store displays need twice the real estate.
 
-App developers are particularly frustrated—do they build for Nokia Android or Nokia Lumia? Most choose Android and skip Lumia entirely. But revenues are solid. The hardware is excellent. You're surviving while you figure out your identity.`
+App developers are particularly frustrated, do they build for Nokia Android or Nokia Lumia? Most choose Android and skip Lumia entirely. But revenues are solid. The hardware is excellent. You're surviving while you figure out your identity.
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         }
@@ -8223,18 +8304,18 @@ App developers are particularly frustrated—do they build for Nokia Android or 
                     date: "JAN 2011",
                     timeMarker: "JAN 2011",
                     title: "The Amazon Problem",
-                    storyImage: '<i class="ph ph-git-branch" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d3-amazon-problem.jpg',
                     storyText: `The comparison is inevitable. "You're building the Kindle Fire of phones," says your strategy lead, and it's not a compliment.
 
-Your forked Android—internally called "Cascade"—has been running on partner hardware for six months. Samsung, HTC, and LG all have Cascade devices in market. The reviews are... complicated. "Everything you love about Android, without anything you love about Google." "Microsoft services that work, Google services that don't." "A ecosystem for people who trust Microsoft more than Google."
+Your forked Android, internally called "Cascade", has been running on partner hardware for six months. Samsung, HTC, and LG all have Cascade devices in market. The reviews are... complicated. "Everything you love about Android, without anything you love about Google." "Microsoft services that work, Google services that don't." "A ecosystem for people who trust Microsoft more than Google."
 
 That last part is the problem. Turns out, not many people trust Microsoft more than Google. At least not on mobile.
 
 Your partner OEMs are frustrated. "We can't sell these without the Play Store," says Samsung's mobile head. "Customers ask for Gmail, YouTube, Google Maps. When we say no, they walk." HTC is already threatening to drop Cascade and go back to Google Android.
 
-Amazon made this work with the Kindle Fire—but they had the e-commerce ecosystem, the Prime membership, the content empire. You have... Bing.
+Amazon made this work with the Kindle Fire, but they had the e-commerce ecosystem, the Prime membership, the content empire. You have... Bing.
 
-The path forward is unclear. You can double down on building your own app store—spend billions to close the gap with Google Play. Or you can accept that Cascade is really a services delivery vehicle—forget the app gap and focus on making Microsoft services essential.
+The path forward is unclear. You can double down on building your own app store, spend billions to close the gap with Google Play. Or you can accept that Cascade is really a services delivery vehicle, forget the app gap and focus on making Microsoft services essential.
 
 Either way, you're fighting a platform war without owning the platform. Google can crush you with a license change whenever they want.`,
                     objective: "Your Android fork faces the app gap problem. Build an ecosystem or accept services focus?",
@@ -8244,10 +8325,10 @@ Either way, you're fighting a platform war without owning the platform. Google c
                         number: 3,
                         label: "Decision Three",
                         title: "The Amazon Problem",
-                        teaser: "Your Android fork faces the same problem as Kindle Fire — no Play Store. OEMs can't sell without Google services."
+                        teaser: "Your Android fork faces the same problem as Kindle Fire - no Play Store. OEMs can't sell without Google services."
                     },
                     playerPosition: {
-                        label: "Your Position — Microsoft",
+                        label: "Your Position: Microsoft",
                         stats: [
                             { label: "Cascade Status", value: "6 months in market", color: "gold" },
                             { label: "OEM Partners", value: "Samsung, HTC, LG", color: "gold" },
@@ -8383,6 +8464,7 @@ Either way, you're fighting a platform war without owning the platform. Google c
                             setsPathState: {
                                 d4State: "differentiated"
                             },
+                            pathMetrics: { marketShare: 6, nokiaShare: 22, appleShare: 17, googleShare: 40, bbShare: 8 },
 
                             consequences: {
 
@@ -8414,7 +8496,7 @@ Either way, you're fighting a platform war without owning the platform. Google c
                                 type: "emerging",
                                 icon: "ph-storefront",
                                 headline: "Not going to out-Google Google. But maybe good enough.",
-                                body: "Instagram, WhatsApp, Uber — they all ported for incentive money and stayed for the user base. Carrier reps stop apologizing for missing apps.",
+                                body: "Instagram, WhatsApp, Uber - they all ported for incentive money and stayed for the user base. Carrier reps stop apologizing for missing apps.",
                                 closing: "We just need to be good enough that customers don't notice the difference."
                             }
                         ],
@@ -8426,9 +8508,9 @@ Either way, you're fighting a platform war without owning the platform. Google c
                                     morale: "high",
                                     mobileRevenue: 0,        // Investment phase
                                     mobileCosts: 0.5,        // Massive ecosystem investment
-                                    narrative: `You announce Project Ascent: $2 billion to build the Microsoft App Store into a Google Play competitor. Developer incentives—$100M to port the top 500 Android apps. Revenue sharing better than Google's. Deep integration with Office, Xbox, Azure.
+                                    narrative: `You announce Project Ascent: $2 billion to build the Microsoft App Store into a Google Play competitor. Developer incentives, $100M to port the top 500 Android apps. Revenue sharing better than Google's. Deep integration with Office, Xbox, Azure.
 
-"If developers come, customers will follow," you tell the board. Skeptics point to Windows Phone's app gap. "We tried this before and failed." But this time is different—Cascade runs Android apps with minor modifications. The porting cost is lower.
+"If developers come, customers will follow," you tell the board. Skeptics point to Windows Phone's app gap. "We tried this before and failed." But this time is different. Cascade runs Android apps with minor modifications. The porting cost is lower.
 
 Developer recruitment teams fan out to every major tech hub. The question is whether "slightly easier" is enough. The money is real; whether the apps will be is another matter.`
                                 },
@@ -8437,22 +8519,21 @@ Developer recruitment teams fan out to every major tech hub. The question is whe
                                     cash: -1.5,
                                     marketCap: 0.5,
                                     marketShare: -2,
-                                    marketShareOverride: 6,
                                     morale: "high",
                                     mobileRevenue: 0.15,     // Early app store + device licensing
                                     mobileCosts: 0.35,       // Continued developer investment
-                                    narrative: `Project Ascent is showing results. The Microsoft App Store has 200,000 apps—still behind Play Store's 500,000, but the gap is narrowing. More importantly, the top 200 apps are all there. Instagram, WhatsApp, Uber—they all ported for the incentive money and stayed for the user base.
+                                    narrative: `Project Ascent is showing results. The Microsoft App Store has 200,000 apps, still behind Play Store's 500,000, but the gap is narrowing. More importantly, the top 200 apps are all there. Instagram, WhatsApp, Uber, they all ported for the incentive money and stayed for the user base.
 
 OEM partners are less frustrated. "We can actually sell these now," reports Samsung. Carrier reps stop apologizing for missing apps. Customer satisfaction scores improve.
 
-Cascade market share hits 6%—small but growing. "We're not going to out-Google Google," reflects your app ecosystem head. "But we might not have to. We just need to be good enough that customers don't notice the difference."`
+Cascade market share hits 6%, small but growing. "We're not going to out-Google Google," reflects your app ecosystem head. "But we might not have to. We just need to be good enough that customers don't notice the difference."`
                                 }
                             }
                         },
                         {
                             id: "d3afnh-option-2",
                             title: "Accept Services Focus",
-                            description: "Stop fighting the app gap war. Cascade isn't about apps—it's about Microsoft services on Android. Focus engineering on Outlook, OneDrive, Office, and Bing. Let the platform be commodity; own the services layer.",
+                            description: "Stop fighting the app gap war. Cascade isn't about apps, it's about Microsoft services on Android. Focus engineering on Outlook, OneDrive, Office, and Bing. Let the platform be commodity; own the services layer.",
                             risk: "Platform remains vulnerable to Google, no ecosystem moat",
                             upside: "Lower investment, services value transfers across platforms",
                             cost: "$400M services integration",
@@ -8461,6 +8542,7 @@ Cascade market share hits 6%—small but growing. "We're not going to out-Google
                             setsPathState: {
                                 d4State: "still-fighting"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 23, appleShare: 17, googleShare: 38, bbShare: 7 },
 
                             consequences: {
 
@@ -8504,26 +8586,27 @@ Cascade market share hits 6%—small but growing. "We're not going to out-Google
                                     morale: "neutral",
                                     mobileRevenue: 0.1,      // Enterprise licensing
                                     mobileCosts: 0.2,        // Services development
-                                    narrative: `You pivot the narrative: "Cascade isn't about apps—it's about the best Microsoft experience on mobile." Engineering focuses on deep integration: Outlook that's better than Gmail, OneDrive that syncs perfectly with Windows, Office that actually works on a phone.
+                                    narrative: `You pivot the narrative: "Cascade isn't about apps, it's about the best Microsoft experience on mobile." Engineering focuses on deep integration: Outlook that's better than Gmail, OneDrive that syncs perfectly with Windows, Office that actually works on a phone.
 
 The app gap remains, but you stop apologizing for it. "Use Google's apps through the web if you need them. Use Microsoft's apps natively." It's a compromise, but an honest one.
 
-OEM partners are relieved—lower expectations mean lower disappointment. "Microsoft finally stopped pretending they can compete with Google's ecosystem," notes one analyst. "Now they're competing where they can actually win."`
+OEM partners are relieved, lower expectations mean lower disappointment. "Microsoft finally stopped pretending they can compete with Google's ecosystem," notes one analyst. "Now they're competing where they can actually win."`
                                 },
                                 delayed: {
                                     date: "SEP 2011",
                                     cash: 0,
                                     marketCap: 1.5,
                                     marketShare: -2,
-                                    marketShareOverride: 3,
                                     morale: "neutral",
                                     mobileRevenue: 0.2,      // Enterprise growth
                                     mobileCosts: 0.1,        // Efficient services team
-                                    narrative: `The services strategy is gaining traction—among enterprise customers. Corporations love Cascade: "It's Android we can actually manage," says one Fortune 500 CIO. "Microsoft services that integrate with our infrastructure, without Google's data collection."
+                                    narrative: `The services strategy is gaining traction, among enterprise customers. Corporations love Cascade: "It's Android we can actually manage," says one Fortune 500 CIO. "Microsoft services that integrate with our infrastructure, without Google's data collection."
 
 Consumer market share is flat, but enterprise deployments are growing 40% quarterly. IT departments standardize on Cascade for company-issued devices. Intune integration makes it the obvious BYOD choice for Microsoft shops.
 
-You're accidentally building the enterprise mobile platform you abandoned years ago. "Cascade started as a consumer play and became a business tool," observes your strategy lead. "That might be the better market anyway. Less volume, higher margins, stickier customers."`
+You're accidentally building the enterprise mobile platform you abandoned years ago. "Cascade started as a consumer play and became a business tool," observes your strategy lead. "That might be the better market anyway. Less volume, higher margins, stickier customers."
+
+Then 2012 happens. Samsung ships the Galaxy S III and sells 50 million units in five months. Android's share rockets from 50% to 70%. Cheap Android phones flood emerging markets. Every month, the gap widens. By Q4 2012, the smartphone market has doubled to a billion units a year, and Android owns 70% of it. iOS holds at 22%. Everyone else is fighting over scraps. Your share erodes to 8%, not from failure, but from the sheer gravitational pull of a market that chose its winners.`
                                 }
                             }
                         }
@@ -8545,21 +8628,21 @@ You're accidentally building the enterprise mobile platform you abandoned years 
                     date: "JAN 2013",
                     timeMarker: "JAN 2013",
                     title: "The Acquisition Question",
-                    storyImage: '<i class="ph ph-handshake" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d4-acquisition-question.jpg',
 
                     chapter: {
                         number: 4,
                         label: "Decision Four",
                         title: "The Acquisition Question",
-                        teaser: "Windows Phone is stable but stuck at 3%. The board wants an answer on Nokia."
+                        teaser: "Windows Phone is stable but stuck at 8%. The board wants an answer on Nokia."
                     },
                     playerPosition: {
-                        label: "Your Position — JAN 2013",
+                        label: "Your Position: JAN 2013",
                         stats: [
-                            { label: "WP Market Share", value: "3%", color: "red" },
+                            { label: "{{#if wpAbandoned}}Platform{{else}}WP{{/if}} Market Share", value: "{{marketShare}}%", color: "gold" },
                             { label: "App Catalog", value: "150K apps", color: "red" },
-                            { label: "Nokia Stock", value: "$2.78", color: "red" },
-                            { label: "Nokia Cash Burn", value: "$400M/qtr", color: "red" },
+                            { label: "{{#if ownsNokia}}Nokia Division{{else}}Nokia Stock{{/if}}", value: "{{#if ownsNokia}}Integrated{{else}}$2.78{{/if}}", color: "red" },
+                            { label: "{{#if ownsNokia}}Division Burn{{else}}Nokia Cash Burn{{/if}}", value: "$400M/qtr", color: "red" },
                             { label: "Board Patience", value: "Exhausted", color: "red" },
                             { label: "Platform Quality", value: "Strong", color: "green" }
                         ]
@@ -8586,7 +8669,7 @@ You're accidentally building the enterprise mobile platform you abandoned years 
                                     { heading: "The Real Problem", content: "Numbers don't tell the story. Quality and timeliness matter more than quantity. Instagram: 18 months late to WP (and abandoned). Snapchat: refuses to build WP version. Banking apps: 60% of major banks missing. Games: most top 50 games never arrive." },
                                     { heading: "Developer Feedback", content: "\"We'll build for Windows Phone when it has 10% market share.\" But you can't get 10% without the apps that drive adoption. Classic chicken-and-egg." }
                                 ],
-                                footnote: "The app gap may be insurmountable without billions in developer subsidies — and even then, timing lag kills user experience."
+                                footnote: "The app gap may be insurmountable without billions in developer subsidies - and even then, timing lag kills user experience."
                             }
                         },
                         {
@@ -8596,7 +8679,7 @@ You're accidentally building the enterprise mobile platform you abandoned years 
                                 icon: "ph-currency-dollar",
                                 label: "MARKET REPORT",
                                 title: "Nokia Financial Situation",
-                                subtitle: "Stock at $2.78 — down from $40 in 2007",
+                                subtitle: "Stock at $2.78 :  down from $40 in 2007",
                                 accentColor: "#7ab88e"
                             },
                             popup: {
@@ -8604,11 +8687,11 @@ You're accidentally building the enterprise mobile platform you abandoned years 
                                 source: "Nokia SEC Filings + Analyst Reports",
                                 date: "JAN 2013",
                                 reliability: "HIGH",
-                                heroStat: { value: "$2.78", label: "Nokia stock price — down from $40 in 2007", attribution: "Nokia SEC Filings, Q4 2012" },
+                                heroStat: { value: "$2.78", label: "Nokia stock price - down from $40 in 2007", attribution: "Nokia SEC Filings, Q4 2012" },
                                 sections: [
                                     { heading: "Nokia Financial State", content: "Stock price: $2.78 (down from $40 in 2007). Market cap: $10.5B (was $150B). Quarterly cash burn: $400M. Cash reserves: $4.1B (10 quarters of runway)." },
                                     { heading: "Partnership Assessment", content: "Platform support payments totaling $1B annually from Microsoft keeping Nokia afloat. Without these payments, Nokia would likely seek bankruptcy protection, sell mobile division to highest bidder, or pivot to Android (breaking partnership)." },
-                                    { heading: "Strategic Question", content: "Is it better to continue subsidizing Nokia, or acquire them outright? At $10B market cap, full acquisition is financially possible — but absorbing 30,000 employees and Finnish operations adds complexity." }
+                                    { heading: "Strategic Question", content: "Is it better to continue subsidizing Nokia, or acquire them outright? At $10B market cap, full acquisition is financially possible - but absorbing 30,000 employees and Finnish operations adds complexity." }
                                 ],
                                 footnote: "Nokia's board increasingly desperate. They may accept terms they would have rejected 2 years ago."
                             }
@@ -8628,11 +8711,11 @@ You're accidentally building the enterprise mobile platform you abandoned years 
                                 source: "IDC/Gartner Q4 2012 Reports",
                                 date: "JAN 2013",
                                 reliability: "HIGH",
-                                heroStat: { value: "3%", label: "Windows Phone market share", attribution: "IDC/Gartner Q4 2012 Reports" },
+                                heroStat: { value: "{{marketShare}}%", label: "{{#if wpAbandoned}}Your mobile{{else}}Windows Phone{{/if}} market share - single digits despite years of investment", attribution: "IDC/Gartner Q4 2012" },
                                 sections: [
-                                    { heading: "2012 Market Share", content: "Android: 70% (up from 50% in 2011). iOS: 22% (stable). Windows Phone: 3% (up from 2%). BlackBerry: 4% (down from 10%). Others: 1%." },
-                                    { heading: "Regional Variations", content: "Windows Phone doing better in select markets: Italy 15% (Nokia brand strength), Mexico 12% (low-cost Lumia 520), UK 8% (carrier partnerships), USA 4% (struggling)." },
-                                    { heading: "Industry Trajectory", content: "Total smartphone market: 1B units/year and growing. Even at 3% share, Windows Phone is 30M units — but growth is coming from markets with lowest margins. Premium segment locked by iPhone; volume segment owned by cheap Android." }
+                                    { heading: "2012 Market Share", content: "Android: {{googleShare}}% (up from 50% in 2011). iOS: 22% (stable). {{#if wpAbandoned}}Your platform{{else}}Windows Phone{{/if}}: {{marketShare}}% (up from 5%). BlackBerry: {{bbShare}}% (down from 10%). Others: 1%." },
+                                    { heading: "Regional Variations", content: "{{#if wpAbandoned}}Your platform{{else}}Windows Phone{{/if}} doing better in select markets: Italy 15% (Nokia brand strength), Mexico 12% (low-cost Lumia 520), UK 8% (carrier partnerships), USA 4% (struggling)." },
+                                    { heading: "Industry Trajectory", content: "Total smartphone market: 1B units/year and growing. Even at {{marketShare}}% share, {{#if wpAbandoned}}your platform{{else}}Windows Phone{{/if}} is 80M units - but growth is coming from markets with lowest margins. Premium segment locked by iPhone; volume segment owned by cheap Android." }
                                 ],
                                 footnote: "Market growing, but our position is not. We're running to stay in place."
                             }
@@ -8640,17 +8723,17 @@ You're accidentally building the enterprise mobile platform you abandoned years 
                     ],
 
                     framingByPath: {
-                        // webOS acquisition path — no Nokia partnership
+                        // webOS acquisition path - no Nokia partnership
                         "d3-p-standard:d3p-option-2": {
                             storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years of fighting.
 
-You're still fighting. The webOS team you acquired delivered real innovations—Windows Phone 8's multitasking and gesture navigation are genuinely praised. But great software on mediocre third-party hardware isn't winning. HTC and Samsung give you their B-list devices. Their A-list goes to Android.
+You're still fighting. The webOS team you acquired delivered real innovations. Windows Phone 8's multitasking and gesture navigation are genuinely praised. But great software on mediocre third-party hardware isn't winning. HTC and Samsung give you their B-list devices. Their A-list goes to Android.
 
-Windows Phone has 3% market share. The app gap is killing you. Instagram finally arrived last month—two years late and missing features. Snapchat refuses to build a Windows Phone app. "When you hit 10% share," they told your business development team. But you can't hit 10% without the apps.
+Windows Phone has 8% market share. The app gap is killing you. Instagram finally arrived last month, two years late and missing features. Snapchat refuses to build a Windows Phone app. "When you hit 15% share," they told your business development team. But you can't grow without the apps.
 
 Your board meeting this morning was brutal. ValueAct's Mason Morfit asked the question directly: "How much longer do we invest without a hardware partner?" You spent $1.5 billion on the webOS acquisition. The software is better. The market doesn't care.
 
-Nokia is desperate—Symbian is dead, and they're flirting with Android. You could acquire them now, cheaply, and finally have premium hardware for your premium software. Or you can accept what you've become: a profitable niche player, third place forever.
+Nokia is desperate. Symbian is dead, and they're flirting with Android. You could acquire them now, cheaply, and finally have premium hardware for your premium software. Or you can accept what you've become: a profitable niche player, third place forever.
 
 The board wants an answer. The market wants an answer. Your own team wants an answer.
 
@@ -8661,97 +8744,97 @@ What kind of company is Microsoft going to be in mobile?`
                         "d3-p-vertical:d3v-option-2": {
                             storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years of fighting.
 
-You're still fighting—on two fronts. Surface Phones get rave reviews from tech enthusiasts. Nokia Lumias sell respectably in Europe. But the dual-track strategy is creating confusion. Carriers don't know which to promote. Reviewers compare them against each other instead of against iPhone. Your own marketing team can't explain the difference.
+You're still fighting, on two fronts. Surface Phones get rave reviews from tech enthusiasts. Nokia Lumias sell respectably in Europe. But the dual-track strategy is creating confusion. Carriers don't know which to promote. Reviewers compare them against each other instead of against iPhone. Your own marketing team can't explain the difference.
 
-Windows Phone has 3% market share. The app gap is killing you. Instagram finally arrived last month—two years late and missing features. Snapchat won't return your calls.
+Windows Phone has 8% market share. The app gap is killing you. Instagram finally arrived last month, two years late and missing features. Snapchat won't return your calls.
 
 Your board meeting this morning was brutal. ValueAct's Mason Morfit asked the question directly: "Why are we competing with ourselves?" Nokia is burning through your platform support payments. Surface Phone loses money on every unit. Combined, the mobile division is hemorrhaging $500 million a quarter.
 
-The strategic options are clarifying. You can acquire Nokia outright, merge the hardware teams, and build one unified phone vision. Or you can accept the niche—pick one hardware line, cut costs, and serve a smaller audience profitably.
+The strategic options are clarifying. You can acquire Nokia outright, merge the hardware teams, and build one unified phone vision. Or you can accept the niche, pick one hardware line, cut costs, and serve a smaller audience profitably.
 
 The board wants an answer. The market wants an answer. Your own team wants an answer.
 
 What kind of company is Microsoft going to be in mobile?`
                         },
 
-                        // Nokia already owned — integration paths
+                        // Nokia already owned - integration paths
                         "d3-i-force-windows": {
                             storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years since you acquired Nokia.
 
-You own the hardware. You own the software. And market share is 3%.
+You own the hardware. You own the software. And market share is 8%.
 
 The Nokia integration has been grueling. The Symbian-to-Windows bridge strategy bought time, but the transition costs were enormous. Finnish engineers who once built the world's best phones now struggle with Microsoft's development tools. The cultural divide hasn't healed.
 
-The Lumia line is good—genuinely good. The cameras are best-in-class. The build quality is premium. Reviews are positive. But the app gap is killing you. Instagram finally arrived last month—two years late. Snapchat refuses to build for you.
+The Lumia line is good, genuinely good. The cameras are best-in-class. The build quality is premium. Reviews are positive. But the app gap is killing you. Instagram finally arrived last month, two years late. Snapchat refuses to build for you.
 
 Your board meeting this morning was brutal. ValueAct's Mason Morfit asked directly: "We've spent $45 billion on Nokia. When does it pay off?" The answer you can't say out loud: maybe never.
 
-The strategic options are clarifying. You can double down—more restructuring, more investment, bet everything on the vertical integration vision. Or you can accept what you've become: a profitable niche player, third place forever.
+The strategic options are clarifying. You can double down, more restructuring, more investment, bet everything on the vertical integration vision. Or you can accept what you've become: a profitable niche player, third place forever.
 
 The board wants an answer. What kind of company is Microsoft going to be in mobile?`
                         },
                         "d3-i-dual": {
                             storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years since you acquired Nokia.
 
-You finally killed Symbian. Every Nokia phone now runs Windows. The transition was painful—millions of loyal Symbian users abandoned for iPhone and Android rather than learn a new OS. But at least you have one platform, one direction.
+You finally killed Symbian. Every Nokia phone now runs Windows. The transition was painful, millions of loyal Symbian users abandoned for iPhone and Android rather than learn a new OS. But at least you have one platform, one direction.
 
-The Lumia line is the best it's ever been. The cameras are genuinely best-in-class. But Windows Phone has 3% market share, and the app gap is fatal. Instagram finally arrived last month—two years late. Snapchat refuses.
+The Lumia line is the best it's ever been. The cameras are genuinely best-in-class. But Windows Phone has 8% market share, and the app gap is fatal. Instagram finally arrived last month, two years late. Snapchat refuses.
 
-Your board meeting this morning was brutal. ValueAct's Mason Morfit asked directly: "The Nokia acquisition cost $45 billion. Market share is 3%. How much longer?" The answer you can't say out loud: you don't know.
+Your board meeting this morning was brutal. ValueAct's Mason Morfit asked directly: "The Nokia acquisition cost $45 billion. Market share is 8%. How much longer?" The answer you can't say out loud: you don't know.
 
-The strategic options are clarifying. You can invest more—restructure harder, pour billions into developer incentives, bet everything on breaking through. Or you can accept the niche—profitable, stable, small.
+The strategic options are clarifying. You can invest more, restructure harder, pour billions into developer incentives, bet everything on breaking through. Or you can accept the niche, profitable, stable, small.
 
 The board wants an answer. What kind of company is Microsoft going to be in mobile?`
                         },
                         "d3-i-nokia-leads": {
                             storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years since you acquired Nokia.
 
-MeeGo is dead. You killed it—redirected Nokia to Windows Phone after promising them platform leadership. The Finnish engineers who built something genuinely innovative left for Jolla, for Google, for anywhere that wasn't Microsoft. The scars haven't healed.
+MeeGo is dead. You killed it, redirected Nokia to Windows Phone after promising them platform leadership. The Finnish engineers who built something genuinely innovative left for Jolla, for Google, for anywhere that wasn't Microsoft. The scars haven't healed.
 
 But the pivot produced results: the Lumia line, running Windows Phone, is the best hardware in the market. Camera quality is outstanding. Build quality is premium. Reviews praise everything except the app selection.
 
-Windows Phone has 3% market share. The app gap remains fatal. Your board meeting this morning was brutal. "We bought Nokia to win mobile," said ValueAct's Mason Morfit. "We're not winning."
+Windows Phone has 8% market share. The app gap remains fatal. Your board meeting this morning was brutal. "We bought Nokia to win mobile," said ValueAct's Mason Morfit. "We're not winning."
 
-The strategic options are clarifying. Double down with more restructuring and investment? Or accept the niche—small, profitable, yours?
+The strategic options are clarifying. Double down with more restructuring and investment? Or accept the niche, small, profitable, yours?
 
 The board wants an answer. What kind of company is Microsoft going to be in mobile?`
                         },
                         "d3-i-nokia": {
                             storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years since you acquired Nokia.
 
-The gradual integration approach preserved talent but cost time. Nokia's hardware team is still excellent—the Lumia line is genuinely competitive. But the slow merge meant years of duplicated efforts, confused reporting lines, and cultural friction that never fully resolved.
+The gradual integration approach preserved talent but cost time. Nokia's hardware team is still excellent, the Lumia line is genuinely competitive. But the slow merge meant years of duplicated efforts, confused reporting lines, and cultural friction that never fully resolved.
 
-Windows Phone has 3% market share. The app gap is killing you. Instagram finally arrived last month—two years late. Snapchat refuses to build for a 3% platform.
+Windows Phone has 8% market share. The app gap is killing you. Instagram finally arrived last month, two years late. Snapchat refuses to build for an 8% platform.
 
-Your board meeting this morning was brutal. ValueAct's Mason Morfit: "We've spent six years integrating Nokia. Market share is 3%. What's the plan?" The honest answer: more of the same, or accept reality.
+Your board meeting this morning was brutal. ValueAct's Mason Morfit: "We've spent six years integrating Nokia. Market share is 8%. What's the plan?" The honest answer: more of the same, or accept reality.
 
 Double down with aggressive restructuring? Or accept the niche? The board wants an answer.`
                         },
 
-                        // BlackBerry spinoff — no Nokia at all
+                        // BlackBerry spinoff - no Nokia at all
                         "d3-i-bb": {
                             storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years of fighting.
 
-The BlackBerry spinoff is behind you—a $10 billion write-down that the market has already forgotten. What's left is cleaner: Windows Phone, standing on its own merits. No more integration distractions. No more Waterloo politics.
+The BlackBerry spinoff is behind you, a $10 billion write-down that the market has already forgotten. What's left is cleaner: Windows Phone, standing on its own merits. No more integration distractions. No more Waterloo politics.
 
-Windows Phone has 3% market share. The platform is mature, the design is praised, the few OEMs still building for you deliver decent hardware. But the app gap is fatal. Instagram finally arrived last month—two years late. Snapchat refuses.
+Windows Phone has 8% market share. The platform is mature, the design is praised, the few OEMs still building for you deliver decent hardware. But the app gap is fatal. Instagram finally arrived last month, two years late. Snapchat refuses.
 
-Your board meeting this morning was brutal. ValueAct's Mason Morfit: "We spent $10 billion on BlackBerry and wrote it off. Now what?" Nokia is desperate—Symbian is dead. They'd take a partnership deal, maybe even an acquisition offer. Their hardware could finally give Windows Phone the premium devices it deserves.
+Your board meeting this morning was brutal. ValueAct's Mason Morfit: "We spent $10 billion on BlackBerry and wrote it off. Now what?" Nokia is desperate. Symbian is dead. They'd take a partnership deal, maybe even an acquisition offer. Their hardware could finally give Windows Phone the premium devices it deserves.
 
 Or you can accept the niche. Small, profitable, third place forever.
 
 The board wants an answer. What kind of company is Microsoft going to be in mobile?`
                         },
 
-                        // MDM/Enterprise pivot — no Nokia, services-focused
+                        // MDM/Enterprise pivot - no Nokia, services-focused
                         "d3-e:d3e-option-2": {
                             storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years of fighting.
 
-Your MDM pivot was prescient. Intune manages 40 million devices—iPhones, Androids, and a small number of Windows Phones. The enterprise services business is growing 30% annually. But Windows Phone itself? 3% market share and falling.
+Your MDM pivot was prescient. Intune manages 40 million devices, iPhones, Androids, and a small number of Windows Phones. The enterprise services business is growing 30% annually. But Windows Phone itself? 8% market share and stalling.
 
 The irony isn't lost on you: Microsoft is excellent at managing other people's phones and terrible at selling its own. The app gap is fatal for consumer adoption. Your enterprise customers use Windows Phone, but their employees carry personal iPhones.
 
-Your board meeting this morning was direct. ValueAct's Mason Morfit: "The MDM business is great. The phone business isn't. Do we need the phone?" Nokia is available—desperate, cheap. Their hardware with your software could change the equation. Or you accept reality: Microsoft manages mobile, it doesn't make mobile.
+Your board meeting this morning was direct. ValueAct's Mason Morfit: "The MDM business is great. The phone business isn't. Do we need the phone?" Nokia is available, desperate, cheap. Their hardware with your software could change the equation. Or you accept reality: Microsoft manages mobile, it doesn't make mobile.
 
 The board wants an answer. What kind of company is Microsoft going to be in mobile?`
                         },
@@ -8760,13 +8843,13 @@ The board wants an answer. What kind of company is Microsoft going to be in mobi
                         "d3-a-nokia-android": {
                             storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years of fighting.
 
-You're running two platforms. Nokia's Android phones have carved out 8% market share—not bad, driven by hardware quality and Microsoft services integration. Windows Phone clings to 3%. The dual-track strategy generates revenue but creates an identity crisis.
+You're running two platforms. Nokia's Android phones have carved out 12% market share, not bad, driven by hardware quality and Microsoft services integration. Windows Phone clings to 8%. The dual-track strategy generates revenue but creates an identity crisis.
 
 Developers ask: "Which one should we build for?" Carriers ask: "Which one do you actually believe in?" Your own engineers ask: "Are we an Android company or a Windows company?" You don't have a good answer.
 
-Your board meeting this morning was brutal. ValueAct's Mason Morfit: "Pick one. The dual-track is confusing everyone—investors, partners, customers." Nokia's Android phones make money. Windows Phone has the vision. You can't keep both.
+Your board meeting this morning was brutal. ValueAct's Mason Morfit: "Pick one. The dual-track is confusing everyone, investors, partners, customers." Nokia's Android phones make money. Windows Phone has the vision. You can't keep both.
 
-Acquire Nokia fully and go all-in on one strategy? Or accept the split—harvest what works, wind down what doesn't?
+Acquire Nokia fully and go all-in on one strategy? Or accept the split, harvest what works, wind down what doesn't?
 
 The board wants an answer. What kind of company is Microsoft going to be in mobile?`
                         },
@@ -8775,13 +8858,49 @@ The board wants an answer. What kind of company is Microsoft going to be in mobi
                         "d3-a-fork-no-hardware": {
                             storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years of fighting.
 
-Cascade—your Android fork—has found a niche. Enterprise customers appreciate the Microsoft services integration without Google's data collection. But market share is 3%, and without your own hardware, you're dependent on OEMs who'd rather ship stock Android.
+Cascade (your Android fork) has found a niche. Enterprise customers appreciate the Microsoft services integration without Google's data collection. But market share is 8%, and without your own hardware, you're dependent on OEMs who'd rather ship stock Android.
 
 Windows Phone lingers as a secondary platform, but the writing is on the wall: Cascade is the future, Windows Phone is the past. The question is what to do about hardware.
 
-Your board meeting this morning was direct. ValueAct's Mason Morfit: "Cascade needs premium hardware. We don't make hardware. Nokia does." Nokia is available—desperate, cheap. Their engineering with your Cascade platform could create something genuinely different: a premium Android alternative with Microsoft at the center.
+Your board meeting this morning was direct. ValueAct's Mason Morfit: "Cascade needs premium hardware. We don't make hardware. Nokia does." Nokia is available, desperate, cheap. Their engineering with your Cascade platform could create something genuinely different: a premium Android alternative with Microsoft at the center.
 
-Or you stay the course—software and services only, no hardware risk.
+Or you stay the course, software and services only, no hardware risk.
+
+The board wants an answer. What kind of company is Microsoft going to be in mobile?`
+                        },
+
+                        // Nokia Android consolidated - chose one platform after dual-track
+                        "d3-a-nokia-android:d3ana-option-2": {
+                            storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years of fighting on two fronts, then choosing one.
+
+You remember the day you killed Windows Phone. The all-hands meeting where half the room stared at their laptops and the other half stared at you. "Nokia Android is what customers want," you said, and meant it. The resignation letters came in waves. Joe Belfiore left without saying goodbye.
+
+But Nokia Android thrived. The N9A flagship earned rapturous reviews. Nokia's cameras, Nokia's build quality, Microsoft's services layered on top of Google's ecosystem. You carved out a real position: the premium Android alternative for people who live in Outlook and OneDrive.
+
+Then Samsung shipped the Galaxy S III and sold 50 million units. Android's share rocketed to 70%. Cheap phones flooded every market. Your differentiated niche eroded from 12% to 8%, not from failure but from the sheer gravitational pull of a market that rewards volume over craft.
+
+Your board meeting this morning was brutal. ValueAct's Mason Morfit: "We consolidated to one platform. Market share is 8% and falling. Nokia hardware is excellent but Google controls the ecosystem. One API change and we're finished."
+
+He's right. Google has tightened Android licensing twice this year. Your fork is getting harder to maintain. Nokia is still building beautiful phones, but without the Play Store, you're fighting with one hand tied.
+
+The strategic options are clarifying. Acquire Nokia outright, own the hardware, and bet everything on making the Microsoft Android experience unmissable? Or accept the niche, profitable, stable, yours, and stop pretending you can challenge Samsung?
+
+The board wants an answer. What kind of company is Microsoft going to be in mobile?`
+                        },
+
+                        // Android fork Cascade + Nokia hardware acquisition
+                        "d3-a-fork-no-hardware:d3afnh-option-1": {
+                            storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years of fighting.
+
+The Nokia acquisition closed nine months ago. You bought them for their hardware, their cameras, their engineering talent, their brand. What you got was all of that plus thirty thousand employees in Helsinki who weren't sure why they now worked for the company that killed Symbian.
+
+But the combination is starting to work. Cascade (your Android fork) running on Nokia hardware is a genuinely compelling product. The Lumia C1, first Nokia phone shipping with Cascade, launched in October. Reviews were generous: "The best non-Google Android phone ever made. Microsoft services that actually work. Nokia cameras that still embarrass the competition."
+
+Market share is 8%. Not what you hoped, not what you feared. The enterprise customers love it, Outlook and OneDrive native, no Google data collection, IT departments can manage it through Intune. But consumers are skeptical. "Where's the Play Store?" they ask in carrier shops. "Where's YouTube?" Your answer, Bing and Microsoft alternatives, isn't convincing anyone under thirty.
+
+Your board meeting this morning was direct. ValueAct's Mason Morfit: "We own the hardware. We own the software fork. Market share is 8%. The Play Store gap is killing consumer adoption. How much longer?"
+
+Nokia's engineers are building something beautiful. Cascade is technically solid. But Google controls the ecosystem, and every quarter they tighten the screws. You can double down, pour billions into your own app store, challenge Google's ecosystem head-on. Or you can accept the niche: enterprise, privacy, premium hardware for people who don't need Google.
 
 The board wants an answer. What kind of company is Microsoft going to be in mobile?`
                         }
@@ -8789,27 +8908,27 @@ The board wants an answer. What kind of company is Microsoft going to be in mobi
 
                     storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years of fighting.
 
-You're still fighting. Windows Phone has 3% market share—up from 2% a year ago. Nokia Lumias are the best Windows Phones ever made. The platform is mature, stable, genuinely differentiated. Reviews are good.
+You're still fighting. Windows Phone has 8% market share, up from 2% a year ago. Nokia Lumias are the best Windows Phones ever made. The platform is mature, stable, genuinely differentiated. Reviews are good.
 
 And none of it matters.
 
-The app gap is killing you. Instagram finally arrived last month—two years late and missing features. Snapchat refuses to build a Windows Phone app. "When you hit 10% share," they told your business development team. But you can't hit 10% without the apps.
+The app gap is killing you. Instagram finally arrived last month, two years late and missing features. Snapchat refuses to build a Windows Phone app. "When you hit 15% share," they told your business development team. But you can't grow without the apps.
 
-Your board meeting this morning was brutal. ValueAct's Mason Morfit asked the question directly: "How much longer do we subsidize this?" Nokia is burning $400 million a quarter. Your platform support payments are keeping them alive. At this rate, you've spent $3 billion on Nokia—and you don't even own them.
+Your board meeting this morning was brutal. ValueAct's Mason Morfit asked the question directly: "How much longer do we subsidize this?" Nokia is burning $400 million a quarter. Your platform support payments are keeping them alive. At this rate, you've spent $3 billion on Nokia, and you don't even own them.
 
-The strategic options are clarifying. You can double down—acquire Nokia outright, own the whole stack, bet everything on the Microsoft phone vision. Or you can accept what you've become: a profitable niche player, third place forever.
+The strategic options are clarifying. You can double down, acquire Nokia outright, own the whole stack, bet everything on the Microsoft phone vision. Or you can accept what you've become: a profitable niche player, third place forever.
 
 The board wants an answer. The market wants an answer. Your own team wants an answer.
 
 What kind of company is Microsoft going to be in mobile?`,
-                    objective: "Windows Phone is stable but stuck at 3%. Acquire Nokia or accept your niche?",
+                    objective: "Windows Phone is stable but stuck at 8%. Acquire Nokia or accept your niche?",
                     availableInfo: ["d4-info-app-gap", "d4-info-nokia-financial", "d4-info-market-reality"],
 
                     options: [
                         {
                             id: "d4sf-option-1",
-                            title: "Acquire Nokia—All In",
-                            description: "Buy Nokia's devices division outright. Own the hardware, own the software, own the destiny. If we're going to lose, let's lose trying to win. No more partnerships—time to build the Microsoft phone.",
+                            title: "Acquire Nokia: All In",
+                            description: "Buy Nokia's devices division outright. Own the hardware, own the software, own the destiny. If we're going to lose, let's lose trying to win. No more partnerships, time to build the Microsoft phone.",
                             risk: "$7B+ acquisition, absorbing 30K employees, Finnish politics",
                             upside: "Full vertical integration, no more platform fragmentation",
                             cost: "$7.2B acquisition + integration",
@@ -8818,6 +8937,7 @@ What kind of company is Microsoft going to be in mobile?`,
                             setsPathState: {
                                 d5State: "platform-contender"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 3, appleShare: 18, googleShare: 68, bbShare: 3 },
 
                             consequences: {
                                 moments: [
@@ -8834,11 +8954,12 @@ What kind of company is Microsoft going to be in mobile?`,
                                         { date: "Q4 2013", text: "First Microsoft-branded Lumia ships. Solid reviews, weak sales.", mood: "neutral" },
                                         { date: "JAN 2014", text: "Key Nokia talent departing. Retention packages multiply as engineers eye exits.", mood: "negative" }
                                     ] },
-                                    { type: "emerging", icon: "ph-handshake", headline: "No More Excuses", body: "You own the hardware. You own the software. The Lumia 1020 camera is genuinely best-in-class. If quality alone could win, you'd be winning. It can't — but you're not retreating either.", closing: "The partnership era is over. Now you find out if the problem was Nokia or the platform." }
+                                    { type: "emerging", icon: "ph-handshake", headline: "No More Excuses", body: "You own the hardware. You own the software. The Lumia 1020 camera is genuinely best-in-class. If quality alone could win, you'd be winning. It can't - but you're not retreating either.", closing: "The partnership era is over. Now you find out if the problem was Nokia or the platform." }
                                 ],
                                 immediate: {
                                     date: "APR 2013",
                                     cash: -7.2,
+                                    acquisitionCost: 7.2,    // D4 Nokia acquisition — tracked in cumulativePL
                                     marketCap: -5.0,
                                     marketShare: -1,
                                     morale: "neutral",
@@ -8847,7 +8968,7 @@ What kind of company is Microsoft going to be in mobile?`,
                                     unlockedArtifacts: ["artifact-nokia-lumia-1020", "artifact-nokia-lumia-900"],
                                     narrative: `You announce the Nokia acquisition on a rainy Monday in September. $7.2 billion for the devices and services division. Stephen Elop returns to Microsoft to run the integration.
 
-Wall Street is skeptical—Microsoft stock drops 5% on the news. "Doubling down on a losing bet," writes one analyst. "This is the Ballmer era's last gasp," predicts another. The market has made its verdict clear.
+Wall Street is skeptical. Microsoft stock drops 5% on the news. "Doubling down on a losing bet," writes one analyst. "This is the Ballmer era's last gasp," predicts another. The market has made its verdict clear.
 
 But internally, there's relief. No more ambiguity. No more partnership politics. For the first time, you own your mobile destiny. "Now we find out if the problem was Nokia or the platform," says your mobile lead. "No more excuses either way."`
                                 },
@@ -8856,21 +8977,20 @@ But internally, there's relief. No more ambiguity. No more partnership politics.
                                     cash: -1.5,
                                     marketCap: -2.0,
                                     marketShare: -2,
-                                    marketShareOverride: 12,
                                     morale: "low",
                                     mobileRevenue: 0.2,      // Some Lumia sales
                                     mobileCosts: 0.5,        // Integration overhead
-                                    narrative: `The integration is harder than anyone expected. 30,000 Nokia employees, most in Finland, many resentful of Microsoft's ownership. Two cultures colliding—Nokia's hardware-first mentality versus Microsoft's software-first approach.
+                                    narrative: `The integration is harder than anyone expected. 30,000 Nokia employees, most in Finland, many resentful of Microsoft's ownership. Two cultures colliding. Nokia's hardware-first mentality versus Microsoft's software-first approach.
 
-The first Microsoft-branded Lumia ships in Q4—solid reviews, weak sales. The camera is excellent; the ecosystem isn't. "We bought a company and got a morale problem," observes one exec. Retention packages multiply as key talent eyes the exits.
+The first Microsoft-branded Lumia ships in Q4, solid reviews, weak sales. The camera is excellent; the ecosystem isn't. "We bought a company and got a morale problem," observes one exec. Retention packages multiply as key talent eyes the exits.
 
-But the product pipeline is improving. The Lumia 1020 camera is genuinely best-in-class. If quality alone could win, you'd be winning. It can't, and you're not—but you're not retreating either.`
+But the product pipeline is improving. The Lumia 1020 camera is genuinely best-in-class. If quality alone could win, you'd be winning. It can't, and you're not, but you're not retreating either.`
                                 }
                             }
                         },
                         {
                             id: "d4sf-option-2",
-                            title: "Accept the Niche—Profitable Third",
+                            title: "Accept the Niche: Profitable Third",
                             description: "Stop chasing market share. We're not going to beat iOS or Android. Focus instead on being the best third option: the business phone, the privacy phone, the 'not Google' phone. Profitable niche beats unprofitable moonshot.",
                             risk: "Developers ignore us, app gap widens, slow decline",
                             upside: "Sustainable business, profitable margins, clear identity",
@@ -8880,6 +9000,7 @@ But the product pipeline is improving. The Lumia 1020 camera is genuinely best-i
                             setsPathState: {
                                 d5State: "niche-survivor"
                             },
+                            pathMetrics: { marketShare: 4, nokiaShare: 3, appleShare: 19, googleShare: 71, bbShare: 3 },
 
                             consequences: {
                                 moments: [
@@ -8894,7 +9015,7 @@ But the product pipeline is improving. The Lumia 1020 camera is genuinely best-i
                                         { date: "APR 2013", text: "\"Focus Strategy\" announced. Enterprise, privacy, simplicity. No more chasing consumers.", mood: "positive" },
                                         { date: "JUN 2013", text: "Barron's: \"Finally, a mobile strategy that makes financial sense.\"", mood: "positive" },
                                         { date: "Q4 2013", text: "Windows Phone profitable for first time. 40% margins on enterprise device sales.", mood: "positive" },
-                                        { date: "JAN 2014", text: "Nokia releases first Android phone — hedging their bets. Partnership cooling.", mood: "warning" }
+                                        { date: "JAN 2014", text: "Nokia releases first Android phone - hedging their bets. Partnership cooling.", mood: "warning" }
                                     ] },
                                     { type: "emerging", icon: "ph-target", headline: "Small Market, High Margins", body: "Market share drifts to 4%, but revenue per device is up 60%. Enterprise customers appreciate the Microsoft integration. Parents appreciate the simplicity. Privacy advocates appreciate the alternative to Google.", closing: "You stopped trying to copy iPhone and started being something different." }
                                 ],
@@ -8909,7 +9030,7 @@ But the product pipeline is improving. The Lumia 1020 camera is genuinely best-i
                                     unlockedArtifacts: ["artifact-nokia-lumia-520"],
                                     narrative: `You announce the "Focus Strategy" at a low-key press event. "Windows Phone will target customers who value security, privacy, and Microsoft ecosystem integration. We're not trying to be everything to everyone."
 
-Wall Street approves—Microsoft stock rises 3% on the disciplined message. "Finally, a mobile strategy that makes financial sense," writes Barron's. Nokia partnership continues but with reduced platform support payments.
+Wall Street approves. Microsoft stock rises 3% on the disciplined message. "Finally, a mobile strategy that makes financial sense," writes Barron's. Nokia partnership continues but with reduced platform support payments.
 
 Your mobile team is smaller, focused, less stressed. "We finally know who we're building for," says your mobile PM. "Enterprise users who need Outlook. Privacy-conscious consumers who don't trust Google. Parents who want a simpler phone for their kids." It's not glamorous. But it might be sustainable.`
                                 },
@@ -8918,15 +9039,267 @@ Your mobile team is smaller, focused, less stressed. "We finally know who we're 
                                     cash: 0.8,
                                     marketCap: 1.5,
                                     marketShare: -1,
-                                    marketShareOverride: 4,
                                     morale: "neutral",
                                     mobileRevenue: 0.15,     // Premium enterprise revenue
                                     mobileCosts: 0.05,       // Minimal overhead
-                                    narrative: `The niche strategy is working—financially. Windows Phone is profitable for the first time, with 40% margins on enterprise device sales. Market share drifted down to 4%, but revenue per device is up 60%.
+                                    narrative: `The niche strategy is working, financially. Windows Phone is profitable for the first time, with 40% margins on enterprise device sales. Market share drifted down to 4%, but revenue per device is up 60%.
 
 "We're the BMW of phones," your marketing lead says. "Small market, high margins, loyal customers." Enterprise customers appreciate the Microsoft integration. Parents appreciate the simplicity. Privacy advocates appreciate the alternative to Google.
 
-Nokia released their first Android phone—the X series—signaling they're hedging their bets. The partnership is cooling. But your core customers are more engaged than ever. "You stopped trying to copy iPhone," writes a tech blogger, "and started being something different. Respect."`
+Nokia released their first Android phone (the X series) signaling they're hedging their bets. The partnership is cooling. But your core customers are more engaged than ever. "You stopped trying to copy iPhone," writes a tech blogger, "and started being something different. Respect."`
+                                }
+                            }
+                        }
+                    ]
+                },
+
+                "d4-still-fighting-nokia-owned": {
+                    id: "d4-still-fighting-nokia-owned",
+                    type: "decision",
+                    date: "JAN 2013",
+                    timeMarker: "JAN 2013",
+                    title: "The Integration That Failed",
+                    storyBg: 'assets/images/chapters/d4-acquisition-question.jpg',
+
+                    chapter: {
+                        number: 4,
+                        label: "Decision Four",
+                        title: "The Integration That Failed",
+                        teaser: "Six years and $54 billion. Nokia is yours. The market isn't."
+                    },
+                    playerPosition: {
+                        label: "Your Position: JAN 2013",
+                        stats: [
+                            { label: "Market Share", value: "{{marketShare}}%", color: "gold" },
+                            { label: "Total Nokia Investment", value: "$54B+", color: "red" },
+                            { label: "Nokia Integration", value: "6 years in", color: "red" },
+                            { label: "Lumia Hardware", value: "Excellent", color: "green" },
+                            { label: "App Gap", value: "Fatal", color: "red" },
+                            { label: "Board Patience", value: "Gone", color: "red" }
+                        ]
+                    },
+                    intelCards: [
+                        {
+                            id: "d4no-intel-nokia-financials",
+                            type: "briefing",
+                            thumb: {
+                                icon: "ph-currency-dollar",
+                                label: "MARKET REPORT",
+                                title: "Nokia Division Financials",
+                                subtitle: "$54B invested — annual losses mounting",
+                                accentColor: "#7ab88e"
+                            },
+                            popup: {
+                                title: "Nokia Division Financials",
+                                source: "Microsoft Mobile Division — Internal Review",
+                                date: "JAN 2013",
+                                reliability: "HIGH",
+                                heroStat: { value: "$54B+", label: "Total investment in Nokia since 2007 hostile takeover", attribution: "Microsoft CFO Internal Briefing, Q4 2012" },
+                                sections: [
+                                    { heading: "The Ledger (2007–2012)", content: "Acquisition cost: $54B (2007 hostile takeover at peak valuation). Integration costs: $4.2B across six years. Annual operating losses: averaging $1.8B since 2010. Total cash burn since acquisition: north of $65B when you include lost opportunity cost on the capital." },
+                                    { heading: "Hardware Quality vs. Market Reality", content: "The Lumia 920 is a genuinely excellent phone. DxOMark rates the camera best-in-class. Build quality surpasses iPhone 5. Nokia's engineering talent remains world-class. And yet: Q4 2012 Lumia shipments were 4.4 million units. Apple shipped 47.8 million iPhones in the same quarter. Samsung shipped 63 million Galaxy devices. Beautiful hardware, invisible market presence." },
+                                    { heading: "The Uncomfortable Math", content: "At current trajectory, the Nokia division will consume another $2B annually in operating losses. The Lumia 520 (low-cost) shows promise in emerging markets, but margins are razor-thin. Premium Lumias can't compete on apps. The division is profitable nowhere, at no price point, in no market." }
+                                ],
+                                footnote: "Six years of integration produced excellent hardware and catastrophic financials. The question is no longer 'when will Nokia pay off' — it's 'how do we stop the bleeding.'"
+                            }
+                        },
+                        {
+                            id: "d4no-intel-app-gap",
+                            type: "briefing",
+                            thumb: {
+                                icon: "ph-app-store-logo",
+                                label: "MARKET REPORT",
+                                title: "The App Gap Reality",
+                                subtitle: "150K apps vs 800K iOS and 700K Android",
+                                accentColor: "#7ab88e"
+                            },
+                            popup: {
+                                title: "The App Gap Reality",
+                                source: "App Store Data + Developer Surveys",
+                                date: "JAN 2013",
+                                reliability: "HIGH",
+                                heroStat: { value: "150K", label: "Windows Phone apps vs iOS 800K and Android 700K — Nokia hardware can't compensate", attribution: "App Store Data, Q4 2012" },
+                                sections: [
+                                    { heading: "Raw Numbers (Q4 2012)", content: "iOS App Store: 800,000 apps. Google Play: 700,000 apps. Windows Phone Store: 150,000 apps. You own the best phone hardware in the world and it runs 15% of the iOS catalog." },
+                                    { heading: "The Nokia Paradox", content: "Nokia's camera is best-in-class. Nokia's build quality is premium. Nokia's brand still resonates in Europe and emerging markets. None of it matters when a customer walks into a carrier store, picks up a Lumia, asks 'Does it have Instagram?' and the answer is 'Yes, but it's 18 months behind and missing features.' They put it down. They buy the Galaxy." },
+                                    { heading: "Developer Reality", content: "At {{marketShare}}% market share, developers won't build for you. 'When you hit 15%,' they say. You can't hit 15% without the apps. You've owned Nokia for six years and this chicken-and-egg problem is exactly where it was in 2008. Owning the hardware changed nothing about the ecosystem math." }
+                                ],
+                                footnote: "The app gap is not a hardware problem. It never was. $54 billion in Nokia investment couldn't solve a software ecosystem problem."
+                            }
+                        },
+                        {
+                            id: "d4no-intel-board-pressure",
+                            type: "memo",
+                            thumb: {
+                                icon: "ph-seal-warning",
+                                label: "INTERNAL MEMO",
+                                title: "Board Pressure",
+                                subtitle: "\"We need answers on the $54 billion question\"",
+                                accentColor: "#e8927c"
+                            },
+                            popup: {
+                                from: "Board of Directors, Microsoft",
+                                re: "Nokia Division Strategic Review",
+                                date: "JAN 2013",
+                                classification: "CONFIDENTIAL",
+                                reliability: "HIGH",
+                                source: "Microsoft Board of Directors — Confidential",
+                                sections: [
+                                    { heading: "From the Chair's Summary", content: "The board convened a special session on the Nokia division. ValueAct's Mason Morfit spoke for twenty minutes without interruption. His message: 'We have spent $54 billion acquiring and integrating Nokia. Market share has declined from 75% at acquisition to approximately {{marketShare}}% today. At what point do we acknowledge this was a mistake and act accordingly?'" },
+                                    { heading: "The Two Camps", content: "The board is split. Camp one (led by Morfit and two independent directors) wants a write-down and restructuring — harvest the profitable pieces, write off the rest, stop the bleeding. Camp two (led by Bill Gates) believes vertical integration needs more time. 'Apple didn't win in one product cycle,' Gates argued. 'Give the Lumia line two more years.' The counterargument: Apple never spent $54 billion to get started." },
+                                    { heading: "The Ultimatum", content: "The board has requested a comprehensive strategic plan by Q2 2013. Options on the table: (1) Double down with unified hardware push and $2B additional investment, or (2) Restructure the division for profitability at smaller scale. The board will not approve a third option of 'more of the same.' The status quo is no longer acceptable." }
+                                ],
+                                footnote: "This is the most direct board intervention in the mobile division since the acquisition. Ballmer's leadership is increasingly questioned behind closed doors."
+                            }
+                        }
+                    ],
+
+                    storyText: `The calendar says January 2013. Six years since Steve Jobs pulled that phone from his pocket. Six years since you wrote the biggest check in Microsoft's history — $54 billion to acquire Nokia in a hostile takeover that the entire industry called insane.
+
+They weren't entirely wrong.
+
+You remember the logic. Nokia had 75% of the global handset market. Their hardware was peerless. Their brand was beloved from Helsinki to Hyderabad. You would marry Microsoft's software ecosystem to Nokia's manufacturing empire and own the future of mobile computing. The board approved it. Wall Street hated it. You did it anyway.
+
+Six years later, Nokia's hardware is still excellent. The Lumia 920 has the best camera in any smartphone. The build quality makes the iPhone 5 feel fragile. Your Finnish engineers, the ones who stayed, build phones with a craftsmanship that borders on obsession. The Lumia line is genuinely, objectively beautiful.
+
+And market share has fallen from 75% to roughly {{marketShare}}%.
+
+The app gap is killing you. Not the hardware, never the hardware. Instagram arrived last month, eighteen months late, missing features. Snapchat refuses to build for you entirely. Banking apps are missing. Games skip your platform. Your customers love the phone and hate the ecosystem.
+
+Your board meeting this morning was the worst in six years. ValueAct's Mason Morfit didn't raise his voice. He didn't need to. "Fifty-four billion dollars," he said, letting the number sit in the room like a body. "Market share was 75% when we bought Nokia. It's {{marketShare}}% today. I need someone in this room to explain to me what the plan is." Nobody spoke. Bill Gates stared at the table.
+
+The strategic options have narrowed to two. You can double down — pour another $2 billion into the Nokia division, unify the hardware vision, and make one last credible run at scale. Or you can accept reality — restructure for profitability at smaller scale, harvest the enterprise niche, write down the dream, and stop the bleeding.
+
+Six years. Fifty-four billion dollars. The best phone hardware in the world. And a market that chose apps over craftsmanship.
+
+What kind of company is Microsoft going to be in mobile?`,
+                    objective: "You've owned Nokia for six years. $54B invested, share collapsing. Double down or harvest the niche?",
+                    availableInfo: ["d4no-intel-nokia-financials", "d4no-intel-app-gap", "d4no-intel-board-pressure"],
+
+                    options: [
+                        {
+                            id: "d4no-option-1",
+                            title: "Nokia All-In: One Last Push",
+                            description: "Pour $2B more into the Nokia division. Merge Surface Phone and Lumia into a unified hardware line. Launch a $500M developer incentive program. One last shot at scale — unified, focused, all or nothing.",
+                            risk: "Throwing good money after bad — $56B becomes $58B",
+                            upside: "Unified hardware strategy could finally differentiate against Android commodity",
+                            cost: "$2B",
+                            investment: "$2B",
+
+                            setsPathState: {
+                                d5State: "platform-contender"
+                            },
+                            pathMetrics: { marketShare: 8, nokiaShare: 0, appleShare: 18, googleShare: 68, bbShare: 3 },
+
+                            consequences: {
+                                moments: [
+                                    { type: "verdict", headline: "Doubling Down on a $54B Bet", subline: "Another $2 billion into Nokia. The board is split. Wall Street is horrified. History will judge.", sentiment: "neutral" },
+                                    { type: "metrics", changes: [
+                                        { metric: "Additional Investment", change: "$2B", direction: "down" },
+                                        { metric: "Hardware Lines", change: "Unified", direction: "up" },
+                                        { metric: "Developer Fund", change: "$500M", direction: "up" },
+                                        { metric: "Total Nokia Spend", change: "$56B+", direction: "down" }
+                                    ] },
+                                    { type: "timeline", events: [
+                                        { date: "MAR 2013", text: "\"One Microsoft Mobile\" restructuring. Surface Phone + Lumia merged. 4,000 redundancies in Finland.", mood: "warning" },
+                                        { date: "JUN 2013", text: "$500M developer fund launched. Instagram agrees to feature parity.", mood: "positive" },
+                                        { date: "OCT 2013", text: "Lumia 1520 launches — best camera, stunning design. Reviews: 'the best phone nobody will buy.'", mood: "neutral" },
+                                        { date: "JAN 2014", text: "Enterprise push gains traction. Fortune 500 adopting Lumia. Consumer share still falling.", mood: "neutral" }
+                                    ] },
+                                    { type: "emerging", icon: "ph-lightning", headline: "The Differentiation Gamble", body: "The unified hardware strategy is producing genuinely distinctive devices. Enterprise customers are noticing. But consumer market share continues to erode as the app gap persists despite the incentive fund.", closing: "You're building the best phone for a market that doesn't exist yet. The question is whether it ever will." }
+                                ],
+                                immediate: {
+                                    date: "APR 2013",
+                                    cash: -2.0,
+                                    marketCap: 1.0,
+                                    marketShare: -2,
+                                    morale: "cautiously optimistic",
+                                    mobileRevenue: 0.2,
+                                    mobileCosts: 0.3,
+                                    unlockedArtifacts: ["artifact-nokia-lumia-1520"],
+                                    narrative: `You announce "One Microsoft Mobile" at a press event in Barcelona. The Surface Phone and Lumia teams will merge. $2 billion in new investment. A $500 million developer incentive fund.
+
+Wall Street's reaction is muted. "Microsoft continues to invest in mobile despite limited returns," writes Goldman Sachs, with the careful neutrality of analysts who've stopped believing but won't say so.
+
+Internally, the merger energizes the team. Nokia's camera engineers working alongside Surface's industrial designers produces something neither could alone. The Lumia 1520 prototype is stunning. Whether stunning is enough remains to be seen.`
+                                },
+                                delayed: {
+                                    date: "JAN 2014",
+                                    cash: -0.5,
+                                    marketCap: -1.0,
+                                    marketShare: 2,
+                                    morale: "neutral",
+                                    mobileRevenue: 0.1,
+                                    mobileCosts: 0.1,
+                                    narrative: `The Lumia 1520 launches to the best reviews a Windows Phone has ever received. Sales are decent — 2.1 million units in Q4. Not transformative, but not death.
+
+The enterprise push is the quiet success story. Forty Fortune 500 companies adopt Lumia as their corporate standard. Enterprise revenue is up 40%.
+
+The developer incentive fund produces mixed results. Instagram reaches feature parity. Snapchat takes the money, ships a minimal app, and visibly stops updating it. You've bought presence without passion.
+
+Market share ticks up — the first gain in three years. Not victory. Not vindication. But not death either.`
+                                }
+                            }
+                        },
+                        {
+                            id: "d4no-option-2",
+                            title: "Accept Reality: Harvest Nokia",
+                            description: "Stop the bleeding. Nokia hardware is profitable at smaller scale — enterprise, camera enthusiasts, emerging markets. Write down the consumer ambition. Find peace with what $54 billion actually bought you: a niche.",
+                            risk: "Admitting the $54B acquisition was a mistake — largest write-down in tech history",
+                            upside: "Profitable niche, Wall Street relief, organizational clarity",
+                            cost: "Write-down + restructuring",
+                            investment: "Write-down",
+
+                            setsPathState: {
+                                d5State: "niche-survivor"
+                            },
+                            pathMetrics: { marketShare: 4, nokiaShare: 0, appleShare: 19, googleShare: 71, bbShare: 3 },
+
+                            consequences: {
+                                moments: [
+                                    { type: "verdict", headline: "The Most Expensive Niche Business in History", subline: "$54 billion to build a profitable niche phone maker. The write-down will be historic. The relief will be immediate.", sentiment: "mixed" },
+                                    { type: "metrics", changes: [
+                                        { metric: "Write-down", change: "$15B+", direction: "down" },
+                                        { metric: "Stock Price", change: "+4%", direction: "up" },
+                                        { metric: "Nokia Layoffs", change: "12,000", direction: "down" },
+                                        { metric: "Division Profitability", change: "Q3 2013 target", direction: "up" }
+                                    ] },
+                                    { type: "timeline", events: [
+                                        { date: "MAR 2013", text: "\"Strategic Realignment\" announced. $15.4B write-down. 12,000 layoffs. Stock rises 4%.", mood: "neutral" },
+                                        { date: "JUN 2013", text: "Restructured division launches \"Lumia Pro\" for enterprise. Fortune 500 interest immediate.", mood: "positive" },
+                                        { date: "SEP 2013", text: "Nokia camera tech licensed to Samsung for $200M. Your best technology inside competitors' phones.", mood: "neutral" },
+                                        { date: "JAN 2014", text: "First profitable quarter since acquisition. Revenue down 60%, costs down 75%. Wall Street applauds.", mood: "positive" }
+                                    ] },
+                                    { type: "emerging", icon: "ph-target", headline: "Finding Peace With Smaller Ambition", body: "The restructured Nokia division is lean, focused, and quietly profitable. Enterprise customers love the Lumia Pro line. Camera enthusiasts treat the Lumia 1020 as a cult object.", closing: "Sometimes the bravest thing a CEO can do is admit that $54 billion bought a lesson, not a victory." }
+                                ],
+                                immediate: {
+                                    date: "APR 2013",
+                                    cash: -0.5,
+                                    marketCap: 2.0,
+                                    marketShare: -3,
+                                    morale: "low",
+                                    mobileRevenue: -0.1,
+                                    mobileCosts: -0.3,
+                                    unlockedArtifacts: ["artifact-nokia-lumia-1020"],
+                                    narrative: `You announce the "Strategic Realignment" before markets open. A $15.4 billion write-down on Nokia goodwill. 12,000 layoffs, most in Finland. The consumer phone ambition, officially dead.
+
+The stock rises 4% before lunch. Wall Street's message is unmistakable: they'd been pricing in the Nokia disaster for years. "Microsoft finally ripped off the Band-Aid," writes Morgan Stanley.
+
+In Espoo, Finland, the mood is funereal. Twelve thousand people who once built the world's best phones are cleaning out their desks. Your restructuring lead calls from Helsinki: "They're not angry. They're sad. That's worse."`
+                                },
+                                delayed: {
+                                    date: "JAN 2014",
+                                    cash: 0,
+                                    marketCap: 1.5,
+                                    marketShare: -1,
+                                    morale: "resigned",
+                                    mobileRevenue: 0.05,
+                                    mobileCosts: -0.1,
+                                    narrative: `The restructured Nokia division posts its first profitable quarter. Revenue down 60% from peak, costs down 75%. The math finally works. "Lumia Pro" is finding its audience in enterprise.
+
+The camera technology becomes an unexpected revenue stream. Samsung licenses Nokia's imaging patents for $200M. Your best technology inside competitors' phones.
+
+Market share settles at a tiny fraction of the market. But you're profitable, which is more than you could say for the past six years. "The most expensive niche business in history," writes the Financial Times, not unkindly.`
                                 }
                             }
                         }
@@ -8939,7 +9312,7 @@ Nokia released their first Android phone—the X series—signaling they're hedg
                     date: "JAN 2013",
                     timeMarker: "JAN 2013",
                     title: "The Burning Platform",
-                    storyImage: '<i class="ph ph-fire" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d4-burning-platform.jpg',
 
                     chapter: {
                         number: 4,
@@ -8948,9 +9321,9 @@ Nokia released their first Android phone—the X series—signaling they're hedg
                         teaser: "Mobile is hemorrhaging money. Bill Gates is calling. The board's patience is exhausted."
                     },
                     playerPosition: {
-                        label: "Your Position — JAN 2013",
+                        label: "Your Position: JAN 2013",
                         stats: [
-                            { label: "WP Market Share", value: "2%", color: "red" },
+                            { label: "{{#if wpAbandoned}}Platform{{else}}WP{{/if}} Market Share", value: "{{marketShare}}%", color: "red" },
                             { label: "Total Mobile Losses", value: "$9.4B", color: "red" },
                             { label: "Quarterly Loss", value: "$1.2B", color: "red" },
                             { label: "Surface RT Write-down", value: "$900M coming", color: "red" },
@@ -8980,7 +9353,7 @@ Nokia released their first Android phone—the X series—signaling they're hedg
                                     { heading: "The Real Problem", content: "Quality and timeliness matter more than quantity. Instagram: 18 months late to WP (and abandoned). Snapchat: refuses to build WP version. Banking apps: 60% of major banks missing. Games: most top 50 games never arrive." },
                                     { heading: "Developer Feedback", content: "\"We'll build for Windows Phone when it has 10% market share.\" Classic chicken-and-egg. You can't get 10% without apps, and can't get apps without 10%." }
                                 ],
-                                footnote: "The app gap may be insurmountable without billions in developer subsidies — and even then, timing lag kills user experience."
+                                footnote: "The app gap may be insurmountable without billions in developer subsidies - and even then, timing lag kills user experience."
                             }
                         },
                         {
@@ -8990,7 +9363,7 @@ Nokia released their first Android phone—the X series—signaling they're hedg
                                 icon: "ph-currency-dollar",
                                 label: "MARKET REPORT",
                                 title: "Nokia Financial Situation",
-                                subtitle: "Stock at $2.78 — down from $40 in 2007",
+                                subtitle: "Stock at $2.78 :  down from $40 in 2007",
                                 accentColor: "#7ab88e"
                             },
                             popup: {
@@ -8998,11 +9371,11 @@ Nokia released their first Android phone—the X series—signaling they're hedg
                                 source: "Nokia SEC Filings + Analyst Reports",
                                 date: "JAN 2013",
                                 reliability: "HIGH",
-                                heroStat: { value: "$2.78", label: "Nokia stock price — down from $40 in 2007", attribution: "Nokia SEC Filings, Q4 2012" },
+                                heroStat: { value: "$2.78", label: "Nokia stock price - down from $40 in 2007", attribution: "Nokia SEC Filings, Q4 2012" },
                                 sections: [
                                     { heading: "Nokia Financial State", content: "Stock price: $2.78 (down from $40 in 2007). Market cap: $10.5B (was $150B). Quarterly cash burn: $400M. Cash reserves: $4.1B (10 quarters of runway)." },
                                     { heading: "Partnership Assessment", content: "Platform support payments totaling $1B annually from Microsoft keeping Nokia afloat. Without these payments, Nokia would likely need to seek bankruptcy, sell mobile division, or pivot to Android." },
-                                    { heading: "Acquisition Calculus", content: "At $10B market cap, full acquisition is financially possible. Nokia's board increasingly desperate — they may accept terms they would have rejected 2 years ago." }
+                                    { heading: "Acquisition Calculus", content: "At $10B market cap, full acquisition is financially possible. Nokia's board increasingly desperate - they may accept terms they would have rejected 2 years ago." }
                                 ],
                                 footnote: "Nokia is burning through your support payments. At this rate, you've spent $3 billion on Nokia and you don't even own them."
                             }
@@ -9019,7 +9392,7 @@ Nokia released their first Android phone—the X series—signaling they're hedg
                             },
                             popup: {
                                 from: "Board Meeting Notes + Investor Communications",
-                                re: "Mobile Strategy Review — Board Sentiment",
+                                re: "Mobile Strategy Review - Board Sentiment",
                                 date: "JAN 2013",
                                 classification: "CONFIDENTIAL",
                                 reliability: "MEDIUM",
@@ -9035,13 +9408,13 @@ Nokia released their first Android phone—the X series—signaling they're hedg
                     ],
 
                     framingByPath: {
-                        // BlackBerry merger crisis — no Nokia references
+                        // BlackBerry merger crisis - no Nokia references
                         "d3-i-bb": {
                             storyText: `The email from your CFO arrives at 6 AM. Subject line: "Mobile P&L - Urgent."
 
 You already know it's bad. You didn't expect it to be this bad.
 
-Total mobile losses since 2007: $11.2 billion. This quarter alone: $1.4 billion. The BlackBerry merger has been a catastrophe—40% of the Waterloo team is gone, BBM integration on Windows Phone feels like a port, and the combined product is worse than either was separately. Market share at 2% and falling.
+Total mobile losses since 2007: $11.2 billion. This quarter alone: $1.4 billion. The BlackBerry merger has been a catastrophe, 40% of the Waterloo team is gone, BBM integration on Windows Phone feels like a port, and the combined product is worse than either was separately. Market share at 2% and falling.
 
 Your phone buzzes. It's Bill Gates. "Steve, we need to talk about mobile."
 
@@ -9051,7 +9424,7 @@ Bill's been on the board for years, but he rarely calls. When he does, it means 
 
 The conversation is polite but the message is clear: the board is losing patience. Either show a path to profitability, or show a path to the exit.
 
-You've given this company everything. Built it from a $46 billion market cap to $300 billion. And now you're being told that your mobile strategy—the one that was supposed to secure Microsoft's future—might end your tenure.
+You've given this company everything. Built it from a $46 billion market cap to $300 billion. And now you're being told that your mobile strategy, the one that was supposed to secure Microsoft's future, might end your tenure.
 
 The numbers are undeniable. The board's patience is exhausted. What do you do?`
                         }
@@ -9061,7 +9434,7 @@ The numbers are undeniable. The board's patience is exhausted. What do you do?`
 
 You already know it's bad. You didn't expect it to be this bad.
 
-Total mobile losses since 2007: $9.4 billion. This quarter alone: $1.2 billion. Nokia burning cash faster than your support payments can cover. Market share at 2% and falling—down from 42% six years ago. The Surface RT write-down is coming: $900 million.
+Total mobile losses since 2007: $9.4 billion. This quarter alone: $1.2 billion. Nokia burning cash faster than your support payments can cover. Market share at 2% and falling, down from 42% six years ago. The Surface RT write-down is coming: $900 million.
 
 Your phone buzzes. It's Bill Gates. "Steve, we need to talk about mobile."
 
@@ -9071,7 +9444,7 @@ Bill's been on the board for years, but he rarely calls. When he does, it means 
 
 The conversation is polite but the message is clear: the board is losing patience. Either show a path to profitability, or show a path to the exit.
 
-You've given this company everything. Built it from a $46 billion market cap to $300 billion. And now you're being told that your mobile strategy—the one that was supposed to secure Microsoft's future—might end your tenure.
+You've given this company everything. Built it from a $46 billion market cap to $300 billion. And now you're being told that your mobile strategy, the one that was supposed to secure Microsoft's future, might end your tenure.
 
 The numbers are undeniable. The board's patience is exhausted. What do you do?`,
                     objective: "Mobile is hemorrhaging money and the board wants answers. Fight or retreat?",
@@ -9080,7 +9453,7 @@ The numbers are undeniable. The board's patience is exhausted. What do you do?`,
                     options: [
                         {
                             id: "d4cm-option-1",
-                            title: "One Last Stand—Nokia Acquisition",
+                            title: "One Last Stand: Nokia Acquisition",
                             description: "If we're going down, we're going down swinging. Acquire Nokia, own the stack, make one final bet on the Microsoft phone vision. The board will either back us or fire us, but at least we'll know we tried everything.",
                             risk: "Career-ending if it fails, board may block acquisition",
                             upside: "Last chance at mobile relevance, clear resolution either way",
@@ -9090,10 +9463,11 @@ The numbers are undeniable. The board's patience is exhausted. What do you do?`,
                             setsPathState: {
                                 d5State: "last-stand"
                             },
+                            pathMetrics: { marketShare: 2.5, nokiaShare: 3, appleShare: 19, googleShare: 72, bbShare: 3 },
 
                             consequences: {
                                 moments: [
-                                    { type: "verdict", headline: "Doubling Down on Disaster", subline: "The board approves — narrowly. You have 18 months to show this wasn't a $7 billion mistake.", sentiment: "negative" },
+                                    { type: "verdict", headline: "Doubling Down on Disaster", subline: "The board approves - narrowly. You have 18 months to show this wasn't a $7 billion mistake.", sentiment: "negative" },
                                     { type: "metrics", changes: [
                                         { metric: "Acquisition Cost", change: "$7.2B", direction: "down" },
                                         { metric: "Stock Price", change: "Hammered", direction: "down" },
@@ -9102,11 +9476,11 @@ The numbers are undeniable. The board's patience is exhausted. What do you do?`,
                                     ] },
                                     { type: "timeline", events: [
                                         { date: "APR 2013", text: "Nokia acquisition presented to board. Approved narrowly with conditions.", mood: "warning" },
-                                        { date: "SEP 2013", text: "\"Microsoft doubles down on disaster\" — Wall Street. Stock hammered.", mood: "negative" },
+                                        { date: "SEP 2013", text: "\"Microsoft doubles down on disaster\" -- Wall Street. Stock hammered.", mood: "negative" },
                                         { date: "Q4 2013", text: "First Microsoft Lumias ship. Good phones into a market that doesn't care.", mood: "neutral" },
                                         { date: "JAN 2014", text: "Integration slog. 30,000 demoralized employees. Key talent eyeing exits.", mood: "negative" }
                                     ] },
-                                    { type: "emerging", icon: "ph-flag-banner", headline: "The 18-Month Clock", body: "The board's deadline is ticking. Rumors about CEO succession grow louder each week. The chicken-and-egg problem hasn't been solved — developers still won't build for 2.5% share.", closing: "You haven't lost yet. But you haven't won either. And time is running out." }
+                                    { type: "emerging", icon: "ph-flag-banner", headline: "The 18-Month Clock", body: "The board's deadline is ticking. Rumors about CEO succession grow louder each week. The chicken-and-egg problem hasn't been solved - developers still won't build for 2.5% share.", closing: "You haven't lost yet. But you haven't won either. And time is running out." }
                                 ],
                                 immediate: {
                                     date: "APR 2013",
@@ -9118,7 +9492,7 @@ The numbers are undeniable. The board's patience is exhausted. What do you do?`,
                                     mobileCosts: 0.6,        // Massive acquisition overhead
                                     narrative: `You present the Nokia acquisition to the board. "This is it. Either we commit fully or we exit. I recommend we commit." The room is silent. John Thompson asks: "And if it doesn't work?" You don't have a good answer.
 
-The board approves—narrowly—with conditions. You have 18 months to show improvement or the mobile division gets a strategic review. Translation: you have 18 months to prove this wasn't a $7 billion mistake.
+The board approves (narrowly) with conditions. You have 18 months to show improvement or the mobile division gets a strategic review. Translation: you have 18 months to prove this wasn't a $7 billion mistake.
 
 Wall Street hammers the stock. "Microsoft doubles down on disaster," reads the headline. Your mobile team is exhausted but relieved. "At least we're not giving up," says your mobile lead. Cold comfort. But comfort nonetheless.`
                                 },
@@ -9127,13 +9501,12 @@ Wall Street hammers the stock. "Microsoft doubles down on disaster," reads the h
                                     cash: -2.0,
                                     marketCap: -3.0,
                                     marketShare: -1,
-                                    marketShareOverride: 2.5,
                                     morale: "low",
                                     mobileRevenue: 0.1,      // Weak Lumia sales
                                     mobileCosts: 0.5,        // Integration bleeding cash
                                     narrative: `The Nokia integration is a slog. 30,000 employees, most demoralized, many leaving. The Finnish government is furious about layoffs. Factory closures become political flashpoints across Europe.
 
-The first Microsoft Lumias ship in Q4—good phones into a market that doesn't care. Market share is 2.5% and falling. App developers continue to deprioritize the platform. The chicken-and-egg problem hasn't been solved.
+The first Microsoft Lumias ship in Q4, good phones into a market that doesn't care. Market share is 2.5% and falling. App developers continue to deprioritize the platform. The chicken-and-egg problem hasn't been solved.
 
 The board's 18-month clock is ticking. Rumors swirl about CEO succession. Your legacy is being written in real-time, and the early reviews aren't kind. "Ballmer bet the company on mobile and lost," writes The Verge. You haven't lost yet. But you haven't won either.`
                                 }
@@ -9141,12 +9514,14 @@ The board's 18-month clock is ticking. Rumors swirl about CEO succession. Your l
                         },
                         {
                             id: "d4cm-option-2",
-                            title: "Strategic Exit—Cut Our Losses",
+                            title: "Strategic Exit: Cut Our Losses",
                             description: "The numbers don't lie. We've lost the mobile platform war. Exit now, while we still have leverage to negotiate with Nokia and while the losses are containable. Refocus Microsoft on cloud, enterprise, and productivity.",
                             risk: "Public admission of defeat, mobile team exodus",
                             upside: "Stop $1B/quarter bleeding, refocus on winning businesses",
                             cost: "$5B write-off + reputation",
                             investment: "$5B write-off",
+
+                            pathMetrics: { marketShare: 2.5, nokiaShare: 3, appleShare: 19, googleShare: 72, bbShare: 3 },
 
                             setsPathState: {
                                 earlyEnding: "strategic-exit"
@@ -9164,7 +9539,7 @@ The board's 18-month clock is ticking. Rumors swirl about CEO succession. Your l
                                     { type: "timeline", events: [
                                         { date: "APR 2013", text: "Strategic exit announced at earnings call. Wall Street approves immediately.", mood: "positive" },
                                         { date: "MAY 2013", text: "Nokia pivots to Android. Hardware was never the problem.", mood: "neutral" },
-                                        { date: "JUN 2013", text: "Mobile team scattered — many to Google, some to Apple. LinkedIn profiles update.", mood: "negative" },
+                                        { date: "JUN 2013", text: "Mobile team scattered - many to Google, some to Apple. LinkedIn profiles update.", mood: "negative" },
                                         { date: "H2 2013", text: "Azure growing 50%. Office 365 accelerating. Focus is clearer than it's been in years.", mood: "positive" }
                                     ] },
                                     { type: "emerging", icon: "ph-cloud", headline: "We Lost Mobile to Win Cloud", body: "Satya Nadella's cloud division is growing 50% annually. Office 365 subscriptions are accelerating. Azure is becoming a real business. The institutional knowledge disperses across Silicon Valley.", closing: "\"We lost mobile. But maybe we had to lose mobile to win cloud.\" Small consolation. But maybe true." }
@@ -9177,11 +9552,11 @@ The board's 18-month clock is ticking. Rumors swirl about CEO succession. Your l
                                     morale: "low",
                                     mobileRevenue: -0.5,     // Revenue collapsing
                                     mobileCosts: -0.3,       // Winding down operations
-                                    narrative: `You announce the strategic review at an earnings call. "Microsoft will wind down its smartphone hardware efforts and refocus on areas where we can win—cloud, productivity, enterprise services."
+                                    narrative: `You announce the strategic review at an earnings call. "Microsoft will wind down its smartphone hardware efforts and refocus on areas where we can win, cloud, productivity, enterprise services."
 
 The market reacts with relief. Microsoft stock rises 4% on "strategic clarity." Wall Street had been waiting for this announcement for years. "Finally, capital discipline," writes one analyst.
 
-Your mobile team is devastated. "We built something beautiful," says your mobile PM, "and you killed it for the stock price." Nokia is left scrambling—they pivot to Android within months. The tech press writes obituaries for Windows Phone. "Microsoft's $10 billion mobile experiment ends," reads the headline. It's over.`
+Your mobile team is devastated. "We built something beautiful," says your mobile PM, "and you killed it for the stock price." Nokia is left scrambling, they pivot to Android within months. The tech press writes obituaries for Windows Phone. "Microsoft's $10 billion mobile experiment ends," reads the headline. It's over.`
                                 },
                                 delayed: {
                                     date: "JUN 2013",
@@ -9193,7 +9568,7 @@ Your mobile team is devastated. "We built something beautiful," says your mobile
                                     mobileCosts: -0.25,      // Most costs eliminated
                                     narrative: `The exit is complete. Windows Phone licensing continues for existing partners, but no new investment. Nokia launches Android phones to surprisingly positive reviews. The hardware was never the problem.
 
-Your mobile team has largely scattered—many to Google, some to Apple. LinkedIn profiles update with new employers. The institutional knowledge disperses across Silicon Valley.
+Your mobile team has largely scattered, many to Google, some to Apple. LinkedIn profiles update with new employers. The institutional knowledge disperses across Silicon Valley.
 
 But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud division is growing 50% annually. Office 365 subscriptions are accelerating. Azure is becoming a real business. "We lost mobile," reflects your strategy lead, "but maybe we had to lose mobile to win cloud." Small consolation. But maybe true.`,
                                     triggersEnding: "strategic-exit"
@@ -9211,7 +9586,7 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
                     date: "JAN 2013",
                     timeMarker: "JAN 2013",
                     title: "The Integration That Wasn't",
-                    storyImage: '<i class="ph ph-fire" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d4-integration-that-wasnt.jpg',
 
                     chapter: {
                         number: 4,
@@ -9220,9 +9595,9 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
                         teaser: "Six years and $45 billion into the Nokia acquisition. Market share is 2%. The board wants answers."
                     },
                     playerPosition: {
-                        label: "Your Position — JAN 2013",
+                        label: "Your Position: JAN 2013",
                         stats: [
-                            { label: "WP Market Share", value: "2%", color: "red" },
+                            { label: "Market Share", value: "{{marketShare}}%", color: "red" },
                             { label: "Total Nokia Investment", value: "$45B", color: "red" },
                             { label: "Total Mobile Losses", value: "$12.4B", color: "red" },
                             { label: "Quarterly Loss", value: "$1.4B", color: "red" },
@@ -9262,7 +9637,7 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
                                 icon: "ph-currency-dollar",
                                 label: "MARKET REPORT",
                                 title: "Nokia Division Financials",
-                                subtitle: "$45B total investment — market share 2%",
+                                subtitle: "$45B total investment :  market share 2%",
                                 accentColor: "#7ab88e"
                             },
                             popup: {
@@ -9270,9 +9645,9 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
                                 source: "Internal Financial Analysis",
                                 date: "JAN 2013",
                                 reliability: "HIGH",
-                                heroStat: { value: "$45B", label: "Total Nokia investment — market share still 2%", attribution: "Microsoft Internal Finance, Q4 2012" },
+                                heroStat: { value: "$45B", label: "Total Nokia investment - market share still {{marketShare}}%", attribution: "Microsoft Internal Finance, Q4 2012" },
                                 sections: [
-                                    { heading: "Investment Summary", content: "Original acquisition: $40B+. Integration costs: $3B+. Ongoing losses: $1.4B/quarter. Total all-in: approximately $45 billion for a 2% market share position." },
+                                    { heading: "Investment Summary", content: "Original acquisition: $40B+. Integration costs: $3B+. Ongoing losses: $1.4B/quarter. Total all-in: approximately $45 billion for a {{marketShare}}% market share position." },
                                     { heading: "Integration Failures", content: "Culture clash never resolved. Finnish engineers resist Redmond management. Platform confusion cost years. Product development slowest in the industry." },
                                     { heading: "What Went Wrong", content: "The acquisition was supposed to provide scale, manufacturing expertise, and distribution. Instead: culture clash, platform confusion, and the slowest product development in the industry." }
                                 ],
@@ -9291,7 +9666,7 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
                             },
                             popup: {
                                 from: "Board Meeting Notes + Investor Communications",
-                                re: "Nokia Investment — Board Sentiment",
+                                re: "Nokia Investment - Board Sentiment",
                                 date: "JAN 2013",
                                 classification: "CONFIDENTIAL",
                                 reliability: "MEDIUM",
@@ -9299,7 +9674,7 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
                                 sections: [
                                     { heading: "Board Sentiment", content: "Mobile losses total $8B+ since 2007. Stock price stagnant for 13 years. ValueAct Capital has a $2B activist position. Board calling for 'strategic review' of the entire Nokia division." },
                                     { heading: "The Gates Call", content: "Bill Gates rarely calls directly. When he does, it means the board has been talking without you. 'The Nokia acquisition hasn't worked. Everyone knows it. The question is what we do about it now.'" },
-                                    { heading: "Options on the Table", content: "Commit fully to fixing the integration — more restructuring, more layoffs, more money. Or admit the acquisition failed and wind it down. There is no middle ground left." }
+                                    { heading: "Options on the Table", content: "Commit fully to fixing the integration - more restructuring, more layoffs, more money. Or admit the acquisition failed and wind it down. There is no middle ground left." }
                                 ],
                                 footnote: "You bet your legacy on this deal. Now you have to decide whether to double down or walk away."
                             }
@@ -9310,7 +9685,7 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
 
 You already know it's bad. You didn't expect it to be this bad.
 
-Six years since you acquired Nokia. $45 billion all-in. And the numbers are catastrophic: total mobile losses since 2007 of $12.4 billion. This quarter alone: $1.4 billion. Market share at 2% and falling—down from 42% when you bought the company.
+Six years since you acquired Nokia. $45 billion all-in. And the numbers are catastrophic: total mobile losses since 2007 of $12.4 billion. This quarter alone: $1.4 billion. Market share at 2% and falling, down from 42% when you bought the company.
 
 The acquisition was supposed to give you scale. Manufacturing expertise. Distribution. What you got instead was culture clash, platform confusion, and the slowest product development in the industry.
 
@@ -9320,7 +9695,7 @@ Bill's been on the board for years, but he rarely calls. When he does, it means 
 
 "The Nokia acquisition hasn't worked," Bill says directly. "Everyone knows it. The question is what we do about it now."
 
-The conversation is polite but the message is clear: the board wants a decision. Either commit fully to fixing the integration—more restructuring, more layoffs, more money—or admit the acquisition failed and wind it down.
+The conversation is polite but the message is clear: the board wants a decision. Either commit fully to fixing the integration (more restructuring, more layoffs, more money) or admit the acquisition failed and wind it down.
 
 You bet your legacy on this deal. Now you have to decide whether to double down or walk away.`,
                     objective: "The Nokia acquisition is failing. Commit to fixing it or wind it down?",
@@ -9329,7 +9704,7 @@ You bet your legacy on this deal. Now you have to decide whether to double down 
                     options: [
                         {
                             id: "d4cmno-option-1",
-                            title: "One Last Restructuring—Fix the Integration",
+                            title: "One Last Restructuring: Fix the Integration",
                             description: "The acquisition failed because we didn't integrate hard enough. Launch a complete restructuring: new leadership, consolidated operations, unified culture. If we own Nokia, let's actually own it.",
                             risk: "More money into a failing investment, board losing patience",
                             upside: "Finally realize the integration synergies we promised",
@@ -9339,10 +9714,11 @@ You bet your legacy on this deal. Now you have to decide whether to double down 
                             setsPathState: {
                                 d5State: "last-stand"
                             },
+                            pathMetrics: { marketShare: 2.5, nokiaShare: 0, appleShare: 19, googleShare: 74, bbShare: 3 },
 
                             consequences: {
                                 moments: [
-                                    { type: "verdict", headline: "Project Unity — Last Chance", subline: "The board approves reluctantly. 'This is your last chance, Steve.' The 18-month clock starts ticking.", sentiment: "negative" },
+                                    { type: "verdict", headline: "Project Unity - Last Chance", subline: "The board approves reluctantly. 'This is your last chance, Steve.' The 18-month clock starts ticking.", sentiment: "negative" },
                                     { type: "metrics", changes: [
                                         { metric: "Restructuring Cost", change: "$2B", direction: "down" },
                                         { metric: "Board Deadline", change: "18 months", direction: "down" },
@@ -9365,7 +9741,7 @@ You bet your legacy on this deal. Now you have to decide whether to double down 
                                     morale: "low",
                                     mobileRevenue: -0.1,     // Sales disrupted by restructuring
                                     mobileCosts: 0.4,        // Restructuring costs
-                                    narrative: `You announce "Project Unity"—a complete restructuring of the Nokia integration. New reporting lines. Consolidated engineering. A single mobile leadership team, based in Redmond. The Finnish operations will be "optimized"—corporate speak for massive layoffs.
+                                    narrative: `You announce "Project Unity", a complete restructuring of the Nokia integration. New reporting lines. Consolidated engineering. A single mobile leadership team, based in Redmond. The Finnish operations will be "optimized", corporate speak for massive layoffs.
 
 The board approves reluctantly. "This is your last chance, Steve," John Thompson says after the vote. "If this doesn't work, we're having a different conversation." The 18-month clock starts ticking.
 
@@ -9376,11 +9752,10 @@ The Finnish government is furious. Labor unions threaten strikes. Tech blogs wri
                                     cash: -1.5,
                                     marketCap: -3.0,
                                     marketShare: -1,
-                                    marketShareOverride: 2.5,
                                     morale: "low",
                                     mobileRevenue: 0.1,      // Lumia 1020 some sales
                                     mobileCosts: 0.3,        // Slimmer operations
-                                    narrative: `The restructuring is brutal but working—operationally. Engineering velocity is up 40%. The first truly unified Microsoft-Nokia phone, the Lumia 1020, ships to excellent reviews. The camera is genuinely best-in-class.
+                                    narrative: `The restructuring is brutal but working, operationally. Engineering velocity is up 40%. The first truly unified Microsoft-Nokia phone, the Lumia 1020, ships to excellent reviews. The camera is genuinely best-in-class.
 
 But the market doesn't care about operational efficiency. Market share is still 2.5%. The app gap is still fatal. Developers still won't build for a platform with 2.5% share, and you can't grow share without apps.
 
@@ -9391,12 +9766,14 @@ But the market doesn't care about operational efficiency. Market share is still 
                         },
                         {
                             id: "d4cmno-option-2",
-                            title: "Strategic Write-Down—Admit Defeat",
+                            title: "Strategic Write-Down: Admit Defeat",
                             description: "The acquisition was a mistake. Admit it, take the write-down, and move on. Sell or wind down the Nokia operations. Refocus Microsoft on cloud, enterprise, and productivity where we can actually win.",
                             risk: "Largest write-down in Microsoft history, career-ending admission",
                             upside: "Stop the bleeding, strategic clarity, focus on winning businesses",
                             cost: "$7.6B write-down + reputation",
                             investment: "$7.6B write-down",
+
+                            pathMetrics: { marketShare: 2.5, nokiaShare: 0, appleShare: 19, googleShare: 74, bbShare: 3 },
 
                             setsPathState: {
                                 earlyEnding: "strategic-exit"
@@ -9414,10 +9791,10 @@ But the market doesn't care about operational efficiency. Market share is still 
                                     { type: "timeline", events: [
                                         { date: "APR 2013", text: "Write-down announced at somber earnings call. Market rises 6%. 'Finally, Ballmer admits the obvious.'", mood: "positive" },
                                         { date: "MAY 2013", text: "Nokia operations sold to private equity. Finnish operations wound down.", mood: "negative" },
-                                        { date: "JUN 2013", text: "Mobile team scattered — many to Google, some to Apple, some to Chinese OEMs.", mood: "negative" },
+                                        { date: "JUN 2013", text: "Mobile team scattered - many to Google, some to Apple, some to Chinese OEMs.", mood: "negative" },
                                         { date: "H2 2013", text: "Azure growing 50%. Office 365 accelerating. Microsoft's focus clearer than in years.", mood: "positive" }
                                     ] },
-                                    { type: "emerging", icon: "ph-cloud", headline: "The Biggest Mistake — and the Hardest Admission", body: "\"The Nokia acquisition was my biggest mistake. We bought a company to win a war that was already lost. I should have seen it sooner.\" The mobile dream dies. Microsoft doesn't.", closing: "Small consolation. But maybe instructive for others." }
+                                    { type: "emerging", icon: "ph-cloud", headline: "The Biggest Mistake - and the Hardest Admission", body: "\"The Nokia acquisition was my biggest mistake. We bought a company to win a war that was already lost. I should have seen it sooner.\" The mobile dream dies. Microsoft doesn't.", closing: "Small consolation. But maybe instructive for others." }
                                 ],
                                 immediate: {
                                     date: "APR 2013",
@@ -9431,7 +9808,7 @@ But the market doesn't care about operational efficiency. Market share is still 
 
 The market reacts with relief. Microsoft stock rises 6% on "strategic clarity." Wall Street had been waiting for this announcement for years. "Finally, Ballmer admits the obvious," writes one analyst.
 
-Your mobile team is devastated. The Nokia employees who survived the acquisition, the restructurings, the platform debates—now they're being told it was all for nothing. "We failed them," you tell your leadership team. "They deserved better leadership than we gave them."`
+Your mobile team is devastated. The Nokia employees who survived the acquisition, the restructurings, the platform debates, now they're being told it was all for nothing. "We failed them," you tell your leadership team. "They deserved better leadership than we gave them."`
                                 },
                                 delayed: {
                                     date: "JUN 2013",
@@ -9441,7 +9818,7 @@ Your mobile team is devastated. The Nokia employees who survived the acquisition
                                     morale: "neutral",
                                     mobileRevenue: -0.2,     // Residual wind-down revenue
                                     mobileCosts: -0.2,       // Most costs gone
-                                    narrative: `The exit is complete. Nokia's phone business is wound down. Finnish operations sold to a private equity consortium. Your mobile team scattered—many to Google, some to Apple, some to the emerging Chinese OEMs.
+                                    narrative: `The exit is complete. Nokia's phone business is wound down. Finnish operations sold to a private equity consortium. Your mobile team scattered, many to Google, some to Apple, some to the emerging Chinese OEMs.
 
 But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud division is growing 50% annually. Office 365 subscriptions are accelerating. Azure is becoming a real business.
 
@@ -9459,7 +9836,7 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
                     date: "JAN 2013",
                     timeMarker: "JAN 2013",
                     title: "The Road Not Taken",
-                    storyImage: '<i class="ph ph-path" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d4-road-not-taken.jpg',
 
                     chapter: {
                         number: 4,
@@ -9468,13 +9845,13 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
                         teaser: "You carved out a differentiated position. Now decide: scale it up or lock in profits?"
                     },
                     playerPosition: {
-                        label: "Your Position — JAN 2013",
+                        label: "Your Position: JAN 2013",
                         stats: [
-                            { label: "Market Share", value: "4-12%", color: "green" },
+                            { label: "Market Share", value: "{{marketShare}}%", color: "green" },
                             { label: "Revenue/User", value: "2-5x industry avg", color: "green" },
                             { label: "Differentiation", value: "Strong niche", color: "green" },
                             { label: "App Gap", value: "Still present", color: "red" },
-                            { label: "Nokia Status", value: "Stable", color: "green" },
+                            { label: "{{#if ownsNokia}}Nokia Division{{else}}Nokia Status{{/if}}", value: "Stable", color: "green" },
                             { label: "Press Sentiment", value: "Respectful", color: "green" }
                         ]
                     },
@@ -9519,11 +9896,11 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
                                 source: "IDC/Gartner Q4 2012 Reports",
                                 date: "JAN 2013",
                                 reliability: "HIGH",
-                                heroStat: { value: "3%", label: "Windows Phone market share", attribution: "IDC/Gartner Q4 2012 Reports" },
+                                heroStat: { value: "{{marketShare}}%", label: "{{#if wpAbandoned}}Your mobile{{else}}Windows Phone{{/if}} market share - single digits despite years of investment", attribution: "IDC/Gartner Q4 2012" },
                                 sections: [
-                                    { heading: "2012 Market Share", content: "Android: 70% (up from 50% in 2011). iOS: 22% (stable). Windows Phone: 3% (up from 2%). BlackBerry: 4% (down from 10%)." },
-                                    { heading: "Regional Variations", content: "Windows Phone stronger in select markets: Italy 15%, Mexico 12%, UK 8%, USA 4%. But premium segment locked by iPhone; volume owned by cheap Android." },
-                                    { heading: "Industry Trajectory", content: "Total smartphone market: 1B units/year and growing. Even at 3% share, that's 30M units. But growth is from lowest-margin markets." }
+                                    { heading: "2012 Market Share", content: "Android: {{googleShare}}% (up from 50% in 2011). iOS: 22% (stable). {{#if wpAbandoned}}Your platform{{else}}Windows Phone{{/if}}: {{marketShare}}% (up from 5%). BlackBerry: {{bbShare}}% (down from 10%)." },
+                                    { heading: "Regional Variations", content: "{{#if wpAbandoned}}Your platform{{else}}Windows Phone{{/if}} stronger in select markets: Italy 15%, Mexico 12%, UK 8%, USA 4%. But premium segment locked by iPhone; volume owned by cheap Android." },
+                                    { heading: "Industry Trajectory", content: "Total smartphone market: 1B units/year and growing. Even at {{marketShare}}% share, that's 30M units. But growth is from lowest-margin markets." }
                                 ],
                                 footnote: "Market growing, but our position is not. The question is whether differentiation changes that math."
                             }
@@ -9546,8 +9923,8 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
                                 heroStat: { value: "150K", label: "Windows Phone apps vs iOS 800K and Android 700K", attribution: "App Store Data, Q4 2012" },
                                 sections: [
                                     { heading: "Raw Numbers (Q4 2012)", content: "iOS App Store: 800,000 apps. Google Play: 700,000 apps. Windows Phone Store: 150,000 apps. Roughly 15% of the iOS catalog." },
-                                    { heading: "The Niche Advantage", content: "For enterprise and productivity users, the app gap matters less. Office, Outlook, OneDrive — the apps that matter most are yours. The missing apps (Instagram, Snapchat) are consumer-facing." },
-                                    { heading: "Developer Economics", content: "Enterprise app developers follow the money, not the market share. If your users pay more, developers will build for them — eventually." }
+                                    { heading: "The Niche Advantage", content: "For enterprise and productivity users, the app gap matters less. Office, Outlook, OneDrive - the apps that matter most are yours. The missing apps (Instagram, Snapchat) are consumer-facing." },
+                                    { heading: "Developer Economics", content: "Enterprise app developers follow the money, not the market share. If your users pay more, developers will build for them - eventually." }
                                 ],
                                 footnote: "The app gap is real but may matter less for your specific audience. Enterprise users need Outlook, not Snapchat."
                             }
@@ -9561,16 +9938,16 @@ But Microsoft's focus is clearer than it's been in years. Satya Nadella's cloud 
 
 "No," you tell the earnings call. "It's a flanking maneuver."
 
-Because it is. Your forked Android—stripped of Google services, loaded with Microsoft's—has found an audience nobody expected. Privacy-conscious users. Enterprise customers who want Android apps without Google's data collection. Governments that banned Google services but needed modern smartphones.
+Because it is. Your forked Android, stripped of Google services, loaded with Microsoft's, has found an audience nobody expected. Privacy-conscious users. Enterprise customers who want Android apps without Google's data collection. Governments that banned Google services but needed modern smartphones.
 
-Market share: 8%. Not much. But those 8% are the most valuable mobile customers in the world—enterprise professionals and security-conscious consumers who pay premium prices for a "clean" Android experience with Microsoft services baked in.
+Market share: 8%. Not much. But those 8% are the most valuable mobile customers in the world, enterprise professionals and security-conscious consumers who pay premium prices for a "clean" Android experience with Microsoft services baked in.
 
-Google is furious. They've threatened to revoke your Play Services license. But your own app store is growing, and the apps that matter to enterprise—Office, Teams, Outlook—are yours to begin with.
+Google is furious. They've threatened to revoke your Play Services license. But your own app store is growing, and the apps that matter to enterprise (Office, Teams, Outlook) are yours to begin with.
 
 You've found a niche nobody saw coming: Android without Google. The question is: do you try to expand it, or do you harvest it?`
                         },
 
-                        // Premium Surface Phone — vertical integration
+                        // Premium Surface Phone - vertical integration
                         "d3-p-vertical": {
                             storyText: `The analyst's question catches you off guard. "Microsoft's Surface Phone seems... different from everyone else's. Is that intentional?"
 
@@ -9578,16 +9955,16 @@ You weren't sure how to answer at first. But now you are.
 
 "Yes," you tell the earnings call. "It's entirely intentional."
 
-The Surface Phone is a cult object. Premium aluminum, best-in-class display, camera that rivals iPhone. Tech reviewers call it "the phone for people who hate phones." It's not trying to be everything—it's trying to be the best at productivity, design, and build quality.
+The Surface Phone is a cult object. Premium aluminum, best-in-class display, camera that rivals iPhone. Tech reviewers call it "the phone for people who hate phones." It's not trying to be everything, it's trying to be the best at productivity, design, and build quality.
 
 Market share: 6%. Not much. But revenue per device is triple the industry average. Your customers are professionals, creatives, and design enthusiasts who pay $1,200 for a phone and $200/year for Office 365. The margins are exceptional.
 
-No Nokia. No OEM partnerships. Just Microsoft hardware and Microsoft software, integrated like Apple does—but for the productivity market.
+No Nokia. No OEM partnerships. Just Microsoft hardware and Microsoft software, integrated like Apple does, but for the productivity market.
 
 You've found a niche. The question is: do you try to expand it, or do you harvest it?`
                         },
 
-                        // Security fortress — enterprise/government
+                        // Security fortress - enterprise/government
                         "d3-e": {
                             storyText: `The analyst's question catches you off guard. "Microsoft's mobile strategy seems... different from everyone else's. Is that intentional?"
 
@@ -9599,16 +9976,16 @@ Market share: 4%. Tiny. But measured by revenue, it's a different story. Governm
 
 "Windows Phone isn't a consumer product anymore," wrote Wired last month. "It's a security platform that happens to make phone calls."
 
-The Intune MDM business is booming too—managing iPhones and Androids alongside your own devices. You've built a fortress. The question is: do you try to expand it, or do you harvest it?`
+The Intune MDM business is booming too, managing iPhones and Androids alongside your own devices. You've built a fortress. The question is: do you try to expand it, or do you harvest it?`
                         },
 
-                        // MeeGo platform — Nokia-led Linux
+                        // MeeGo platform - Nokia-led Linux
                         "d3-i-nokia-leads": {
                             storyText: `The analyst's question catches you off guard. "Microsoft is betting on a Linux phone? Is that... real?"
 
 "Yes," you tell the earnings call, and you can hear the surprise in the room. "It's real. And it's working."
 
-MeeGo—the Nokia-built, Linux-based platform you backed—has developed something rare in tech: genuine devotion. The N9 and its successors are beautiful, innovative devices with gesture navigation that makes iOS feel dated. The Qt developer ecosystem is small but passionate. The community builds apps, shares customizations, evangelizes relentlessly.
+MeeGo (the Nokia-built, Linux-based platform you backed) has developed something rare in tech: genuine devotion. The N9 and its successors are beautiful, innovative devices with gesture navigation that makes iOS feel dated. The Qt developer ecosystem is small but passionate. The community builds apps, shares customizations, evangelizes relentlessly.
 
 Market share: 7%. Not iOS numbers, but real momentum. The Jolla partnership expanded the hardware lineup. Enterprise customers appreciate the non-Google, non-Apple alternative. Privacy advocates love the open-source foundation.
 
@@ -9617,15 +9994,15 @@ Nokia is energized. For the first time since 2007, Finnish engineers are proud o
 You've found a niche. The question is: do you try to expand it, or do you harvest it?`
                         },
 
-                        // Nokia Android — full commitment
+                        // Nokia Android - full commitment
                         "d3-a-nokia-android": {
                             storyText: `The analyst's question catches you off guard. "Microsoft is making Android phones through Nokia? And it's... working?"
 
 "Yes," you tell the earnings call. "Better than anyone expected."
 
-Nokia's Android phones—loaded with Microsoft services instead of Google's—have carved out a real position. The hardware is outstanding. The cameras are best-in-class. Microsoft services integration is seamless: Outlook, OneDrive, Office, all native. It's "Android, but Microsoft."
+Nokia's Android phones, loaded with Microsoft services instead of Google's, have carved out a real position. The hardware is outstanding. The cameras are best-in-class. Microsoft services integration is seamless: Outlook, OneDrive, Office, all native. It's "Android, but Microsoft."
 
-Market share: 12%. Nokia's brand and distribution still carry weight in Europe, Asia, and emerging markets. The premium models compete directly with Samsung's Galaxy line. Revenue per device is strong because enterprise customers pay for the Microsoft ecosystem integration.
+Market share: 5%. Not huge, but Nokia's brand still carries weight in Europe and emerging markets. The premium models carve a niche below Samsung's Galaxy line. Revenue per device is strong because enterprise customers pay for the Microsoft ecosystem integration.
 
 Google is uncomfortable. They can't block Nokia from Android (it's open source), but they've made clear that Google services won't be available. Your answer: you don't need them. Bing, Outlook, and OneDrive work fine.
 
@@ -9638,9 +10015,9 @@ You've found something unexpected: a profitable Android business that strengthen
 
 "Yes," you tell the earnings call. "Two million apps. Forty million users. Growing 20% quarterly."
 
-The Microsoft App Store—built on your Android fork, Cascade—found its audience. Enterprise customers who want managed app distribution. Privacy-conscious consumers who don't trust Google Play. Developers who appreciate Microsoft's 85/15 revenue split versus Google's 70/30.
+The Microsoft App Store (built on your Android fork, Cascade) found its audience. Enterprise customers who want managed app distribution. Privacy-conscious consumers who don't trust Google Play. Developers who appreciate Microsoft's 85/15 revenue split versus Google's 70/30.
 
-Market share: 6% of devices run Cascade with the Microsoft App Store. Not much hardware—you rely on OEM partners. But the software ecosystem is sticky. Once an enterprise deploys Cascade, they're locked into Microsoft services. The recurring revenue is strong.
+Market share: 6% of devices run Cascade with the Microsoft App Store. Not much hardware, you rely on OEM partners. But the software ecosystem is sticky. Once an enterprise deploys Cascade, they're locked into Microsoft services. The recurring revenue is strong.
 
 "Microsoft built the third app store nobody asked for," wrote The Verge last month, "and it might actually survive."
 
@@ -9654,13 +10031,13 @@ You weren't sure how to answer at first. But now you are.
 
 "Yes," you tell the earnings call. "It's entirely intentional."
 
-Because it's true. Your path diverged somewhere in the last six years, and what emerged isn't what anyone expected—including you.
+Because it's true. Your path diverged somewhere in the last six years, and what emerged isn't what anyone expected, including you.
 
 You're not trying to be iOS. You're not trying to be Android. You've become something else: the productivity phone. The enterprise phone. The phone for people who use Office 12 hours a day and need it to work perfectly on mobile.
 
-Market share: 8%. Not much. But those 8% are the most valuable mobile customers in the world—enterprise professionals who spend $200/year on Office 365, $1,000/year on Azure services, $2,000/year on Surface devices. Your revenue per user is triple Apple's.
+Market share: 8%. Not much. But those 8% are the most valuable mobile customers in the world, enterprise professionals who spend $200/year on Office 365, $1,000/year on Azure services, $2,000/year on Surface devices. Your revenue per user is triple Apple's.
 
-More surprising: the tech press has started to respect you. "Windows Phone isn't trying to win the consumer market anymore," wrote Wired last month. "It's building something genuinely different—a productivity platform that happens to fit in your pocket."
+More surprising: the tech press has started to respect you. "Windows Phone isn't trying to win the consumer market anymore," wrote Wired last month. "It's building something genuinely different, a productivity platform that happens to fit in your pocket."
 
 Nokia is stable. Not growing, but not dying either. The Lumia 1020 camera is objectively the best in the industry. Enterprise deployments are accelerating.
 
@@ -9681,6 +10058,7 @@ You've found a niche. The question is: do you try to expand it, or do you harves
                             setsPathState: {
                                 d5State: "platform-contender"
                             },
+                            pathMetrics: { marketShare: 8, nokiaShare: 3, appleShare: 18, googleShare: 68, bbShare: 3 },
 
                             consequences: {
                                 moments: [
@@ -9709,22 +10087,21 @@ You've found a niche. The question is: do you try to expand it, or do you harves
                                     mobileCosts: 0.25,       // Expansion investment
                                     narrative: `You announce the "Productivity Everywhere" initiative: $2 billion to expand Windows Phone's enterprise footprint. Free Office licenses for Windows Phone users. Deep Skype integration. "The phone that makes you better at work."
 
-Nokia gets additional platform support to accelerate Lumia development. Enterprise IT managers are intrigued—Microsoft is finally talking their language. Pilot programs multiply across Fortune 500 companies.
+Nokia gets additional platform support to accelerate Lumia development. Enterprise IT managers are intrigued. Microsoft is finally talking their language. Pilot programs multiply across Fortune 500 companies.
 
-Consumer press is skeptical: "Is productivity enough to compete with Instagram?" Maybe not. But maybe you don't need Instagram users. Maybe you need accountants, lawyers, consultants—the people who would pay $50/month for a phone that actually works with their workflow.`
+Consumer press is skeptical: "Is productivity enough to compete with Instagram?" Maybe not. But maybe you don't need Instagram users. Maybe you need accountants, lawyers, consultants, the people who would pay $50/month for a phone that actually works with their workflow.`
                                 },
                                 delayed: {
                                     date: "JAN 2014",
                                     cash: -1.0,
                                     marketCap: 3.0,
                                     marketShare: -1,
-                                    marketShareOverride: 12,
                                     morale: "high",
                                     mobileRevenue: 0.25,     // Enterprise deployments paying off
                                     mobileCosts: 0.15,       // More efficient scaling
-                                    narrative: `The expansion is working—within the target market. Enterprise Windows Phone deployments up 40%. BYOD(Bring your own Device) programs featuring Windows Phone as the "managed option." Lumia 1520 positioned as the business phablet.
+                                    narrative: `The expansion is working, within the target market. Enterprise Windows Phone deployments up 40%. BYOD(Bring your own Device) programs featuring Windows Phone as the "managed option." Lumia 1520 positioned as the business phablet.
 
-Market share hits 10% in enterprise, even as consumer share stagnates. CIOs appreciate the Intune integration, the security features, the predictable update cycle. "It just works with our infrastructure," says one Fortune 100 CTO.
+Market share hits 8% globally, higher in enterprise. CIOs appreciate the Intune integration, the security features, the predictable update cycle. "It just works with our infrastructure," says one Fortune 100 CTO.
 
 "We're not fighting Apple and Google for teenagers," reflects your mobile lead. "We're fighting them for C-suite executives. That's a fight we can win." Revenue per device is now 2.5x the industry average. Small market, but increasingly profitable.`
                                 }
@@ -9733,7 +10110,7 @@ Market share hits 10% in enterprise, even as consumer share stagnates. CIOs appr
                         {
                             id: "d4d-option-2",
                             title: "Harvest the Position",
-                            description: "We've found our niche. Don't get greedy. Reduce investment, maximize margins, and extract value from our loyal customer base. The mobile war is over—let's profit from our corner of it.",
+                            description: "We've found our niche. Don't get greedy. Reduce investment, maximize margins, and extract value from our loyal customer base. The mobile war is over, let's profit from our corner of it.",
                             risk: "Slow decline as market evolves",
                             upside: "Guaranteed profitability, reduced risk",
                             cost: "Long-term growth potential",
@@ -9742,10 +10119,11 @@ Market share hits 10% in enterprise, even as consumer share stagnates. CIOs appr
                             setsPathState: {
                                 d5State: "niche-survivor"
                             },
+                            pathMetrics: { marketShare: 4, nokiaShare: 3, appleShare: 19, googleShare: 71, bbShare: 3 },
 
                             consequences: {
                                 moments: [
-                                    { type: "verdict", headline: "Harvest Mode Activated", subline: "Windows Phone is profitable — the first time ever. Market share down to 4%, but revenue up 20% on higher margins.", sentiment: "positive" },
+                                    { type: "verdict", headline: "Harvest Mode Activated", subline: "Windows Phone is profitable - the first time ever. Market share down to 4%, but revenue up 20% on higher margins.", sentiment: "positive" },
                                     { type: "metrics", changes: [
                                         { metric: "Profitability", change: "First ever", direction: "up" },
                                         { metric: "Market Share", change: "4% (declining)", direction: "down" },
@@ -9768,7 +10146,7 @@ Market share hits 10% in enterprise, even as consumer share stagnates. CIOs appr
                                     morale: "high",
                                     mobileRevenue: 0.1,      // Steady enterprise revenue
                                     mobileCosts: 0.03,       // Minimal investment
-                                    narrative: `You announce "operational efficiency" for the mobile division—code for reduced investment. Platform support payments to Nokia decrease 30%. Marketing budget cut by half.
+                                    narrative: `You announce "operational efficiency" for the mobile division, code for reduced investment. Platform support payments to Nokia decrease 30%. Marketing budget cut by half.
 
 New features focus on enterprise needs only: better Exchange integration, improved MDM, enhanced security. Consumer-facing features get deprioritized. No more chasing social apps.
 
@@ -9779,11 +10157,10 @@ Wall Street loves it. "Microsoft finally being rational about mobile," writes on
                                     cash: 2.0,
                                     marketCap: 2.0,
                                     marketShare: -1,
-                                    marketShareOverride: 4,
                                     morale: "high",
                                     mobileRevenue: 0.12,     // Premium pricing steady
                                     mobileCosts: 0.02,       // Harvesting mode
-                                    narrative: `The harvest strategy is producing returns. Windows Phone is profitable—the first time ever. Market share down to 4%, but revenue up 20% on higher margins and enterprise pricing.
+                                    narrative: `The harvest strategy is producing returns. Windows Phone is profitable, the first time ever. Market share down to 4%, but revenue up 20% on higher margins and enterprise pricing.
 
 Nokia is frustrated by reduced support, but the partnership holds. They've started exploring Android as a hedge, but the Lumia lineup continues. The relationship is transactional now, not aspirational.
 
@@ -9809,10 +10186,35 @@ Nokia is frustrated by reduced support, but the partnership holds. They've start
                     date: "JAN 2015",
                     timeMarker: "JAN 2015",
                     title: "The $7.6 Billion Question",
-                    storyImage: '<i class="ph ph-flag-banner" style="font-size: 4rem;"></i>',
-                    storyText: `The write-down announcement is ready. $7.6 billion—the largest in Microsoft history. The Nokia acquisition, reduced to an accounting entry.
+                    storyBg: 'assets/images/chapters/d5-76-billion-question.jpg',
+                    framingByPath: {
+                        "crisis-mode": {
+                            storyText: `The restructuring announcement is ready. $9.4 billion in cumulative mobile losses, written off in a single quarterly filing. The largest operational write-down in Microsoft history, and there isn't even an acquisition to blame it on.
 
-Last February, Steve Ballmer stepped down. Satya Nadella—quiet, cerebral, a cloud and enterprise man—took the helm. "Mobile-first, cloud-first," he declared. Eleven months in, you're still figuring out what that means for your team.
+Last February, Steve Ballmer stepped down. Satya Nadella (quiet, cerebral, a cloud and enterprise man) took the helm. "Mobile-first, cloud-first," he declared. Eleven months in, you're still figuring out what that means for a platform nobody builds for anymore.
+
+He called you into his office this morning. You've known what this meeting would be about.
+
+"The write-down goes public next week," he says. "Before it does, I need to know what comes next. Do we continue fighting in mobile, or do we pivot to a services strategy?"
+
+You've been fighting this war for eight years. Since Steve Jobs pulled that phone from his pocket at Macworld. Since you laughed and said "no physical keyboard." Since developers stopped returning your calls, since the app gap became a chasm, since every partner who promised loyalty quietly shipped Android flagships instead.
+
+Market share is 2.5%. The developer exodus is complete. Your app store adds maybe a dozen new titles a month, most of them abandoned ports. The platform that was supposed to unify Microsoft's mobile future couldn't attract the one thing platforms need to survive: people who build for them.
+
+But failure isn't the same as surrender.
+
+Windows 10 Mobile is in development, a unified platform across phone, tablet, and PC. The hardware prototypes are genuinely impressive. Universal apps could finally solve the developer problem. There's a path forward, if you're willing to keep walking it.
+
+Or you could accept what the numbers are telling you. Microsoft's future is in cloud and productivity services. Azure, Office 365, LinkedIn. Mobile can be a services delivery vehicle without being a platform bet.
+
+Satya is waiting for your answer. The board is waiting. Eight years of mobile strategy comes down to this moment.
+
+Do you fight to the end, or do you choose a different ending?`
+                        }
+                    },
+                    storyText: `The write-down announcement is ready. $7.6 billion, the largest in Microsoft history. The Nokia acquisition, reduced to an accounting entry.
+
+Last February, Steve Ballmer stepped down. Satya Nadella (quiet, cerebral, a cloud and enterprise man) took the helm. "Mobile-first, cloud-first," he declared. Eleven months in, you're still figuring out what that means for your team.
 
 He called you into his office this morning. You've known what this meeting would be about.
 
@@ -9820,13 +10222,13 @@ He called you into his office this morning. You've known what this meeting would
 
 You've been fighting this war for eight years. Since Steve Jobs pulled that phone from his pocket at Macworld. Since you laughed and said "no physical keyboard." Since everything changed and nothing you did could change it back.
 
-Market share is 2.5%. The app gap is permanent—developers have stopped even considering Windows Phone. Nokia's best engineers have left. The Finnish operations are being wound down. The $7.6 billion write-down is just accounting acknowledgment of what everyone already knew: the acquisition failed.
+Market share is 2.5%. The app gap is permanent, developers have stopped even considering Windows Phone. Nokia's best engineers have left. The Finnish operations are being wound down. The $7.6 billion write-down is just accounting acknowledgment of what everyone already knew: the acquisition failed.
 
 But failure isn't the same as surrender.
 
-Windows 10 Mobile is in development—a unified platform across phone, tablet, and PC. The Lumia 950 prototype is genuinely impressive. Universal apps could finally solve the developer problem. There's a path forward, if you're willing to keep walking it.
+Windows 10 Mobile is in development, a unified platform across phone, tablet, and PC. The Lumia 950 prototype is genuinely impressive. Universal apps could finally solve the developer problem. There's a path forward, if you're willing to keep walking it.
 
-Or you could accept what the numbers are telling you. Microsoft's future is in cloud and productivity services—Azure, Office 365, LinkedIn. Mobile can be a services delivery vehicle without being a platform bet.
+Or you could accept what the numbers are telling you. Microsoft's future is in cloud and productivity services. Azure, Office 365, LinkedIn. Mobile can be a services delivery vehicle without being a platform bet.
 
 Satya is waiting for your answer. The board is waiting. Eight years of mobile strategy comes down to this moment.
 
@@ -9841,10 +10243,10 @@ Do you fight to the end, or do you choose a different ending?`,
                         teaser: "The Nokia write-down is ready. Nadella wants your answer before it goes public."
                     },
                     playerPosition: {
-                        label: "Your Position — JAN 2015",
+                        label: "Your Position: JAN 2015",
                         stats: [
-                            { label: "Market Share", value: "2.5%", color: "red" },
-                            { label: "Nokia Write-Down", value: "$7.6B", color: "red" },
+                            { label: "Market Share", value: "{{marketShare}}%", color: "red" },
+                            { label: "{{#if ownsNokia}}Nokia Write-Down{{else}}Mobile Losses{{/if}}", value: "{{#if ownsNokia}}$7.6B{{else}}$9B+{{/if}}", color: "red" },
                             { label: "CEO", value: "Nadella (11mo)", color: "neutral" },
                             { label: "App Gap", value: "Permanent", color: "red" },
                             { label: "Key Engineers", value: "Departing", color: "red" },
@@ -9864,7 +10266,7 @@ Do you fight to the end, or do you choose a different ending?`,
                             },
                             popup: {
                                 from: "CEO Transition Analysis Team",
-                                re: "Nadella Leadership — Mobile Implications",
+                                re: "Nadella Leadership: Mobile Implications",
                                 date: "JAN 2015",
                                 classification: "CONFIDENTIAL",
                                 reliability: "HIGH",
@@ -9884,12 +10286,12 @@ Do you fight to the end, or do you choose a different ending?`,
                                 icon: "ph-clipboard-text",
                                 label: "INTERNAL MEMO",
                                 title: "Nokia Integration Status",
-                                subtitle: "18 months in — integration challenging, layoffs ongoing",
+                                subtitle: "18 months in :  integration challenging, layoffs ongoing",
                                 accentColor: "#c4a35a"
                             },
                             popup: {
                                 from: "Nokia Integration Task Force",
-                                re: "Nokia-Microsoft Integration — 18-Month Assessment",
+                                re: "Nokia-Microsoft Integration - 18-Month Assessment",
                                 date: "JAN 2015",
                                 classification: "CONFIDENTIAL",
                                 reliability: "HIGH",
@@ -9917,11 +10319,11 @@ Do you fight to the end, or do you choose a different ending?`,
                                 source: "Finance Internal Analysis",
                                 date: "JAN 2015",
                                 reliability: "HIGH",
-                                heroStat: { value: "$7.6B", label: "Expected Nokia acquisition write-down — largest in Microsoft history", attribution: "Finance Internal Analysis, Q1 2015" },
+                                heroStat: { value: "$7.6B", label: "Expected Nokia acquisition write-down - largest in Microsoft history", attribution: "Finance Internal Analysis, Q1 2015" },
                                 sections: [
                                     { heading: "Acquisition Value Review", content: "Nokia acquisition price: $7.2B. Integration costs to date: $1.8B. Current fair value estimate: $1-2B. Expected impairment: $7.6B." },
                                     { heading: "Accounting Reality", content: "GAAP requires goodwill impairment testing. Mobile division's carrying value significantly exceeds recoverable amount. Write-down likely in Q2 or Q3 2015." },
-                                    { heading: "Market Implications", content: "Write-down is accounting, not cash — but signals public admission acquisition failed expectations, pressure to show path forward, and may enable a \"clean start\" strategically." }
+                                    { heading: "Market Implications", content: "Write-down is accounting, not cash - but signals public admission acquisition failed expectations, pressure to show path forward, and may enable a \"clean start\" strategically." }
                                 ],
                                 footnote: "The write-down is coming. Question is what strategy accompanies it. Write-down + exit = one message. Write-down + renewed commitment = another."
                             }
@@ -9931,12 +10333,14 @@ Do you fight to the end, or do you choose a different ending?`,
                     options: [
                         {
                             id: "d5ls-option-1",
-                            title: "Fight to the End—Windows 10 Mobile",
-                            description: "The write-down doesn't change the vision. Windows 10 Mobile, Universal apps, Continuum—there's still a differentiated story to tell. We didn't come this far to give up at the last mile.",
+                            title: "Fight to the End: Windows 10 Mobile",
+                            description: "The write-down doesn't change the vision. Windows 10 Mobile, Universal apps, Continuum, there's still a differentiated story to tell. We didn't come this far to give up at the last mile.",
                             risk: "Throwing good money after bad, another $2-3B investment with diminishing returns",
                             upside: "Slim chance of breakthrough, honor the team's work, maybe lightning strikes",
                             cost: "$2B+ continued investment",
                             investment: "$2B+",
+
+                            pathMetrics: { marketShare: 2.5, nokiaShare: 0, appleShare: 16, googleShare: 81, bbShare: 0.5 },
 
                             consequences: {
                                 moments: [
@@ -9953,7 +10357,7 @@ Do you fight to the end, or do you choose a different ending?`,
                                         { date: "OCT 2015", text: "Lumia 950 launches. Reviews positive. Sales modest.", mood: "warning" },
                                         { date: "JAN 2016", text: "Market share drops below 2%. App developers continue to flee.", mood: "negative" }
                                     ] },
-                                    { type: "emerging", icon: "ph-flag-banner", headline: "The Last Stand", body: "Wall Street is skeptical. The stock drops. But your mobile team is energized — probably for the last time. They know this is the final shot. The Lumia 950 launches to positive reviews and modest sales. The fight continues, but the clock is ticking.", closing: "You bought 18 months. The question is whether that's enough to change a decade of momentum." }
+                                    { type: "emerging", icon: "ph-flag-banner", headline: "The Last Stand", body: "Wall Street is skeptical. The stock drops. But your mobile team is energized - probably for the last time. They know this is the final shot. The Lumia 950 launches to positive reviews and modest sales. The fight continues, but the clock is ticking.", closing: "You bought 18 months. The question is whether that's enough to change a decade of momentum." }
                                 ],
                                 immediate: {
                                     date: "APR 2015",
@@ -9968,7 +10372,7 @@ Do you fight to the end, or do you choose a different ending?`,
 
 The write-down announcement includes a renewed commitment to mobile: "Microsoft remains committed to Windows Phone and will continue investing in mobile experiences." Wall Street is skeptical. Analysts call it "denial." The stock drops another 2%.
 
-But your mobile team is energized—probably for the last time. "We get one more shot," says your mobile lead. "Let's make it count." The Lumia 950 launches in Q4. Reviews are positive. Sales are... modest. The fight continues.`
+But your mobile team is energized, probably for the last time. "We get one more shot," says your mobile lead. "Let's make it count." The Lumia 950 launches in Q4. Reviews are positive. Sales are... modest. The fight continues.`
                                 },
                                 delayed: {
                                     date: "JAN 2017",
@@ -9978,7 +10382,7 @@ But your mobile team is energized—probably for the last time. "We get one more
                                     morale: "low",
                                     mobileRevenue: -0.3,     // Platform revenue evaporating
                                     mobileCosts: 0.2,        // Winding down costs
-                                    narrative: `The fight is over. Windows 10 Mobile never achieved critical mass. Market share dropped below 1%. App support evaporated—even Microsoft released better versions of Office for iOS and Android than for its own platform.
+                                    narrative: `The fight is over. Windows 10 Mobile never achieved critical mass. Market share dropped below 1%. App support evaporated, even Microsoft released better versions of Office for iOS and Android than for its own platform.
 
 In October 2016, Satya announces: "Microsoft will no longer develop new mobile hardware." The mobile team is disbanded. Key engineers join Google's Pixel team. LinkedIn profiles update en masse. The institutional knowledge disperses.
 
@@ -9989,12 +10393,14 @@ It's the end you always feared, but fought anyway. "We lost," you tell your team
                         },
                         {
                             id: "d5ls-option-2",
-                            title: "Graceful Exit—Embrace Services",
-                            description: "The write-down is the opportunity for a clean break. Announce the end of Windows Phone hardware. Pivot fully to services on iOS and Android. Microsoft's future is cloud and productivity—mobile can be a delivery vehicle, not a platform.",
+                            title: "Graceful Exit: Embrace Services",
+                            description: "The write-down is the opportunity for a clean break. Announce the end of Windows Phone hardware. Pivot fully to services on iOS and Android. Microsoft's future is cloud and productivity, mobile can be a delivery vehicle, not a platform.",
                             risk: "Public admission of defeat, abandoning team members who believed in the vision",
                             upside: "Stop the bleeding, focus resources on winning battles, strategic clarity",
                             cost: "The mobile dream + morale",
                             investment: "$0 (exit)",
+
+                            pathMetrics: { marketShare: 2.5, nokiaShare: 0, appleShare: 16, googleShare: 81, bbShare: 0.5 },
 
                             consequences: {
                                 moments: [
@@ -10036,9 +10442,9 @@ Wall Street loves it. Stock jumps 5% on "strategic clarity." The tech press is s
                                     mobileRevenue: 0.2,      // Services revenue growing
                                     mobileCosts: 0.1,        // Lean services team
                                     unlockedArtifacts: ["artifact-microsoft-surface-duo"],
-                                    narrative: `The pivot worked. Microsoft Office is now the most-downloaded productivity suite on both iOS and Android. Outlook is the default mail app for millions of iPhone users. OneDrive, Teams, LinkedIn—Microsoft services are thriving on competitors' platforms.
+                                    narrative: `The pivot worked. Microsoft Office is now the most-downloaded productivity suite on both iOS and Android. Outlook is the default mail app for millions of iPhone users. OneDrive, Teams, LinkedIn. Microsoft services are thriving on competitors' platforms.
 
-"We lost the platform war," reflects Satya at the 2017 earnings call, "but we won the services war. Microsoft experiences reach 2 billion mobile users now—far more than Windows Phone ever could have."
+"We lost the platform war," reflects Satya at the 2017 earnings call, "but we won the services war. Microsoft experiences reach 2 billion mobile users now, far more than Windows Phone ever could have."
 
 It's not the victory you imagined in 2007. But it's a victory. Microsoft is more valuable than ever. The mobile dream died. Microsoft didn't.`,
                                     triggersEnding: "graceful-exit"
@@ -10054,20 +10460,20 @@ It's not the victory you imagined in 2007. But it's a victory. Microsoft is more
                     date: "JAN 2015",
                     timeMarker: "JAN 2015",
                     title: "The Profitable Third",
-                    storyImage: '<i class="ph ph-target" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d5-profitable-third.jpg',
                     storyText: `The quarterly review meeting has a different energy this time. For the first time in eight years, the mobile P&L shows black ink.
 
 "Profitable," your CFO confirms, pulling up the slide. "Small margin, but positive contribution after overhead allocation. First time ever."
 
-You built this. Not the platform victory you imagined in 2007—but something. A sustainable business serving 40 million users who genuinely prefer Windows Phone. Enterprise customers who value manageability. Privacy-conscious users who don't trust Google. Photography enthusiasts who love the Lumia cameras. A small, loyal community that chose you.
+You built this. Not the platform victory you imagined in 2007, but something. A sustainable business serving 40 million users who genuinely prefer Windows Phone. Enterprise customers who value manageability. Privacy-conscious users who don't trust Google. Photography enthusiasts who love the Lumia cameras. A small, loyal community that chose you.
 
 Market share is 4%. It's never going to be 40% again. But 4% of a 1.5 billion unit market is 60 million potential customers. At premium prices with high margins, that's a real business.
 
 The question is what you do with it.
 
-Last February, Steve Ballmer stepped down. Satya Nadella took over—a cloud man, not a devices man. His "mobile-first, cloud-first" mantra puts the emphasis squarely on services. He's been CEO for 11 months now. He hasn't pressured you to exit, but he hasn't championed you either.
+Last February, Steve Ballmer stepped down. Satya Nadella took over, a cloud man, not a devices man. His "mobile-first, cloud-first" mantra puts the emphasis squarely on services. He's been CEO for 11 months now. He hasn't pressured you to exit, but he hasn't championed you either.
 
-You could defend your position—keep investing just enough to maintain the niche, milk the profits, serve your loyal users. It's sustainable. It's not exciting. But it's yours.
+You could defend your position, keep investing just enough to maintain the niche, milk the profits, serve your loyal users. It's sustainable. It's not exciting. But it's yours.
 
 Or you could take the money and run. The mobile division, profitable and stable, has actual value now. A buyer might pay $3-5 billion for it. Amazon, Facebook, even Huawei have shown interest. You could exit at the peak of your value, declare victory, and move on.
 
@@ -10078,17 +10484,55 @@ What do you want your mobile legacy to be?`,
 
 "Profitable," your CFO confirms, pulling up the slide. "Small margin, but positive contribution after overhead allocation. First time ever."
 
-You built this. Not the platform victory you imagined in 2007—but something. A sustainable business serving 40 million users who genuinely prefer your platform. Enterprise customers who value manageability. Privacy-conscious users who don't trust Google. Tech enthusiasts drawn to what makes your devices different. A small, loyal community that chose you.
+You built this. Not the platform victory you imagined in 2007, but something. A sustainable business serving 40 million users who genuinely prefer your platform. Enterprise customers who value manageability. Privacy-conscious users who don't trust Google. Tech enthusiasts drawn to what makes your devices different. A small, loyal community that chose you.
 
 Market share is 4%. It's never going to be 40% again. But 4% of a 1.5 billion unit market is 60 million potential customers. At premium prices with high margins, that's a real business.
 
 The question is what you do with it.
 
-Last February, Steve Ballmer stepped down. Satya Nadella took over—a cloud man, not a devices man. His "mobile-first, cloud-first" mantra puts the emphasis squarely on services. He's been CEO for 11 months now. He hasn't pressured you to exit, but he hasn't championed you either.
+Last February, Steve Ballmer stepped down. Satya Nadella took over, a cloud man, not a devices man. His "mobile-first, cloud-first" mantra puts the emphasis squarely on services. He's been CEO for 11 months now. He hasn't pressured you to exit, but he hasn't championed you either.
 
-You could defend your position—keep investing just enough to maintain the niche, milk the profits, serve your loyal users. It's sustainable. It's not exciting. But it's yours.
+You could defend your position, keep investing just enough to maintain the niche, milk the profits, serve your loyal users. It's sustainable. It's not exciting. But it's yours.
 
 Or you could take the money and run. The mobile division, profitable and stable, has actual value now. A buyer might pay $3-5 billion for it. Amazon, Facebook, even Huawei have shown interest. You could exit at the peak of your value, declare victory, and move on.
+
+What do you want your mobile legacy to be?`
+                        },
+                        "still-fighting": {
+                            storyText: `The quarterly review meeting has a different energy this time. For the first time in eight years, the mobile P&L shows black ink.
+
+"Profitable," your CFO confirms, pulling up the slide. "Small margin, but positive contribution after overhead allocation. First time ever."
+
+You almost laugh. After everything, after years of hemorrhaging cash and market share and talent, after board meetings that felt like tribunals and press coverage that read like obituaries, the thing that finally worked was giving up.
+
+Not giving up entirely. Giving up the dream. At D4 you were still fighting, 8% market share, pouring money into developer incentives nobody claimed, shipping hardware that reviewers praised and consumers ignored. The app gap was a canyon. The platform was a ghost town with beautiful architecture.
+
+Then you chose to stop pretending. You accepted the niche. Cut the consumer marketing budget by 80%. Killed the carrier subsidies. Focused entirely on what actually worked: enterprise device management, privacy-first positioning, the "not Google" pitch that resonated with a small but fiercely loyal audience.
+
+Market share dropped to 4%. Revenue per device went up 60%. The customers who stayed were the customers who wanted to stay. IT departments. Government agencies. Privacy advocates. Parents who wanted a simple, manageable phone for their kids. A small community that chose you because you were different, not because you were popular.
+
+Last February, Steve Ballmer stepped down. Satya Nadella took over, a cloud man, not a devices man. He hasn't championed your division, but he hasn't killed it either. The profitable P&L bought you breathing room.
+
+You could defend your position, keep the niche alive, serve your loyal users, milk the margins. Or you could take the money and run. The mobile division has actual value now. Amazon, Facebook, even Huawei have shown interest. $3-5 billion for a profitable, stable mobile business.
+
+What do you want your mobile legacy to be?`
+                        },
+                        "still-fighting-nokia-owned": {
+                            storyText: `The quarterly review meeting has a different energy this time. For the first time since the Nokia acquisition, the mobile P&L shows black ink.
+
+"Profitable," your CFO confirms. "Small margin, but positive contribution. First time since 2007."
+
+You almost laugh. $54 billion for Nokia. Six years of integration hell. A market share that fell from 75% to single digits. Board meetings that felt like war tribunals. And what finally worked was not the acquisition itself — it was accepting what the acquisition actually bought you.
+
+Not a platform empire. A niche.
+
+When you chose to restructure at D4, the write-down was $15 billion. Twelve thousand layoffs in Finland. The press called it "the death certificate for Microsoft mobile." But the surgery saved the patient. The restructured Nokia division — lean, focused, enterprise-first — found its audience.
+
+Market share is 4%. It will never be 40% again. But 4% of 1.5 billion smartphones is 60 million potential customers. At premium prices with high margins, the Nokia division is generating real revenue. Enterprise customers love the security story. Camera enthusiasts worship the Lumia hardware. It's small, dignified, and profitable.
+
+Last February, Satya Nadella took over. He inherited the most expensive mobile mistake in history and found, buried in the wreckage, a functioning business. He hasn't championed you. But he hasn't killed you either.
+
+You could defend the niche, keep serving your loyal users, milk the margins. Or you could exit. The mobile division has real value now — $3-5 billion from Amazon, Facebook, or Huawei. After losing $54 billion on the dream, recovering $5 billion on the reality might be the smartest move left.
 
 What do you want your mobile legacy to be?`
                         }
@@ -10104,14 +10548,14 @@ What do you want your mobile legacy to be?`
                         teaser: "Your niche turned profitable. Now Nadella wants to know what you do with it."
                     },
                     playerPosition: {
-                        label: "Your Position — JAN 2015",
+                        label: "Your Position: JAN 2015",
                         stats: [
-                            { label: "Market Share", value: "4%", color: "neutral" },
+                            { label: "Market Share", value: "{{marketShare}}%", color: "neutral" },
                             { label: "P&L Status", value: "Profitable", color: "green" },
                             { label: "Active Users", value: "40M loyal", color: "green" },
                             { label: "CEO", value: "Nadella (11mo)", color: "neutral" },
                             { label: "Buyer Interest", value: "$3-5B offers", color: "green" },
-                            { label: "Niche Position", value: "Enterprise + Camera", color: "green" }
+                            { label: "Niche Position", value: "{{#if wpAbandoned}}Android niche{{else}}Enterprise + Camera{{/if}}", color: "green" }
                         ]
                     },
                     intelCards: [
@@ -10122,12 +10566,12 @@ What do you want your mobile legacy to be?`
                                 icon: "ph-user-switch",
                                 label: "LEADERSHIP BRIEF",
                                 title: "The Nadella Transition",
-                                subtitle: "Cloud man, not a devices man — supportive but not championing you",
+                                subtitle: "Cloud man, not a devices man :  supportive but not championing you",
                                 accentColor: "#c4a35a"
                             },
                             popup: {
                                 from: "CEO Transition Analysis Team",
-                                re: "Nadella Leadership — Mobile Implications",
+                                re: "Nadella Leadership: Mobile Implications",
                                 date: "JAN 2015",
                                 classification: "CONFIDENTIAL",
                                 reliability: "HIGH",
@@ -10147,21 +10591,21 @@ What do you want your mobile legacy to be?`
                                 icon: "ph-chart-pie",
                                 label: "MARKET REPORT",
                                 title: "Mobile Market 2015",
-                                subtitle: "iOS/Android now 97% — but your 4% is profitable",
+                                subtitle: "iOS/Android now 97% :  but your 4% is profitable",
                                 accentColor: "#7ab88e"
                             },
                             popup: {
-                                title: "Mobile Market 2015 — Niche Perspective",
+                                title: "Mobile Market 2015 :  Niche Perspective",
                                 source: "IDC/Gartner 2014 Annual Report",
                                 date: "JAN 2015",
                                 reliability: "HIGH",
-                                heroStat: { value: "2.7%", label: "Windows Phone market share — iOS/Android now 97%", attribution: "IDC Worldwide Mobile OS Tracker, 2014" },
+                                heroStat: { value: "{{marketShare}}%", label: "Your platform market share - iOS/Android dominate the rest", attribution: "IDC Worldwide Mobile OS Tracker, 2014" },
                                 sections: [
-                                    { heading: "2014 Market Share (Real-World Baseline)", content: "Android: 81% (driven by cheap devices). iOS: 16% (iPhone 6 successful). Windows Phone: 2.7% (down from 3.2%). BlackBerry: 0.3% (effectively dead)." },
-                                    { heading: "Developer Ecosystem", content: "Developer calculus now binary. iOS: Must-have. Android: Must-have. Windows Phone: \"Maybe someday.\" New app Windows Phone support declining." },
+                                    { heading: "2014 Market Share (Real-World Baseline)", content: "Android: {{googleShare}}% (driven by cheap devices). iOS: {{appleShare}}% (iPhone 6 successful). Your platform: {{marketShare}}%. BlackBerry: {{bbShare}}% (effectively dead)." },
+                                    { heading: "Developer Ecosystem", content: "Developer calculus now binary. iOS: Must-have. Android: Must-have. Your platform: \"Maybe someday.\" New app support for your platform declining." },
                                     { heading: "Structural Reality", content: "Platform markets tend toward winner-take-all. History suggests third platforms don't survive long-term: OS/2, webOS, BlackBerry, Symbian. But your niche profitability defies the pattern." }
                                 ],
-                                footnote: "The window for a third platform may have closed. But your 4% niche with premium pricing is the exception that proves the rule."
+                                footnote: "The window for a third platform may have closed. But your {{marketShare}}% niche with premium pricing is the exception that proves the rule."
                             }
                         }
                     ],
@@ -10169,24 +10613,26 @@ What do you want your mobile legacy to be?`
                     options: [
                         {
                             id: "d5ns-option-1",
-                            title: "Defend the Niche—Stay the Course",
+                            title: "Defend the Niche: Stay the Course",
                             description: "We built something real. Keep it. Serve our users. Maintain modest investment and harvest steady profits. We may never win the platform war, but we don't have to lose ourselves either.",
                             risk: "Niche may erode over time as market consolidates further",
                             upside: "Sustained profitability, loyal user base, platform presence",
                             cost: "$500M annual maintenance investment",
                             investment: "$500M/yr",
 
+                            pathMetrics: { marketShare: 4, nokiaShare: 0, appleShare: 16, googleShare: 79, bbShare: 0.5 },
+
                             consequences: {
                                 moments: [
                                     { type: "verdict", headline: "The Loyal Steward", subline: "You chose your users over a payday. 40 million people are counting on you to keep your promise.", sentiment: "positive" },
                                     { type: "metrics", changes: [
-                                        { metric: "Market Share", change: "4% — stable", direction: "neutral" },
+                                        { metric: "Market Share", change: "4% - stable", direction: "neutral" },
                                         { metric: "Profitability", change: "Margin expanding", direction: "up" },
                                         { metric: "User Loyalty", change: "#WindowsPhoneForever", direction: "up" },
                                         { metric: "Analyst View", change: "Principled but quixotic", direction: "neutral" }
                                     ] },
                                     { type: "timeline", events: [
-                                        { date: "FEB 2015", text: "\"Windows Phone Enduring\" announced — five-year support commitment.", mood: "positive" },
+                                        { date: "FEB 2015", text: "\"Windows Phone Enduring\" announced - five-year support commitment.", mood: "positive" },
                                         { date: "APR 2015", text: "Niche community celebrates. Reddit, Twitter light up with support.", mood: "positive" },
                                         { date: "SEP 2015", text: "Fewer SKUs, focused features. Margin expansion continues.", mood: "positive" },
                                         { date: "JAN 2016", text: "Revenue per user up 25%. Small but growing profit.", mood: "positive" }
@@ -10201,11 +10647,11 @@ What do you want your mobile legacy to be?`
                                     morale: "high",
                                     mobileRevenue: 0.08,     // Loyal user base revenue
                                     mobileCosts: 0.04,       // Maintenance mode
-                                    narrative: `You announce "Windows Phone Enduring"—a commitment to maintain and support the platform for at least five more years. "We serve 40 million users who chose us," you tell the press. "We won't abandon them."
+                                    narrative: `You announce "Windows Phone Enduring", a commitment to maintain and support the platform for at least five more years. "We serve 40 million users who chose us," you tell the press. "We won't abandon them."
 
 The niche community celebrates. Reddit's Windows Phone forum lights up with gratitude. Twitter fills with #WindowsPhoneForever hashtags. Tech analysts call it "principled but quixotic."
 
-Your team is satisfied—they get to keep building something they believe in. The margin expansion continues: fewer SKUs, focused features, efficient operations. It's not glamorous. But it's profitable.`
+Your team is satisfied, they get to keep building something they believe in. The margin expansion continues: fewer SKUs, focused features, efficient operations. It's not glamorous. But it's profitable.`
                                 },
                                 delayed: {
                                     date: "JAN 2017",
@@ -10215,23 +10661,25 @@ Your team is satisfied—they get to keep building something they believe in. Th
                                     morale: "high",
                                     mobileRevenue: 0.1,      // Premium user revenue
                                     mobileCosts: 0.03,       // Efficient operations
-                                    narrative: `The niche strategy endures. Market share settled at 3%—small but stable. 35 million active users, down from 40 million but more engaged than ever. Revenue per user is up 40%.
+                                    narrative: `The niche strategy endures. Market share settled at 8%, small but stable. 35 million active users, down from 40 million but more engaged than ever. Revenue per user is up 40%.
 
 The app gap persists, but core apps (Office, Outlook, Skype, camera) are best-in-class. Users who stay are passionate advocates. The community forums are active and supportive.
 
-"We're the Leica of phones," says your mobile lead. "Small market, premium experience, loyal customers." The business generates $200M annual profit—not transformative for Microsoft, but not nothing either. You kept your promise. You kept your platform. You kept your users.`,
+"We're the Leica of phones," says your mobile lead. "Small market, premium experience, loyal customers." The business generates $200M annual profit, not transformative for Microsoft, but not nothing either. You kept your promise. You kept your platform. You kept your users.`,
                                     triggersEnding: "sustainable-niche"
                                 }
                             }
                         },
                         {
                             id: "d5ns-option-2",
-                            title: "Sell the Division—Exit at Peak Value",
-                            description: "We've proven the niche has value. Now extract that value before it erodes. Sell to a buyer who wants mobile presence—Amazon, Facebook, a Chinese OEM. Take the win and redeploy capital to cloud.",
+                            title: "Sell the Division: Exit at Peak Value",
+                            description: "We've proven the niche has value. Now extract that value before it erodes. Sell to a buyer who wants mobile presence. Amazon, Facebook, a Chinese OEM. Take the win and redeploy capital to cloud.",
                             risk: "Abandoning users who trusted us, talent exodus",
                             upside: "$3-5B sale price, clean exit, resources for cloud investment",
                             cost: "User trust + platform presence",
                             investment: "$0 (sale proceeds: $4.2B)",
+
+                            pathMetrics: { marketShare: 4, nokiaShare: 0, appleShare: 16, googleShare: 79, bbShare: 0.5 },
 
                             consequences: {
                                 moments: [
@@ -10260,7 +10708,7 @@ The app gap persists, but core apps (Office, Outlook, Skype, camera) are best-in
                                     mobileCosts: -0.25,      // Operations transferring
                                     narrative: `You approach three potential buyers: Amazon (wants mobile presence), Facebook (wants hardware platform), and Huawei (wants Western brand). The negotiations are intense.
 
-Facebook drops out—too complicated with regulatory concerns. Huawei offers $3.5B. Amazon counters with $4.2B plus ongoing licensing. You take the Amazon deal.
+Facebook drops out, too complicated with regulatory concerns. Huawei offers $3.5B. Amazon counters with $4.2B plus ongoing licensing. You take the Amazon deal.
 
 The announcement shocks the industry: "Amazon Acquires Microsoft Mobile Division." Your users are confused, worried. Your team is devastated. But the check clears. Amazon gets 40 million users and Nokia's hardware expertise. You get $4.2 billion and freedom.`
                                 },
@@ -10272,9 +10720,9 @@ The announcement shocks the industry: "Amazon Acquires Microsoft Mobile Division
                                     morale: "neutral",
                                     mobileRevenue: 0.05,     // Residual services revenue
                                     mobileCosts: 0.02,       // Minimal ongoing
-                                    narrative: `Amazon rebranded the phones "Fire Phone 2.0." Results were mixed—Amazon's ecosystem is different from Microsoft's. Many users defected to Android. Some stayed for the hardware quality.
+                                    narrative: `Amazon rebranded the phones "Fire Phone 2.0." Results were mixed. Amazon's ecosystem is different from Microsoft's. Many users defected to Android. Some stayed for the hardware quality.
 
-The Nokia hardware team merged with Amazon's Lab126. Your mobile team scattered—some to Amazon, some to Google, many to startups. The community you built dispersed to new platforms.
+The Nokia hardware team merged with Amazon's Lab126. Your mobile team scattered, some to Amazon, some to Google, many to startups. The community you built dispersed to new platforms.
 
 Microsoft's focus shifted entirely to cloud and productivity services. Azure grew 50% annually. Office 365 became Microsoft's fastest-growing business. You traded platform dreams for cloud dominance. History will judge whether that was wisdom or surrender.`,
                                     triggersEnding: "sold-division"
@@ -10290,26 +10738,26 @@ Microsoft's focus shifted entirely to cloud and productivity services. Azure gre
                     date: "JAN 2015",
                     timeMarker: "JAN 2015",
                     title: "The Third Ecosystem",
-                    storyImage: '<i class="ph ph-trophy" style="font-size: 4rem;"></i>',
+                    storyBg: 'assets/images/chapters/d5-third-ecosystem.jpg',
                     storyText: `You never expected to be here. Third place. Viable. Growing.
 
 The industry analysts called it "impossible" five years ago. "No third mobile ecosystem has ever survived," they said. "Platform markets are winner-take-all."
 
 They were wrong. Or at least, they were wrong about you.
 
-Windows Phone has 12% market share. Not iOS's 18%. Not Android's 68%. But 12%—enough to matter. Enough that developers build for you. Enough that carriers promote you. Enough that 150 million people chose your platform.
+Windows Phone has 8% market share. Not iOS's 18%. Not Android's 72%. But 8%, enough to matter. Enough that developers build for you. Enough that carriers promote you. Enough that 100 million people chose your platform.
 
-The Nokia acquisition finally makes sense. Lumia hardware is excellent. The Surface Phone prototype is even better. Windows 10 Mobile is creating genuine platform unification—the same apps running on phone, tablet, and PC. Universal apps are solving the developer problem you spent a decade fighting.
+The Nokia acquisition finally makes sense. Lumia hardware is excellent. The Surface Phone prototype is even better. Windows 10 Mobile is creating genuine platform unification, the same apps running on phone, tablet, and PC. Universal apps are solving the developer problem you spent a decade fighting.
 
 You're not winning. But you're not losing anymore either.
 
-Last February, Steve Ballmer stepped down. Satya Nadella—a cloud man, an enterprise man—took the helm. He inherited your mobile bet with visible skepticism. "Mobile-first, cloud-first," he declared, but everyone knew the emphasis was on cloud.
+Last February, Steve Ballmer stepped down. Satya Nadella (a cloud man, an enterprise man) took the helm. He inherited your mobile bet with visible skepticism. "Mobile-first, cloud-first," he declared, but everyone knew the emphasis was on cloud.
 
 Then he saw the numbers. He pulled you into his office this morning. "I didn't believe in mobile when I took this job," he admits. "You proved me wrong. The question now is: what do we do with it?"
 
-He's offering you resources. The board is supportive—finally. Microsoft's market cap just passed $500 billion, and mobile is no longer a liability.
+He's offering you resources. The board is supportive, finally. Microsoft's market cap just passed $500 billion, and mobile is no longer a liability.
 
-You can sustain your position—invest carefully, grow slowly, build the third ecosystem into something permanent. Or you can push for more—challenge iOS directly, try to break the duopoly, go for second place.
+You can sustain your position, invest carefully, grow slowly, build the third ecosystem into something permanent. Or you can push for more, challenge iOS directly, try to break the duopoly, go for second place.
 
 You've climbed the mountain. Do you plant your flag here, or keep climbing?`,
                     framingByPath: {
@@ -10320,21 +10768,59 @@ The industry analysts called it "impossible" five years ago. "No third mobile ec
 
 They were wrong. Or at least, they were wrong about you.
 
-Your mobile platform has 12% market share. Not iOS's 18%. Not Android's 68%. But 12%—enough to matter. Enough that developers build for you. Enough that carriers promote you. Enough that 150 million people chose your platform.
+Your mobile platform has 8% market share. Not iOS's 18%. Not Android's 72%. But 8%, enough to matter. Enough that developers build for you. Enough that carriers promote you. Enough that 100 million people chose your platform.
 
-The differentiation strategy is paying off. Your devices have carved out a real identity in a sea of Android sameness. The ecosystem you built—hardware, software, and services working together—has created genuine loyalty. Platform unification across phone, tablet, and PC is creating something neither Apple nor Google can match. Universal apps are solving the developer problem you spent a decade fighting.
+The differentiation strategy is paying off. Your devices have carved out a real identity in a sea of Android sameness. The ecosystem you built (hardware, software, and services working together) has created genuine loyalty. Platform unification across phone, tablet, and PC is creating something neither Apple nor Google can match. Universal apps are solving the developer problem you spent a decade fighting.
 
 You're not winning. But you're not losing anymore either.
 
-Last February, Steve Ballmer stepped down. Satya Nadella—a cloud man, an enterprise man—took the helm. He inherited your mobile bet with visible skepticism. "Mobile-first, cloud-first," he declared, but everyone knew the emphasis was on cloud.
+Last February, Steve Ballmer stepped down. Satya Nadella (a cloud man, an enterprise man) took the helm. He inherited your mobile bet with visible skepticism. "Mobile-first, cloud-first," he declared, but everyone knew the emphasis was on cloud.
 
 Then he saw the numbers. He pulled you into his office this morning. "I didn't believe in mobile when I took this job," he admits. "You proved me wrong. The question now is: what do we do with it?"
 
-He's offering you resources. The board is supportive—finally. Microsoft's market cap just passed $500 billion, and mobile is no longer a liability.
+He's offering you resources. The board is supportive, finally. Microsoft's market cap just passed $500 billion, and mobile is no longer a liability.
 
-You can sustain your position—invest carefully, grow slowly, build the third ecosystem into something permanent. Or you can push for more—challenge iOS directly, try to break the duopoly, go for second place.
+You can sustain your position, invest carefully, grow slowly, build the third ecosystem into something permanent. Or you can push for more, challenge iOS directly, try to break the duopoly, go for second place.
 
 You've climbed the mountain. Do you plant your flag here, or keep climbing?`
+                        },
+                        "still-fighting": {
+                            storyText: `You never expected to be here. Third place. Viable. Growing. Not after everything it cost to get here.
+
+Two years ago, at D4, you were bleeding. 8% market share and falling. The app gap was a death sentence in slow motion. Every analyst on Wall Street had written the obituary. Then you did the thing everyone said was insane: you acquired Nokia.
+
+Not Nokia the partner. Not Nokia the licensee. Nokia the company. $7.2 billion for the devices division, 30,000 employees, factories in Finland and China, and a brand that still meant something in half the world's markets. Wall Street called it "Ballmer's last gasp." Your own board had three members vote against it.
+
+The integration was brutal. Cultural friction between Redmond and Helsinki. Key engineers leaving for Google and Apple. A stock price that punished you for eighteen months straight. But the hardware got better. And better. And better. Nokia's camera technology, married to your platform, produced devices that won every blind comparison test. The Lumia 1520 was the phone that changed the narrative.
+
+Your platform has 8% market share. Not iOS's 18%. Not Android's 72%. But 8%, enough to matter. Enough that developers build for you. Enough that carriers promote you. Enough that 100 million people chose the platform you nearly killed by committee indecision.
+
+Last February, Steve Ballmer stepped down. Satya Nadella took the helm, skeptical of mobile, focused on cloud. Then he saw what Nokia's hardware team was producing. He pulled you into his office this morning. "I didn't believe in this when I took the job," he admits. "You proved me wrong. The question now is: what do we do with it?"
+
+The Nokia acquisition at D4, the bet everyone called reckless, turned out to be the move that saved your mobile ambitions. The question is whether you're satisfied with survival or hungry for more.
+
+You can sustain your position, invest carefully, grow slowly, build the third ecosystem into something permanent. Or you can push for more, challenge iOS directly, try to break the duopoly, go for second place.
+
+You've climbed the mountain. Do you plant your flag here, or keep climbing?`
+                        },
+                        "still-fighting-nokia-owned": {
+                            storyText: `You never expected to be here. Not after $54 billion. Not after six years of integration hell. Not after every analyst, every board member, every business school case study declared the Nokia acquisition the worst deal in technology history.
+
+But here you are. Third place. Viable. Growing.
+
+The hostile takeover in 2007 was supposed to create a mobile empire. Instead it created a decade of pain: culture clashes, engineering departures, platform confusion, and a market share that plummeted from 75% to single digits while iPhone and Android devoured everything. Your board nearly fired Ballmer over it. ValueAct nearly forced a breakup.
+
+Then, slowly, something shifted. The Lumia hardware got extraordinary. Nokia's camera engineers, the ones who stayed, produced technology two years ahead of anyone else. The Surface Phone merger created devices that won blind comparison tests against iPhone. Enterprise customers noticed. Carriers noticed. The app gap started, grudgingly, to close.
+
+Your platform has 8% market share. You spent $54 billion to get here. The math is catastrophic on paper. But those 8% are real, growing, and loyal. 100 million people chose your platform. Enterprise deployments are accelerating. Revenue per user is triple Apple's.
+
+Last February, Satya Nadella took the helm. He inherited the Nokia disaster and, against all expectation, found something worth keeping. "I didn't believe in mobile hardware when I took this job," he told you this morning. "The Nokia acquisition was a mistake by every financial metric. But what your team built with it — that's something."
+
+He's offering resources. The board, exhausted by years of mobile losses, is cautiously supportive.
+
+You can sustain your position, invest carefully, build the third ecosystem into something permanent. Or you can push for more — after $54 billion, why stop now?
+
+You've climbed the most expensive mountain in corporate history. Do you plant your flag here, or keep climbing?`
                         }
                     },
 
@@ -10348,9 +10834,9 @@ You've climbed the mountain. Do you plant your flag here, or keep climbing?`
                         teaser: "You proved them wrong at 12%. Now Nadella is offering resources. How far do you push?"
                     },
                     playerPosition: {
-                        label: "Your Position — JAN 2015",
+                        label: "Your Position: JAN 2015",
                         stats: [
-                            { label: "Market Share", value: "12%", color: "green" },
+                            { label: "Market Share", value: "{{marketShare}}%", color: "green" },
                             { label: "Active Users", value: "150M", color: "green" },
                             { label: "CEO", value: "Nadella (converted)", color: "green" },
                             { label: "Developer Support", value: "Growing", color: "green" },
@@ -10371,17 +10857,17 @@ You've climbed the mountain. Do you plant your flag here, or keep climbing?`
                             },
                             popup: {
                                 from: "CEO Transition Analysis Team",
-                                re: "Nadella Leadership — Mobile Implications",
+                                re: "Nadella Leadership: Mobile Implications",
                                 date: "JAN 2015",
                                 classification: "CONFIDENTIAL",
                                 reliability: "HIGH",
                                 source: "CEO Transition Analysis + Earnings Calls",
                                 sections: [
                                     { heading: "Leadership Change (Feb 2014)", content: "Satya Nadella appointed CEO February 2014. Background: Cloud and Enterprise (Azure). Mantra: \"Mobile-first, cloud-first world.\" Board mandate: Restore growth, modernize company." },
-                                    { heading: "Strategic Priorities", content: "Nadella's early signals prioritized Azure and Office 365. He inherited mobile with skepticism. But 12% share and 150M users changed his calculus." },
+                                    { heading: "Strategic Priorities", content: "Nadella's early signals prioritized Azure and Office 365. He inherited mobile with skepticism. But {{marketShare}}% share and growing users changed his calculus." },
                                     { heading: "Mobile Support (New)", content: "Nadella now actively supportive. \"I didn't believe in mobile when I took this job. You proved me wrong.\" Resources and board backing now available for mobile expansion." }
                                 ],
-                                footnote: "For the first time, the CEO and the board are aligned behind mobile. The question is no longer survival — it's ambition."
+                                footnote: "For the first time, the CEO and the board are aligned behind mobile. The question is no longer survival - it's ambition."
                             }
                         },
                         {
@@ -10391,19 +10877,19 @@ You've climbed the mountain. Do you plant your flag here, or keep climbing?`
                                 icon: "ph-chart-pie",
                                 label: "MARKET REPORT",
                                 title: "Mobile Market 2015",
-                                subtitle: "You broke the duopoly — 12% in a winner-take-all market",
+                                subtitle: "You broke the duopoly :  12% in a winner-take-all market",
                                 accentColor: "#7ab88e"
                             },
                             popup: {
-                                title: "Mobile Market 2015 — Third Ecosystem Perspective",
+                                title: "Mobile Market 2015 :  Third Ecosystem Perspective",
                                 source: "IDC/Gartner 2014 Annual Report",
                                 date: "JAN 2015",
                                 reliability: "HIGH",
-                                heroStat: { value: "2.7%", label: "Windows Phone market share — iOS/Android now 97%", attribution: "IDC Worldwide Mobile OS Tracker, 2014" },
+                                heroStat: { value: "{{marketShare}}%", label: "Your platform market share - you broke the duopoly", attribution: "IDC Worldwide Mobile OS Tracker, 2014" },
                                 sections: [
-                                    { heading: "2014 Market Share (Real-World Baseline)", content: "Android: 81% (driven by cheap devices). iOS: 16% (iPhone 6 successful). Windows Phone: 2.7% (down from 3.2%). BlackBerry: 0.3% (effectively dead). Note: Your strategic decisions have pushed your share to 12%." },
-                                    { heading: "Developer Ecosystem", content: "At 12% share and 150M users, developers are taking notice. Several major apps announcing Windows ports. The ecosystem flywheel is beginning to spin for the first time." },
-                                    { heading: "Structural Question", content: "You defied the \"no third ecosystem\" rule. But can 12% hold? History says platforms either grow to dominance or slowly die. Stability at third is uncharted territory." }
+                                    { heading: "2014 Market Share", content: "Android: {{googleShare}}% (driven by cheap devices). iOS: {{appleShare}}% (iPhone 6 successful). Your platform: {{marketShare}}%. BlackBerry: {{bbShare}}% (effectively dead)." },
+                                    { heading: "Developer Ecosystem", content: "At {{marketShare}}% share, developers are starting to take notice. Several major apps announcing ports to your platform. The ecosystem flywheel is beginning to spin for the first time." },
+                                    { heading: "Structural Question", content: "You defied the \"no third ecosystem\" rule. But can {{marketShare}}% hold? History says platforms either grow to dominance or slowly die. Stability at third is uncharted territory." }
                                 ],
                                 footnote: "You did what everyone said was impossible. The question now is: sustain the miracle, or push for more?"
                             }
@@ -10413,18 +10899,20 @@ You've climbed the mountain. Do you plant your flag here, or keep climbing?`
                     options: [
                         {
                             id: "d5pc-option-1",
-                            title: "Sustain and Solidify—Build the Third",
-                            description: "12% is victory. Don't get greedy. Invest carefully in platform quality, developer relations, and user experience. Build the third ecosystem into something permanent—the Firefox of mobile.",
+                            title: "Sustain and Solidify: Build the Third",
+                            description: "8% is a foothold. Don't get greedy. Invest carefully in platform quality, developer relations, and user experience. Build the third ecosystem into something permanent, the Firefox of mobile.",
                             risk: "iOS/Android continue to consolidate, third place becomes second-to-last",
                             upside: "Sustainable platform business, 150M+ users, profitable",
                             cost: "$1.5B annual investment",
                             investment: "$1.5B/yr",
 
+                            pathMetrics: { marketShare: 8, nokiaShare: 0, appleShare: 15, googleShare: 76, bbShare: 0.5 },
+
                             consequences: {
                                 moments: [
                                     { type: "verdict", headline: "Platform for the Long Term", subline: "You chose discipline over ambition. $1.5B annual investment to build something permanent.", sentiment: "positive" },
                                     { type: "metrics", changes: [
-                                        { metric: "Market Share", change: "12% — growing slowly", direction: "up" },
+                                        { metric: "Market Share", change: "8% - growing slowly", direction: "up" },
                                         { metric: "Developer Support", change: "Top 500 apps porting", direction: "up" },
                                         { metric: "Wall Street", change: "Approves discipline", direction: "up" },
                                         { metric: "User Satisfaction", change: "All-time high", direction: "up" }
@@ -10435,7 +10923,7 @@ You've climbed the mountain. Do you plant your flag here, or keep climbing?`
                                         { date: "OCT 2015", text: "Surface Phone launches to strong reviews. Enterprise deployments up 40%.", mood: "positive" },
                                         { date: "JAN 2016", text: "Market share hits 13%. App gap closing for top 500 apps.", mood: "positive" }
                                     ] },
-                                    { type: "emerging", icon: "ph-shield-check", headline: "The Impossible Made Permanent", body: "Wall Street approves the discipline. Investors appreciate restraint compared to previous mobile spending. Developers see 150 million users and decide you're worth supporting. The ecosystem flywheel, long stuck, begins to spin.", closing: "You didn't win the mobile war. But you survived it — and that might be the greater achievement." }
+                                    { type: "emerging", icon: "ph-shield-check", headline: "The Impossible Made Permanent", body: "Wall Street approves the discipline. Investors appreciate restraint compared to previous mobile spending. Developers see 150 million users and decide you're worth supporting. The ecosystem flywheel, long stuck, begins to spin.", closing: "You didn't win the mobile war. But you survived it - and that might be the greater achievement." }
                                 ],
                                 immediate: {
                                     date: "APR 2015",
@@ -10445,11 +10933,11 @@ You've climbed the mountain. Do you plant your flag here, or keep climbing?`
                                     morale: "high",
                                     mobileRevenue: 0.35,     // Strong platform revenue
                                     mobileCosts: 0.25,       // Sustainable investment
-                                    narrative: `You announce "Platform for the Long Term"—a five-year commitment to Windows Mobile. $1.5 billion annual investment. Developer subsidies extended. Enterprise program expanded.
+                                    narrative: `You announce "Platform for the Long Term", a five-year commitment to Windows Mobile. $1.5 billion annual investment. Developer subsidies extended. Enterprise program expanded.
 
-The message is clear: Microsoft is here to stay. Wall Street approves—the investment is modest relative to Microsoft's scale. Investors appreciate the discipline compared to previous mobile spending.
+The message is clear: Microsoft is here to stay. Wall Street approves, the investment is modest relative to Microsoft's scale. Investors appreciate the discipline compared to previous mobile spending.
 
-Developers take notice. Several major apps that skipped Windows Phone announce ports. The ecosystem flywheel, long stuck, begins to spin. "We finally have critical mass," says your developer relations lead. "Developers see the 150 million users and decide we're worth supporting."`
+Developers take notice. Several major apps that skipped Windows Phone announce ports. The ecosystem flywheel, long stuck, begins to spin. "We finally have critical mass," says your developer relations lead. "Developers see the 100 million users and decide we're worth supporting."`
                                 },
                                 delayed: {
                                     date: "JAN 2017",
@@ -10459,29 +10947,31 @@ Developers take notice. Several major apps that skipped Windows Phone announce p
                                     morale: "high",
                                     mobileRevenue: 0.5,      // Thriving platform revenue
                                     mobileCosts: 0.3,        // Healthy R&D investment
-                                    narrative: `The third ecosystem is real. Windows Mobile hit 14% global share—higher in enterprise, lower in consumer. 180 million active users. App gap largely closed for top 500 apps.
+                                    narrative: `The third ecosystem is real. Windows Mobile hit 11% global share, higher in enterprise, lower in consumer. 130 million active users. App gap largely closed for top 500 apps.
 
 Lumia devices sell steadily. The Surface Phone launched to strong reviews. Carrier relationships stabilized. Enterprise deployments grew 40% year over year.
 
-"Microsoft did what everyone said was impossible," wrote The Verge. "They built a viable third mobile ecosystem." It's not Android. It's not iOS. It's something different—a productivity-focused, enterprise-friendly, privacy-respecting alternative. You didn't win the mobile war. But you survived it.`,
+"Microsoft did what everyone said was impossible," wrote The Verge. "They built a viable third mobile ecosystem." It's not Android. It's not iOS. It's something different, a productivity-focused, enterprise-friendly, privacy-respecting alternative. You didn't win the mobile war. But you survived it.`,
                                     triggersEnding: "sustainable-third"
                                 }
                             }
                         },
                         {
                             id: "d5pc-option-2",
-                            title: "Push for Second—Challenge iOS",
-                            description: "12% is a platform. 25% would be a movement. Go aggressive: massive marketing, subsidized devices, developer bounties. Break the duopoly. Make Windows the default for everyone who isn't an Apple loyalist.",
+                            title: "Push for Second: Challenge iOS",
+                            description: "8% is a platform. 15% would be a movement. Go aggressive: massive marketing, subsidized devices, developer bounties. Break the duopoly. Make Windows the default for everyone who isn't an Apple loyalist.",
                             risk: "Overextension, burning cash, iOS counterattack",
                             upside: "If it works, Windows becomes the global default for non-premium",
                             cost: "$5B aggressive push",
                             investment: "$5B",
 
+                            pathMetrics: { marketShare: 8, nokiaShare: 0, appleShare: 15, googleShare: 76, bbShare: 0.5 },
+
                             consequences: {
                                 moments: [
-                                    { type: "verdict", headline: "Project Momentum", subline: "$5 billion to break the duopoly. You're buying growth — the question is whether it converts to loyalty.", sentiment: "neutral" },
+                                    { type: "verdict", headline: "Project Momentum", subline: "$5 billion to break the duopoly. You're buying growth - the question is whether it converts to loyalty.", sentiment: "neutral" },
                                     { type: "metrics", changes: [
-                                        { metric: "Market Share", change: "12% to 16% (subsidies)", direction: "up" },
+                                        { metric: "Market Share", change: "8% to 12% (subsidies)", direction: "up" },
                                         { metric: "Investment", change: "$5B committed", direction: "down" },
                                         { metric: "Wall Street", change: "Nervous", direction: "down" },
                                         { metric: "Developer Bounties", change: "$500/app port", direction: "up" }
@@ -10502,11 +10992,11 @@ Lumia devices sell steadily. The Surface Phone launched to strong reviews. Carri
                                     morale: "high",
                                     mobileRevenue: 0.4,      // Device sales surge
                                     mobileCosts: 0.8,        // Massive investment
-                                    narrative: `You announce "Project Momentum"—$5 billion to make Windows Mobile the number two platform. Subsidized devices to carriers. $500 bounties to developers who port top apps. Marketing blitz positioning Windows as "the smart choice."
+                                    narrative: `You announce "Project Momentum", $5 billion to make Windows Mobile the number two platform. Subsidized devices to carriers. $500 bounties to developers who port top apps. Marketing blitz positioning Windows as "the smart choice."
 
-Wall Street is nervous: "Microsoft going for broke in mobile." The CFO gets uncomfortable questions about capital allocation. But market share jumps to 16% on device subsidies alone.
+Wall Street is nervous: "Microsoft going for broke in mobile." The CFO gets uncomfortable questions about capital allocation. But market share jumps to 12% on device subsidies alone.
 
-You're buying growth—the question is whether it converts to loyalty. "We can outspend Google," you tell the board. "We just need to do it long enough that users stick." Bold. Expensive. Possibly brilliant. Possibly catastrophic.`
+You're buying growth, the question is whether it converts to loyalty. "We can outspend Google," you tell the board. "We just need to do it long enough that users stick." Bold. Expensive. Possibly brilliant. Possibly catastrophic.`
                                 },
                                 delayed: {
                                     date: "JAN 2017",
@@ -10516,9 +11006,9 @@ You're buying growth—the question is whether it converts to loyalty. "We can o
                                     morale: "neutral",
                                     mobileRevenue: 0.45,     // 14% share revenue
                                     mobileCosts: 0.35,       // Normalization after push
-                                    narrative: `The push peaked at 18% share in Q2 2016—then gravity reasserted itself. Subsidies created users, not loyalty. When the deals ended, many switched back to Android. The app ecosystem couldn't keep them.
+                                    narrative: `The push peaked at 18% share in Q2 2016, then gravity reasserted itself. Subsidies created users, not loyalty. When the deals ended, many switched back to Android. The app ecosystem couldn't keep them.
 
-Final share: 14%—better than before the push, but not what you hoped. The $5 billion bought market position but not market love. Many of those "acquired" users never downloaded more than the pre-installed apps.
+Final share: 14%, better than before the push, but not what you hoped. The $5 billion bought market position but not market love. Many of those "acquired" users never downloaded more than the pre-installed apps.
 
 "We tried to buy our way to second place," reflects your strategy lead. "Turns out you can't buy ecosystem loyalty. You have to earn it." Still, 14% is viable. 180 million users is real. You swung for the fences and hit a double.`,
                                     triggersEnding: "pushed-for-second"
@@ -10539,31 +11029,31 @@ Final share: 14%—better than before the push, but not what you hoped. The $5 b
             achievement: "Platform Pioneer",
             reflection: `You did what everyone said was impossible. When Steve Jobs unveiled the iPhone in 2007, nobody believed a third ecosystem could survive. "Platform markets are winner-take-all," they said. "Microsoft is too late."
 
-They were wrong. Through persistence, smart investments, and a willingness to find your niche, you built something real. Not the dominant platform—iOS and Android still own 84% combined—but a meaningful alternative for 180 million users who value what Windows offers: productivity integration, enterprise security, camera excellence.
+They were wrong. Through persistence, smart investments, and a willingness to find your niche, you built something real. Not the dominant platform (iOS and Android still own 89% combined) but a meaningful alternative for 120 million users who value what Windows offers: productivity integration, enterprise security, camera excellence.
 
 The history books will remember Microsoft as the third platform that survived. In a market that killed BlackBerry, Palm, Symbian, webOS, and Fire Phone, Windows Mobile endured. That's not nothing. That might be everything.`,
             actualReality: "In reality, Windows Phone peaked at 3.6% share in 2013 and was discontinued in 2017. Microsoft lost $10B+ on mobile."
         },
         "sustainable-niche": {
             title: "Niche Master",
-            summary: "You found your place. A loyal user base and sustainable profitability. Not victory—but not defeat either.",
+            summary: "You found your place. A loyal user base and sustainable profitability. Not victory, but not defeat either.",
             achievement: "Niche Commander",
-            reflection: `You stopped chasing the mass market and found your people instead. Enterprise users who need real Exchange integration. Photography enthusiasts who love the Lumia cameras. Privacy advocates who don't trust Google. A small, loyal community that chose you—and stayed.
+            reflection: `You stopped chasing the mass market and found your people instead. Enterprise users who need real Exchange integration. Photography enthusiasts who love the Lumia cameras. Privacy advocates who don't trust Google. A small, loyal community that chose you, and stayed.
 
 The numbers were never impressive: 3-4% share, 35 million users, $200M annual profit. But in a market where most challengers died completely, survival is its own achievement. You built something real for people who needed it.
 
-The dream of platform dominance died. But the dream of serving users well—that one survived.`,
+The dream of platform dominance died. But the dream of serving users well, that one survived.`,
             actualReality: "In reality, Microsoft never achieved sustainable niche profitability. Windows Phone peaked at 3.6% and was discontinued completely."
         },
         "graceful-exit": {
             title: "Graceful Exit",
-            summary: "You knew when to fold. Mobile closed with dignity. Resources redeployed to cloud and productivity—where Microsoft went on to dominate.",
+            summary: "You knew when to fold. Mobile closed with dignity. Resources redeployed to cloud and productivity, where Microsoft went on to dominate.",
             achievement: "Strategic Wisdom",
-            reflection: `The hardest decision in business isn't when to fight—it's when to stop. You looked at eight years of mobile struggle, $10 billion in losses, and a market that had clearly decided its winners. And you chose wisdom over pride.
+            reflection: `The hardest decision in business isn't when to fight, it's when to stop. You looked at eight years of mobile struggle, $10 billion in losses, and a market that had clearly decided its winners. And you chose wisdom over pride.
 
 Microsoft's exit from mobile hardware was announced with clarity and purpose. No desperate acquisitions, no delusional pivots. Just an honest acknowledgment: "We lost the platform war. We will win the services war instead."
 
-And you did. Microsoft Office is now the most popular productivity suite on iOS and Android. Azure became the fastest-growing enterprise cloud. Microsoft's market cap passed $2 trillion. Sometimes the best way to win is to stop playing a game you can't win—and find a better game.`,
+And you did. Microsoft Office is now the most popular productivity suite on iOS and Android. Azure became the fastest-growing enterprise cloud. Microsoft's market cap passed $2 trillion. Sometimes the best way to win is to stop playing a game you can't win, and find a better game.`,
             actualReality: "This mirrors the actual Nadella strategy, though Microsoft took longer to fully exit and absorbed the $7.6B Nokia write-down first."
         },
         "fought-to-end": {
@@ -10572,7 +11062,7 @@ And you did. Microsoft Office is now the most popular productivity suite on iOS 
             achievement: "Never Surrender",
             reflection: `You knew the odds. You knew the numbers. You knew what the analysts said and what the board wanted. And you kept fighting anyway.
 
-Windows Phone died in October 2017—the same fate as BlackBerry, Palm, Symbian, and every other challenger that tried to break the iOS/Android duopoly. Market share at the end: 0.1%. Ten years of effort, $15 billion invested, 30,000 careers disrupted.
+Windows Phone died in October 2017, the same fate as BlackBerry, Palm, Symbian, and every other challenger that tried to break the iOS/Android duopoly. Market share at the end: 0.1%. Ten years of effort, $15 billion invested, 30,000 careers disrupted.
 
 But here's what the accountants don't measure: you tried. You built beautiful phones. You created a genuinely different user experience. You gave 50 million people a platform they loved, even if they were the only ones. History is written by the winners, but that doesn't make the losers wrong for trying.
 
@@ -10583,28 +11073,28 @@ You fought to the end. That counts for something.`,
             title: "Strategic Sale",
             summary: "You sold the mobile division at its peak value. Resources redeployed, pride preserved.",
             achievement: "Business Acumen",
-            reflection: `The phone rang from Amazon on a Tuesday. They wanted your mobile division—the 40 million users, the Nokia hardware expertise, the patents and partnerships. They offered $4.2 billion.
+            reflection: `The phone rang from Amazon on a Tuesday. They wanted your mobile division, the 40 million users, the Nokia hardware expertise, the patents and partnerships. They offered $4.2 billion.
 
 You took it.
 
 Wall Street called it surrender. Your team called it betrayal. Your users called it abandonment. But you called it business. The mobile division was worth $4.2 billion that day. In two years, it would be worth nothing. You did the math.
 
-Amazon renamed it "Fire Phone 2.0." It failed, eventually. But by then, Microsoft had moved on—to Azure, to Office 365, to LinkedIn, to a $2 trillion market cap. The mobile dream died. Microsoft didn't.
+Amazon renamed it "Fire Phone 2.0." It failed, eventually. But by then, Microsoft had moved on, to Azure, to Office 365, to LinkedIn, to a $2 trillion market cap. The mobile dream died. Microsoft didn't.
 
 Sometimes the smartest exit is the one you make before you have to.`,
-            actualReality: "In reality, Microsoft did not sell the mobile division—they wrote it down and shut it down. No buyer emerged."
+            actualReality: "In reality, Microsoft did not sell the mobile division, they wrote it down and shut it down. No buyer emerged."
         },
         "pushed-for-second": {
             title: "The Push",
             summary: "You swung for the fences with massive investment. Bold, expensive, memorable. You pushed hard for market dominance.",
             achievement: "Ambitious Leader",
-            reflection: `When you had 12% share, everyone said you should be satisfied. "Third place is a miracle," they said. "Don't get greedy." You got greedy anyway.
+            reflection: `When you had 8% share, everyone said you should be satisfied. "Third place is a miracle," they said. "Don't get greedy." You got greedy anyway.
 
-$5 billion in device subsidies, developer bounties, and marketing blitzes. Market share jumped to 18%—briefly, gloriously, Windows was a legitimate competitor. For three quarters, you could say "Windows is the number two platform in Europe." For three quarters, the dream seemed possible.
+$5 billion in device subsidies, developer bounties, and marketing blitzes. Market share jumped to 12%, briefly, gloriously, Windows was a legitimate competitor. For three quarters, you could say "Windows is the fastest-growing mobile platform." For three quarters, the dream seemed possible.
 
-Then gravity reasserted itself. When the subsidies ended, the users who came for cheap phones left for cheap phones elsewhere. Final share: 14%. A $5 billion investment bought you 2 percentage points.
+Then gravity reasserted itself. When the subsidies ended, the users who came for cheap phones left for cheap phones elsewhere. Final share: 10%. A $5 billion investment bought you 2 percentage points.
 
-Was it worth it? Financially, no. Strategically, maybe—14% is more viable than 12%. Emotionally, absolutely. You proved that Windows could compete. You proved that Microsoft could swing for the fences. You proved that ambition isn't always foolish, even when it fails.
+Was it worth it? Financially, no. Strategically, maybe, 10% is more viable than 8%. Emotionally, absolutely. You proved that Windows could compete. You proved that Microsoft could swing for the fences. You proved that ambition isn't always foolish, even when it fails.
 
 You pushed for second. You got third. You tried.`,
             actualReality: "In reality, Windows Phone never exceeded 3.6% global share. The push scenario represents an alternate history."
@@ -10613,7 +11103,7 @@ You pushed for second. You got third. You tried.`,
             title: "Strategic Exit",
             summary: "In crisis, you made the hard call. Mobile closed. Resources redeployed to winning businesses.",
             achievement: "Pragmatic Leader",
-            reflection: `The board meeting that ended Microsoft's mobile dream lasted 90 minutes. The financials were brutal: $1.2 billion quarterly losses, 2% market share, talent exodus accelerating. The Nokia acquisition had failed. The platform was dying. The only question was whether to keep the life support running.
+            reflection: `The board meeting that ended Microsoft's mobile dream lasted 90 minutes. The financials were brutal: $1.2 billion quarterly losses, 2% market share, talent exodus accelerating. The mobile strategy had failed. The platform was dying. The only question was whether to keep the life support running.
 
 You pulled the plug.
 
@@ -10626,13 +11116,13 @@ History will ask whether you gave up too early or too late. The honest answer: e
         },
         "early-exit-services": {
             title: "Services Pivot",
-            summary: "You gave up the platform but won the services war. Microsoft Office and Outlook now run on 2 billion mobile devices—most of them competitors'.",
+            summary: "You gave up the platform but won the services war. Microsoft Office and Outlook now run on 2 billion mobile devices, most of them competitors'.",
             achievement: "Pivot Master",
-            reflection: `The day Microsoft Office launched on iPad, Steve Ballmer reportedly threw a chair. The day you launched Outlook for Android, he threw another one. The day you admitted "our services will be on every platform, including our competitors'" he didn't throw anything—he just looked tired.
+            reflection: `The day Microsoft Office launched on iPad, Steve Ballmer reportedly threw a chair. The day you launched Outlook for Android, he threw another one. The day you admitted "our services will be on every platform, including our competitors'" he didn't throw anything, he just looked tired.
 
 You gave up the platform dream. And in its place, you built something bigger.
 
-Microsoft Office is now the most-used productivity suite on iOS and Android—on devices you don't control, running operating systems you didn't build. 2 billion users. More than Windows Phone ever dreamed of reaching. More than Windows itself.
+Microsoft Office is now the most-used productivity suite on iOS and Android, on devices you don't control, running operating systems you didn't build. 2 billion users. More than Windows Phone ever dreamed of reaching. More than Windows itself.
 
 The platform war is over. iOS and Android won. But the services war? That one's just beginning. And on that battlefield, Microsoft is winning.
 

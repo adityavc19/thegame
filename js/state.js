@@ -82,15 +82,18 @@ class GameState {
                         // D3 uses d2Choice as lookup key
                         lookupKey = this.pathState.d2Choice;
                     } else if (stage === "d4") {
-                        // D4: try composite key (d3Variant:d3OptionId) first, then d3Variant
+                        // D4: try composite key (d3Variant:d3OptionId) first, then d3Variant alone
                         const d3Decision = this.decisions.find(d => d.stage === "d3");
-                        if (d3Decision) {
+                        if (d3Decision && this.pathState.d3Variant) {
                             const compositeKey = this.pathState.d3Variant + ":" + d3Decision.optionId;
                             if (variant.framingByPath[compositeKey]) {
                                 lookupKey = compositeKey;
                             } else {
                                 lookupKey = this.pathState.d3Variant;
                             }
+                        } else if (this.pathState.d3Variant) {
+                            // Fallback: use d3Variant directly if d3Decision not found
+                            lookupKey = this.pathState.d3Variant;
                         }
                     } else if (stage === "d5") {
                         // D5: use d4State as primary key (determines Nokia context)
@@ -98,6 +101,8 @@ class GameState {
                             lookupKey = this.pathState.d4State;
                         }
                     }
+
+                    console.log(`[DEBUG] framingByPath lookup: stage=${stage}, lookupKey=${lookupKey}, d3Variant=${this.pathState.d3Variant}, available keys=`, Object.keys(variant.framingByPath));
 
                     if (lookupKey) {
                         pathFraming = variant.framingByPath[lookupKey];
@@ -141,6 +146,7 @@ class GameState {
                     "still-fighting": "d4-still-fighting",
                     "crisis-mode": "d4-crisis-mode",
                     "crisis-mode-nokia-owned": "d4-crisis-mode-nokia-owned",
+                    "still-fighting-nokia-owned": "d4-still-fighting-nokia-owned",
                     "differentiated": "d4-differentiated"
                 };
                 return d4StateMap[this.pathState.d4State];
@@ -208,8 +214,8 @@ class GameState {
             }
         }
 
-        // Apply immediate consequences
-        this.applyConsequences(consequences);
+        // Apply immediate consequences (with declared pathMetrics if available)
+        this.applyConsequences(consequences, option.pathMetrics);
 
 
         // Unlock new information cards
@@ -235,7 +241,8 @@ class GameState {
 
 
     // Apply consequences to metrics
-    applyConsequences(consequences) {
+    // pathMetrics: if provided, declared values override computed deltas (e.g. marketShare)
+    applyConsequences(consequences, pathMetrics = null) {
         // Store previous metrics for comparison
         this.previousMetrics = { ...this.metrics };
 
@@ -252,7 +259,18 @@ class GameState {
         if (consequences.mobileCosts !== undefined) {
             this.metrics.mobileCosts += consequences.mobileCosts;
         }
-        if (consequences.marketShareOverride !== undefined) {
+
+        // Accumulate cumulative P&L: period ops + explicit acquisition costs
+        // acquisitionCost field = full price of an acquisition (regardless of cash/debt split)
+        const periodPL = (consequences.mobileRevenue || 0) - (consequences.mobileCosts || 0);
+        const acqCost = consequences.acquisitionCost || 0; // explicit field, e.g. 54 for Nokia
+        if (this.metrics.cumulativePL === undefined) this.metrics.cumulativePL = 0;
+        this.metrics.cumulativePL += periodPL - acqCost;
+        // Market share: use declared pathMetrics value if available, else fall back to delta
+        if (pathMetrics && pathMetrics.marketShare !== undefined) {
+            this.metrics.marketShare = pathMetrics.marketShare;
+        } else if (consequences.marketShareOverride !== undefined) {
+            // Legacy fallback — will be removed once all options use pathMetrics
             this.metrics.marketShare = consequences.marketShareOverride;
         } else if (consequences.marketShare !== undefined) {
             this.metrics.marketShare += consequences.marketShare;
@@ -266,13 +284,24 @@ class GameState {
         if (consequences.date) {
             this.metrics.date = consequences.date;
         }
-        // Competitor shares
+        // Competitor shares: SET from pathMetrics if declared (absolute values)
         ['appleShare', 'googleShare', 'nokiaShare', 'bbShare'].forEach(key => {
-            if (consequences[key] !== undefined) {
+            if (pathMetrics && pathMetrics[key] !== undefined) {
+                this.metrics[key] = pathMetrics[key];
+            } else if (consequences[key] !== undefined) {
                 this.metrics[key] = (this.metrics[key] || 0) + consequences[key];
                 if (this.metrics[key] < 0) this.metrics[key] = 0;
             }
         });
+
+        // Enforce absorption: acquired entities' share stays at 0 (folded into MSFT)
+        // This prevents generic pathMetrics from resurrecting absorbed entities
+        if (this.pathState.d1Choice === 'acquire-nokia') {
+            this.metrics.nokiaShare = 0;
+        }
+        if (this.pathState.d2Choice === 'acquire-blackberry') {
+            this.metrics.bbShare = 0;
+        }
 
 
         // Unlock artifacts
@@ -332,7 +361,7 @@ class GameState {
                 const option = decisionPoint.options.find(opt => opt.id === lastDecision.optionId);
                 if (option?.consequences?.delayed) {
                     console.log('[DEBUG] Applying delayed consequences:', option.consequences.delayed);
-                    this.applyConsequences(option.consequences.delayed);
+                    this.applyConsequences(option.consequences.delayed, option.pathMetrics);
                     console.log('[DEBUG] Metrics after delayed:', this.metrics);
                 }
             }
@@ -530,6 +559,49 @@ class GameState {
     }
 
 
+    // ── Template Variable Engine ──────────────────────────────────────
+    // Resolves {{variableName}} and {{#if flag}}...{{else}}...{{/if}}
+    // in non-narrated content (intel cards, timeline events, playerPosition)
+
+    getTemplateVars() {
+        const m = this.metrics;
+        return {
+            // Market shares (rounded integers for clean display)
+            marketShare: Math.round(m.marketShare || 0),
+            nokiaShare: Math.round(m.nokiaShare || 0),
+            appleShare: Math.round(m.appleShare || 0),
+            googleShare: Math.round(m.googleShare || 0),
+            bbShare: Math.round(m.bbShare || 0),
+            // Financial
+            cash: m.cash,
+            mobileRevenue: m.mobileRevenue,
+            mobileCosts: m.mobileCosts,
+            marketCap: m.marketCap,
+            // Path flags (derived from existing pathState — no storage needed)
+            ownsNokia: this.pathState.d1Choice === 'acquire-nokia',
+            forkedAndroid: ['nokia-android', 'fork-android'].includes(this.pathState.d2Choice),
+            ownsBB: this.pathState.d2Choice === 'acquire-blackberry',
+            wpAbandoned: (this.pathState.d3Variant || '').startsWith('d3-a-'),
+        };
+    }
+
+    resolveTemplate(text) {
+        if (!text || typeof text !== 'string' || !text.includes('{{')) return text;
+        const vars = this.getTemplateVars();
+        // Pass 1: Conditional blocks — {{#if flag}}...{{else}}...{{/if}}
+        let result = text.replace(
+            /\{\{#if (\w+)\}\}([\s\S]*?)(?:\{\{else\}\}([\s\S]*?))?\{\{\/if\}\}/g,
+            (_, key, ifBlock, elseBlock) => vars[key] ? ifBlock : (elseBlock || '')
+        );
+        // Pass 2: Simple substitution — {{marketShare}} → 8
+        result = result.replace(
+            /\{\{(\w+)\}\}/g,
+            (match, key) => vars[key] !== undefined ? String(vars[key]) : match
+        );
+        return result;
+    }
+
+
     // Save state to localStorage
     saveState() {
         const state = {
@@ -583,6 +655,14 @@ class GameState {
             if (this.previousMetrics.mobileRevenue === undefined) {
                 this.previousMetrics.mobileRevenue = scenarioData.initialMetrics.mobileRevenue;
                 this.previousMetrics.mobileCosts = scenarioData.initialMetrics.mobileCosts;
+            }
+
+            // Migration: Add cumulative P&L if not present
+            if (this.metrics.cumulativePL === undefined) {
+                // Best-effort: approximate from current annual P&L × number of decisions
+                const annualPL = (this.metrics.mobileRevenue || 0) - (this.metrics.mobileCosts || 0);
+                this.metrics.cumulativePL = annualPL * Math.max(1, this.decisions.length);
+                this.saveState();
             }
         }
     }

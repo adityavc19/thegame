@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Cinematic dark gradient background -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1A1612"/>
+      <stop offset="40%" stop-color="#0F0D0B"/>
+      <stop offset="100%" stop-color="#0A0908"/>
+    </linearGradient>
+
+    <!-- Warm accent glow -->
+    <radialGradient id="glow" cx="0.5" cy="0.45" r="0.6">
+      <stop offset="0%" stop-color="#C05028" stop-opacity="0.12"/>
+      <stop offset="60%" stop-color="#C05028" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#C05028" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Top light leak -->
+    <radialGradient id="topLight" cx="0.3" cy="0" r="0.7">
+      <stop offset="0%" stop-color="#D4A08C" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#D4A08C" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Grid pattern for subtle tech feel -->
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
+    </pattern>
+
+    <!-- Vertical scan line -->
+    <linearGradient id="scanline" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(212,160,140,0)" />
+      <stop offset="45%" stop-color="rgba(212,160,140,0.06)" />
+      <stop offset="55%" stop-color="rgba(212,160,140,0.06)" />
+      <stop offset="100%" stop-color="rgba(212,160,140,0)" />
+    </linearGradient>
+  </defs>
+
+  <!-- Base -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect width="1200" height="630" fill="url(#topLight)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Subtle horizontal lines (CRT/executive monitor feel) -->
+  <g opacity="0.03">
+    <line x1="0" y1="100" x2="1200" y2="100" stroke="#fff" stroke-width="0.5"/>
+    <line x1="0" y1="200" x2="1200" y2="200" stroke="#fff" stroke-width="0.5"/>
+    <line x1="0" y1="300" x2="1200" y2="300" stroke="#fff" stroke-width="0.5"/>
+    <line x1="0" y1="400" x2="1200" y2="400" stroke="#fff" stroke-width="0.5"/>
+    <line x1="0" y1="500" x2="1200" y2="500" stroke="#fff" stroke-width="0.5"/>
+  </g>
+
+  <!-- Accent line at top -->
+  <rect x="0" y="0" width="1200" height="3" fill="#C05028" opacity="0.8"/>
+
+  <!-- Left accent bar -->
+  <rect x="80" y="180" width="3" height="270" fill="#C05028" opacity="0.5" rx="1.5"/>
+
+  <!-- Period badge -->
+  <rect x="100" y="180" width="130" height="28" rx="4" fill="rgba(192,80,40,0.15)" stroke="rgba(192,80,40,0.3)" stroke-width="1"/>
+  <text x="165" y="199" font-family="SF Mono, Menlo, monospace" font-size="12" fill="#D4A08C" text-anchor="middle" letter-spacing="2">2007 – 2017</text>
+
+  <!-- Main Title -->
+  <text x="100" y="270" font-family="Georgia, 'Times New Roman', serif" font-size="64" fill="#F5F1EA" font-weight="700" letter-spacing="-1">THE MOBILE</text>
+  <text x="100" y="345" font-family="Georgia, 'Times New Roman', serif" font-size="64" fill="#C05028" font-weight="700" letter-spacing="-1">WARS</text>
+
+  <!-- Tagline -->
+  <text x="103" y="390" font-family="system-ui, -apple-system, sans-serif" font-size="17" fill="rgba(245,241,234,0.5)" letter-spacing="0.5">The iPhone just launched. $18 billion on the line.</text>
+  <text x="103" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="17" fill="rgba(245,241,234,0.5)" letter-spacing="0.5">Can you save Microsoft from missing mobile?</text>
+
+  <!-- Interactive badge -->
+  <rect x="100" y="445" width="200" height="32" rx="6" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="200" y="466" font-family="SF Mono, Menlo, monospace" font-size="11" fill="rgba(255,255,255,0.45)" text-anchor="middle" letter-spacing="2">INTERACTIVE STORY</text>
+
+  <!-- Right side: stylized market share visualization -->
+  <!-- Vertical bars representing market share timeline -->
+  <g transform="translate(700, 150)" opacity="0.6">
+    <!-- Chart frame -->
+    <line x1="0" y1="0" x2="0" y2="330" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <line x1="0" y1="330" x2="420" y2="330" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+    <!-- Y-axis labels -->
+    <text x="-10" y="5" font-family="SF Mono, Menlo, monospace" font-size="9" fill="rgba(255,255,255,0.2)" text-anchor="end">50%</text>
+    <text x="-10" y="170" font-family="SF Mono, Menlo, monospace" font-size="9" fill="rgba(255,255,255,0.2)" text-anchor="end">25%</text>
+    <text x="-10" y="335" font-family="SF Mono, Menlo, monospace" font-size="9" fill="rgba(255,255,255,0.2)" text-anchor="end">0%</text>
+
+    <!-- Grid lines -->
+    <line x1="0" y1="165" x2="420" y2="165" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="4,4"/>
+
+    <!-- Windows Mobile line (decline) - warm orange -->
+    <polyline points="0,60 42,55 84,65 126,100 168,140 210,190 252,240 294,280 336,310 378,325 420,330"
+              fill="none" stroke="#C05028" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Apple iOS line (rise) - silver -->
+    <polyline points="0,330 42,310 84,280 126,250 168,230 210,210 252,195 294,185 336,180 378,178 420,175"
+              fill="none" stroke="#A0A0A0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+
+    <!-- Android line (explosive rise) - green -->
+    <polyline points="0,330 42,320 84,290 126,220 168,150 210,90 252,55 294,40 336,30 378,25 420,20"
+              fill="none" stroke="#7BC67E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+
+    <!-- Nokia line (decline) - blue -->
+    <polyline points="0,10 42,15 84,25 126,50 168,100 210,180 252,260 294,310 336,325 378,330 420,330"
+              fill="none" stroke="#5B8DEF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>
+
+    <!-- End labels -->
+    <text x="428" y="332" font-family="SF Mono, Menlo, monospace" font-size="8" fill="#C05028" opacity="0.8">MSFT</text>
+    <text x="428" y="178" font-family="SF Mono, Menlo, monospace" font-size="8" fill="#A0A0A0" opacity="0.6">AAPL</text>
+    <text x="428" y="23" font-family="SF Mono, Menlo, monospace" font-size="8" fill="#7BC67E" opacity="0.5">GOOG</text>
+
+    <!-- Time axis -->
+    <text x="0" y="350" font-family="SF Mono, Menlo, monospace" font-size="9" fill="rgba(255,255,255,0.2)">2007</text>
+    <text x="190" y="350" font-family="SF Mono, Menlo, monospace" font-size="9" fill="rgba(255,255,255,0.2)">2012</text>
+    <text x="390" y="350" font-family="SF Mono, Menlo, monospace" font-size="9" fill="rgba(255,255,255,0.2)">2017</text>
+
+    <!-- "YOU DECIDE" marker on MSFT line -->
+    <circle cx="168" cy="140" r="6" fill="none" stroke="#C05028" stroke-width="1.5" opacity="0.9"/>
+    <circle cx="168" cy="140" r="2" fill="#C05028" opacity="0.9"/>
+    <line x1="168" y1="148" x2="168" y2="330" stroke="#C05028" stroke-width="0.5" stroke-dasharray="3,3" opacity="0.3"/>
+    <text x="168" y="160" font-family="SF Mono, Menlo, monospace" font-size="8" fill="#D4A08C" text-anchor="middle" opacity="0.8">YOU</text>
+    <text x="168" y="170" font-family="SF Mono, Menlo, monospace" font-size="8" fill="#D4A08C" text-anchor="middle" opacity="0.8">DECIDE</text>
+
+    <!-- Dotted future line from decision point -->
+    <polyline points="168,140 210,130 252,125 294,120 336,115 378,110 420,105"
+              fill="none" stroke="#C05028" stroke-width="1.5" stroke-dasharray="4,4" stroke-linecap="round" opacity="0.4"/>
+  </g>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="600" width="1200" height="30" fill="rgba(0,0,0,0.4)"/>
+  <text x="100" y="620" font-family="SF Mono, Menlo, monospace" font-size="10" fill="rgba(255,255,255,0.25)" letter-spacing="1">AURORA LABS</text>
+  <text x="1100" y="620" font-family="SF Mono, Menlo, monospace" font-size="10" fill="rgba(255,255,255,0.25)" letter-spacing="1" text-anchor="end">PLAY NOW</text>
+
+  <!-- Subtle vignette overlay -->
+  <rect width="1200" height="630" fill="url(#scanline)" opacity="0.5"/>
+</svg>

@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Mobile Wars — Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #FAFAFA;
+            --surface: #FFFFFF;
+            --surface-2: #F3F4F6;
+            --border: rgba(0,0,0,0.08);
+            --text: #1F2937;
+            --text-dim: #6B7280;
+            --accent: #059669;
+            --accent-2: #DC2626;
+            --blue: #2563EB;
+            --amber: #D97706;
+            --red: #DC2626;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .dash-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .dash-header h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .dash-header h1 span { color: var(--text-dim); font-weight: 400; }
+
+        .dash-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .dash-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .dash-btn:hover { background: var(--surface-2); }
+        .dash-btn--accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .dash-btn--accent:hover { background: #047857; }
+
+        .dash-status {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .dash-status .dot {
+            display: inline-block;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        .dot--ok { background: var(--accent); }
+        .dot--err { background: var(--red); }
+        .dot--loading { background: var(--amber); animation: pulse 1s infinite; }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .dash-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            padding: 24px 32px;
+        }
+
+        .dash-kpi {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .dash-kpi-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .dash-kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        .dash-kpi-sub {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 6px;
+        }
+
+        .kpi-green { color: #059669; }
+        .kpi-amber { color: #B45309; }
+        .kpi-red { color: #DC2626; }
+        .kpi-blue { color: #2563EB; }
+
+        .dash-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 0 32px 24px;
+        }
+
+        .dash-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .dash-card--full { grid-column: 1 / -1; }
+
+        .dash-card h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .chart-wrap {
+            position: relative;
+            height: 260px;
+        }
+
+        .chart-wrap--tall { height: 320px; }
+
+        /* Funnel */
+        .funnel-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .funnel-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .funnel-label {
+            width: 140px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .funnel-bar-wrap {
+            flex: 1;
+            height: 32px;
+            position: relative;
+        }
+
+        .funnel-bar {
+            height: 100%;
+            border-radius: 6px;
+            background: var(--accent);
+            transition: width 0.6s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            min-width: 40px;
+        }
+
+        .funnel-bar span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .funnel-drop {
+            font-size: 0.65rem;
+            color: var(--red);
+            width: 60px;
+            text-align: left;
+            flex-shrink: 0;
+        }
+
+        /* Decision table */
+        .decision-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .decision-stage {
+            background: var(--surface-2);
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .decision-stage-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+        }
+
+        .decision-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .decision-opt {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .decision-opt-name {
+            flex: 1;
+            font-size: 0.78rem;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .decision-opt-bar {
+            width: 120px;
+            height: 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 4px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .decision-opt-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--blue);
+            transition: width 0.4s ease;
+        }
+
+        .decision-opt-count {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            width: 40px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .decision-opt-pct {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text);
+            width: 36px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        /* Engagement table */
+        .engage-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .engage-table th {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .engage-table td {
+            font-size: 0.78rem;
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .engage-table tr:last-child td { border-bottom: none; }
+
+        .engage-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .badge-green { background: #ECFDF5; color: #059669; }
+        .badge-amber { background: #FFFBEB; color: #B45309; }
+        .badge-red { background: #FEF2F2; color: #DC2626; }
+        .badge-blue { background: #EFF6FF; color: #2563EB; }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-dim);
+        }
+
+        .empty-state h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text); }
+        .empty-state p { font-size: 0.85rem; max-width: 400px; margin: 0 auto 20px; }
+
+        .config-input {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            width: 500px;
+            max-width: 90vw;
+        }
+
+        .config-input:focus { outline: none; border-color: var(--accent); }
+
+        .config-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .dash-grid { grid-template-columns: repeat(2, 1fr); }
+            .dash-charts { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 600px) {
+            .dash-grid { grid-template-columns: 1fr; padding: 16px; }
+            .dash-charts { padding: 0 16px 16px; }
+            .dash-header { padding: 16px; flex-direction: column; }
+        }
+
+        .time-toggle.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--surface-2) 25%, rgba(0,0,0,0.02) 50%, var(--surface-2) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+        }
+
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body>
+
+<div class="dash-header">
+    <h1>The Mobile Wars <span>Analytics</span></h1>
+    <div class="dash-controls">
+        <span class="dash-status" id="status"><span class="dot dot--loading"></span> Loading...</span>
+        <button class="dash-btn" id="refresh-btn" onclick="loadData()">Refresh</button>
+    </div>
+</div>
+
+<!-- Config screen (shown if no webhook URL) -->
+<div id="config-screen" class="empty-state" style="display:none;">
+    <h2>Connect Your Data</h2>
+    <p>Enter your Google Apps Script webhook URL to load analytics data. This is the same URL used in analytics.js.</p>
+    <input class="config-input" id="webhook-input" placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" />
+    <div class="config-row">
+        <button class="dash-btn dash-btn--accent" onclick="saveWebhook()">Connect</button>
+    </div>
+    <p style="margin-top:16px; font-size:0.75rem;">Make sure your Apps Script handles <code>?action=dashboard</code> requests. See <code>google-apps-script.gs</code> for the updated script.</p>
+</div>
+
+<!-- Dashboard content -->
+<div id="dashboard" style="display:none;">
+
+    <!-- KPI Row -->
+    <div class="dash-grid">
+        <div class="dash-kpi">
+            <div class="dash-kpi-label">Total Sessions</div>
+            <div class="dash-kpi-value" id="kpi-sessions">—</div>
+            <div class="dash-kpi-sub" id="kpi-sessions-sub">unique visitors</div>
+        </div>
+        <div class="dash-kpi">
+            <div class="dash-kpi-label">Game Starts</div>
+            <div class="dash-kpi-value kpi-blue" id="kpi-starts">—</div>
+            <div class="dash-kpi-sub" id="kpi-starts-sub">players who began</div>
+        </div>
+        <div class="dash-kpi">
+            <div class="dash-kpi-label">Completions</div>
+            <div class="dash-kpi-value kpi-green" id="kpi-completions">—</div>
+            <div class="dash-kpi-sub" id="kpi-completions-sub">completion rate</div>
+        </div>
+        <div class="dash-kpi">
+            <div class="dash-kpi-label">Avg. Time to Complete</div>
+            <div class="dash-kpi-value kpi-amber" id="kpi-avgtime">—</div>
+            <div class="dash-kpi-sub" id="kpi-avgtime-sub">minutes</div>
+        </div>
+        <div class="dash-kpi">
+            <div class="dash-kpi-label">Avg. Dropoff Time</div>
+            <div class="dash-kpi-value kpi-red" id="kpi-dropoff-time">—</div>
+            <div class="dash-kpi-sub" id="kpi-dropoff-time-sub">non-completers</div>
+        </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="dash-charts">
+        <!-- Funnel / Drop-off -->
+        <div class="dash-card">
+            <h3>Player Funnel & Drop-off</h3>
+            <div id="funnel-container" class="funnel-container"></div>
+        </div>
+
+        <!-- Completion Time Distribution -->
+        <div class="dash-card">
+            <h3>Time to Complete (distribution)</h3>
+            <div class="chart-wrap">
+                <canvas id="chart-time"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="dash-charts">
+        <!-- Decision Choices -->
+        <div class="dash-card dash-card--full">
+            <h3>Choice Distribution by Decision Point</h3>
+            <div class="decision-grid" id="decision-grid"></div>
+        </div>
+    </div>
+
+    <!-- Charts Row 3 -->
+    <div class="dash-charts">
+        <!-- Element Clicks -->
+        <div class="dash-card">
+            <h3>Element Interactions</h3>
+            <table class="engage-table" id="engage-table">
+                <thead>
+                    <tr><th>Element</th><th>Count</th><th>Rate</th></tr>
+                </thead>
+                <tbody id="engage-tbody"></tbody>
+            </table>
+        </div>
+
+        <!-- Info Card Types -->
+        <div class="dash-card">
+            <h3>Info Card Views by Type</h3>
+            <div class="chart-wrap">
+                <canvas id="chart-card-types"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 4 -->
+    <div class="dash-charts">
+        <!-- Audio Engagement -->
+        <div class="dash-card">
+            <h3>Audio & Backstory Engagement</h3>
+            <table class="engage-table">
+                <thead>
+                    <tr><th>Metric</th><th>Count</th><th>Insight</th></tr>
+                </thead>
+                <tbody id="audio-tbody"></tbody>
+            </table>
+        </div>
+
+        <!-- Games Played & Completed Over Time -->
+        <div class="dash-card">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                <h3 style="margin-bottom:0;">Games Played & Completed</h3>
+                <div style="display:flex; gap:4px;">
+                    <button class="dash-btn time-toggle" id="toggle-daily" onclick="setTimeGranularity('daily')" style="padding:5px 12px; font-size:0.7rem;">Daily</button>
+                    <button class="dash-btn time-toggle" id="toggle-hourly" onclick="setTimeGranularity('hourly')" style="padding:5px 12px; font-size:0.7rem;">Hourly</button>
+                </div>
+            </div>
+            <div class="chart-wrap chart-wrap--tall">
+                <canvas id="chart-timeline"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 5: Additional metrics -->
+    <div class="dash-charts">
+        <div class="dash-card">
+            <h3>Feedback Ratings</h3>
+            <div class="chart-wrap">
+                <canvas id="chart-ratings"></canvas>
+            </div>
+        </div>
+
+        <div class="dash-card">
+            <h3>Top Decision Paths</h3>
+            <div id="paths-container" style="max-height: 280px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <!-- Raw Events (collapsible) -->
+    <div class="dash-charts">
+        <div class="dash-card dash-card--full">
+            <h3 style="cursor:pointer;" onclick="toggleRaw()">
+                Raw Event Log <span style="font-weight:400; color:var(--text-dim); font-size:0.75rem;">(click to expand)</span>
+            </h3>
+            <div id="raw-events" style="display:none; max-height: 400px; overflow-y: auto;">
+                <table class="engage-table" id="raw-table">
+                    <thead>
+                        <tr><th>Time</th><th>Session</th><th>Event</th><th>Stage</th><th>Data</th></tr>
+                    </thead>
+                    <tbody id="raw-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ========================================
+// Dashboard Logic
+// ========================================
+
+const STORAGE_KEY = 'aurora_dashboard_webhook';
+let WEBHOOK_URL = localStorage.getItem(STORAGE_KEY) || '';
+let rawData = null;
+
+// On load
+document.addEventListener('DOMContentLoaded', () => {
+    // Try to auto-detect webhook URL from analytics.js default
+    if (!WEBHOOK_URL) {
+        WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw7YPAx6Nj4mRDvgzkXTq4PgeDXhfIXFTle-P1lbi3YNIFeadkMriw4Z7DEyKqsBMwzSA/exec';
+        if (WEBHOOK_URL) localStorage.setItem(STORAGE_KEY, WEBHOOK_URL);
+    }
+
+    if (WEBHOOK_URL) {
+        document.getElementById('dashboard').style.display = 'block';
+        loadData();
+    } else {
+        document.getElementById('config-screen').style.display = 'block';
+    }
+});
+
+function saveWebhook() {
+    const url = document.getElementById('webhook-input').value.trim();
+    if (!url) return;
+    WEBHOOK_URL = url;
+    localStorage.setItem(STORAGE_KEY, url);
+    document.getElementById('config-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadData();
+}
+
+async function loadData() {
+    const status = document.getElementById('status');
+    status.innerHTML = '<span class="dot dot--loading"></span> Fetching data...';
+
+    try {
+        const url = `${WEBHOOK_URL}?action=dashboard&t=${Date.now()}`;
+        const resp = await fetch(url);
+
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+        const rows = await resp.json();
+
+        // Debug: log first row keys to verify column mapping
+        if (rows.length > 0) console.log('[Dashboard] Row keys:', Object.keys(rows[0]), 'Sample row:', rows[0]);
+
+        // The Apps Script returns a flat array of row objects with sheet column names as keys
+        // Trim all keys to handle whitespace from Google Sheets headers
+        const cleanRows = rows.map(r => {
+            const cleaned = {};
+            Object.entries(r).forEach(([k, v]) => { cleaned[k.trim()] = v; });
+            return cleaned;
+        });
+
+        const events = cleanRows.map(r => {
+            // Parse the Data column (JSON string) back into an object
+            let parsedData = {};
+            const dataCol = r['Data'] || r['data'] || '';
+            if (dataCol && typeof dataCol === 'string') {
+                try { parsedData = JSON.parse(dataCol); } catch(e) {}
+            } else if (typeof dataCol === 'object') {
+                parsedData = dataCol;
+            }
+            return {
+                timestamp: r['timestamp'] || r['Timestamp'] || '',
+                sessionId: r['SessionId'] || r['sessionId'] || '',
+                userId: r['UserId'] || r['userId'] || '',
+                playCount: r['PlayCount'] || r['playCount'] || 0,
+                event: r['Event'] || r['event'] || '',
+                currentStage: r['Stage'] || r['stage'] || r['currentStage'] || '',
+                currentScreen: r['Screen'] || r['screen'] || r['currentScreen'] || '',
+                decisionsCount: r['DecisionsCount'] || r['decisionsCount'] || 0,
+                data: parsedData
+            };
+        });
+
+        // Compute summary from events
+        const summary = computeSummary(events);
+        const data = { events, summary };
+        rawData = data;
+
+        renderDashboard(data);
+        status.innerHTML = `<span class="dot dot--ok"></span> Updated ${new Date().toLocaleTimeString()} · ${events.length} events`;
+    } catch (err) {
+        console.error('Dashboard fetch error:', err);
+        status.innerHTML = `<span class="dot dot--err"></span> Error: ${err.message}`;
+
+        // If CORS error, show helpful message
+        if (err.message.includes('Failed to fetch') || err.message.includes('CORS')) {
+            status.innerHTML += ' (CORS — make sure Apps Script is deployed as "Anyone" access)';
+        }
+    }
+}
+
+function computeSummary(events) {
+    const sessionIds = new Set();
+    const userIds = new Set();
+    let gameStarts = 0;
+    let gameCompletes = 0;
+    const completionTimes = [];
+    let backstoryStarted = 0;
+    let backstoryCompleted = 0;
+    let muteCount = 0;
+    let mutedTrue = 0;
+    let audioSkipCount = 0;
+    const decisions = {};
+    const infoCardTypes = {};
+
+    events.forEach(e => {
+        if (e.sessionId) sessionIds.add(e.sessionId);
+        if (e.userId) userIds.add(e.userId);
+
+        switch (e.event) {
+            case 'game_start':
+                gameStarts++;
+                break;
+            case 'game_complete':
+                gameCompletes++;
+                if (e.data?.totalTime) completionTimes.push(e.data.totalTime);
+                break;
+            case 'backstory_progress':
+                backstoryStarted++;
+                break;
+            case 'backstory_complete':
+                backstoryCompleted++;
+                break;
+            case 'mute_toggle':
+                muteCount++;
+                if (e.data?.muted) mutedTrue++;
+                break;
+            case 'audio_skip':
+                audioSkipCount++;
+                break;
+            case 'decision_made':
+                if (e.data?.stage && e.data?.optionId) {
+                    const key = e.data.stage + ':' + e.data.optionId;
+                    decisions[key] = (decisions[key] || 0) + 1;
+                }
+                break;
+            case 'info_card_viewed':
+                if (e.data?.cardId) {
+                    const type = e.data.cardId.split('-')[0] || 'other';
+                    infoCardTypes[type] = (infoCardTypes[type] || 0) + 1;
+                }
+                break;
+        }
+    });
+
+    // Deduplicate backstory started (count unique sessions)
+    const backstorySessions = new Set();
+    events.filter(e => e.event === 'backstory_progress').forEach(e => backstorySessions.add(e.sessionId));
+    backstoryStarted = backstorySessions.size;
+
+    const avgCompletionTime = completionTimes.length > 0
+        ? completionTimes.reduce((a, b) => a + b, 0) / completionTimes.length
+        : 0;
+
+    // Compute avg session time for dropoff (sessions that started but didn't complete)
+    const completedSessions = new Set();
+    events.filter(e => e.event === 'game_complete').forEach(e => completedSessions.add(e.sessionId));
+
+    // For each non-completing session, find session duration from session_end totalTime or timestamp span
+    const sessionTimes = {};
+    events.forEach(e => {
+        if (!e.sessionId) return;
+        // Track session_end totalTime
+        if (e.event === 'session_end' && e.data?.totalTime) {
+            sessionTimes[e.sessionId] = e.data.totalTime;
+        }
+        // Track page_hidden timeOnPage as fallback
+        if (e.event === 'page_hidden' && e.data?.timeOnPage) {
+            if (!sessionTimes[e.sessionId] || e.data.timeOnPage > sessionTimes[e.sessionId]) {
+                sessionTimes[e.sessionId] = e.data.timeOnPage;
+            }
+        }
+    });
+
+    // For sessions without session_end/page_hidden, compute from timestamp span
+    const sessionTimestamps = {};
+    events.forEach(e => {
+        if (!e.sessionId || !e.timestamp) return;
+        const t = new Date(e.timestamp).getTime();
+        if (isNaN(t)) return;
+        if (!sessionTimestamps[e.sessionId]) sessionTimestamps[e.sessionId] = { min: t, max: t };
+        else {
+            sessionTimestamps[e.sessionId].min = Math.min(sessionTimestamps[e.sessionId].min, t);
+            sessionTimestamps[e.sessionId].max = Math.max(sessionTimestamps[e.sessionId].max, t);
+        }
+    });
+
+    const dropoffTimes = [];
+    sessionIds.forEach(sid => {
+        if (completedSessions.has(sid)) return; // skip completers
+        if (sessionTimes[sid]) {
+            dropoffTimes.push(sessionTimes[sid]);
+        } else if (sessionTimestamps[sid]) {
+            const span = (sessionTimestamps[sid].max - sessionTimestamps[sid].min) / 1000;
+            if (span > 0) dropoffTimes.push(span);
+        }
+    });
+
+    const avgDropoffTime = dropoffTimes.length > 0
+        ? dropoffTimes.reduce((a, b) => a + b, 0) / dropoffTimes.length
+        : 0;
+    const dropoffCount = dropoffTimes.length;
+
+    return {
+        totalSessions: sessionIds.size,
+        gameStarts,
+        gameCompletes,
+        completionRate: gameStarts > 0 ? ((gameCompletes / gameStarts) * 100).toFixed(0) : 0,
+        avgCompletionTime,
+        completionTimeDistribution: completionTimes,
+        backstoryStarted,
+        backstoryCompleted,
+        muteCount,
+        mutedTrue,
+        audioSkipCount,
+        decisions,
+        infoCardTypes,
+        avgDropoffTime,
+        dropoffCount
+    };
+}
+
+function renderDashboard(data) {
+    const { events = [], summary = {} } = data;
+
+    // ── KPIs ──
+    document.getElementById('kpi-sessions').textContent = fmt(summary.totalSessions || 0);
+    document.getElementById('kpi-sessions-sub').textContent = `${countUnique(events, 'userId')} unique users`;
+
+    document.getElementById('kpi-starts').textContent = fmt(summary.gameStarts || 0);
+    const startRate = summary.totalSessions > 0
+        ? ((summary.gameStarts / summary.totalSessions) * 100).toFixed(0) + '% of sessions'
+        : 'of sessions';
+    document.getElementById('kpi-starts-sub').textContent = startRate;
+
+    document.getElementById('kpi-completions').textContent = fmt(summary.gameCompletes || 0);
+    document.getElementById('kpi-completions-sub').textContent = `${summary.completionRate || 0}% completion rate`;
+
+    const avgMin = summary.avgCompletionTime ? (summary.avgCompletionTime / 60).toFixed(1) : '—';
+    document.getElementById('kpi-avgtime').textContent = avgMin === '—' ? '—' : avgMin;
+    document.getElementById('kpi-avgtime-sub').textContent = avgMin === '—' ? 'no completions yet' : 'minutes avg';
+
+    const dropMin = summary.avgDropoffTime ? (summary.avgDropoffTime / 60).toFixed(1) : '—';
+    document.getElementById('kpi-dropoff-time').textContent = dropMin === '—' ? '—' : dropMin;
+    document.getElementById('kpi-dropoff-time-sub').textContent = dropMin === '—' ? 'no dropoffs yet' : `${summary.dropoffCount} session${summary.dropoffCount !== 1 ? 's' : ''} · min avg`;
+
+    // ── Funnel ──
+    renderFunnel(events, summary);
+
+    // ── Time Distribution ──
+    renderTimeChart(summary.completionTimeDistribution || []);
+
+    // ── Decision Choices ──
+    renderDecisions(events, summary);
+
+    // ── Element Interactions ──
+    renderEngagement(events, summary);
+
+    // ── Info Card Types ──
+    renderCardTypes(summary.infoCardTypes || {});
+
+    // ── Audio & Backstory ──
+    renderAudio(events, summary);
+
+    // ── Sessions Over Time ──
+    renderTimeline(events);
+
+    // ── Feedback Ratings ──
+    renderRatings(events);
+
+    // ── Decision Paths ──
+    renderPaths(events);
+
+    // ── Raw Events ──
+    renderRawEvents(events);
+}
+
+// ── Funnel ──────────────────────────────────────────────────────────────────
+function renderFunnel(events, summary) {
+    const container = document.getElementById('funnel-container');
+
+    // Build funnel steps
+    const sessions = summary.totalSessions || 0;
+    const starts = summary.gameStarts || 0;
+    const backstory = summary.backstoryCompleted || 0;
+
+    // Count by stage
+    const stageReached = { d1: 0, d2: 0, d3: 0, d4: 0, d5: 0 };
+    const sessionStages = {};
+    events.forEach(e => {
+        if (e.event === 'screen_view' && e.data && e.data.screen === 'story') {
+            const stage = e.data.stage || e.currentStage;
+            if (stage && !sessionStages[e.sessionId + stage]) {
+                sessionStages[e.sessionId + stage] = true;
+                if (stageReached[stage] !== undefined) stageReached[stage]++;
+            }
+        }
+        // Fallback: count decision_made events
+        if (e.event === 'decision_made' && e.data && e.data.stage) {
+            const stage = e.data.stage;
+            const key = e.sessionId + stage + '_dec';
+            if (!sessionStages[key]) {
+                sessionStages[key] = true;
+                if (stageReached[stage] !== undefined) {
+                    stageReached[stage] = Math.max(stageReached[stage],
+                        (stageReached[stage] || 0));
+                }
+            }
+        }
+    });
+
+    // Also count from decisions
+    const decisionsByStage = {};
+    events.filter(e => e.event === 'decision_made').forEach(e => {
+        const key = e.sessionId + ':' + (e.data?.stage || '');
+        if (!decisionsByStage[key]) {
+            decisionsByStage[key] = true;
+            const s = e.data?.stage;
+            if (s && stageReached[s] !== undefined) {
+                stageReached[s]++;
+            }
+        }
+    });
+
+    const completes = summary.gameCompletes || 0;
+
+    const steps = [
+        { label: 'Sessions', count: sessions },
+        { label: 'Game Started', count: starts },
+        { label: 'Decision 1', count: stageReached.d1 || starts },
+        { label: 'Decision 2', count: stageReached.d2 || 0 },
+        { label: 'Decision 3', count: stageReached.d3 || 0 },
+        { label: 'Decision 4', count: stageReached.d4 || 0 },
+        { label: 'Decision 5', count: stageReached.d5 || 0 },
+        { label: 'Completed', count: completes }
+    ];
+
+    const maxCount = Math.max(...steps.map(s => s.count), 1);
+
+    container.innerHTML = steps.map((step, i) => {
+        const pct = (step.count / maxCount * 100).toFixed(0);
+        const drop = i > 0 && steps[i-1].count > 0
+            ? `-${((1 - step.count / steps[i-1].count) * 100).toFixed(0)}%`
+            : '';
+        const opacity = 1 - (i * 0.08);
+        return `
+            <div class="funnel-step">
+                <div class="funnel-label">${step.label}</div>
+                <div class="funnel-bar-wrap">
+                    <div class="funnel-bar" style="width:${Math.max(pct, 5)}%; opacity:${opacity};">
+                        <span>${step.count}</span>
+                    </div>
+                </div>
+                <div class="funnel-drop">${drop}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ── Time Distribution Chart ─────────────────────────────────────────────────
+function renderTimeChart(times) {
+    const ctx = document.getElementById('chart-time');
+    if (ctx._chart) ctx._chart.destroy();
+
+    if (times.length === 0) {
+        ctx._chart = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: ['No data'], datasets: [{ data: [0] }] },
+            options: { plugins: { legend: { display: false } } }
+        });
+        return;
+    }
+
+    // Bucket into minute ranges
+    const buckets = {};
+    times.forEach(t => {
+        const min = Math.floor(t / 60);
+        const label = `${min}-${min+1}m`;
+        buckets[label] = (buckets[label] || 0) + 1;
+    });
+
+    const labels = Object.keys(buckets);
+    const values = Object.values(buckets);
+
+    ctx._chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                data: values,
+                backgroundColor: 'rgba(245, 158, 11, 0.6)',
+                borderColor: 'rgba(245, 158, 11, 1)',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { ticks: { color: '#6B7280', font: { size: 11 } }, grid: { display: false } },
+                y: {
+                    ticks: { color: '#6B7280', font: { size: 11 }, stepSize: 1 },
+                    grid: { color: 'rgba(0,0,0,0.06)' },
+                    title: { display: true, text: 'Players', color: '#6B7280', font: { size: 11 } }
+                }
+            }
+        }
+    });
+}
+
+// ── Decision Choices ────────────────────────────────────────────────────────
+function renderDecisions(events, summary) {
+    const grid = document.getElementById('decision-grid');
+    const decisions = summary.decisions || {};
+
+    // Group by stage
+    const stages = {};
+    Object.entries(decisions).forEach(([key, count]) => {
+        const [stage, optionId] = key.split(':');
+        if (!stages[stage]) stages[stage] = [];
+
+        // Find option title from events
+        const evt = events.find(e =>
+            e.event === 'decision_made' && e.data?.optionId === optionId
+        );
+        const title = evt?.data?.optionTitle || optionId;
+        stages[stage].push({ optionId, title, count });
+    });
+
+    const stageNames = {
+        d1: 'Decision 1 — Initial Response',
+        d2: 'Decision 2 — Strategic Direction',
+        d3: 'Decision 3 — Platform Play',
+        d4: 'Decision 4 — Market Pivot',
+        d5: 'Decision 5 — Endgame'
+    };
+
+    const stageOrder = ['d1', 'd2', 'd3', 'd4', 'd5'];
+    const colors = ['#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981'];
+
+    grid.innerHTML = stageOrder.map((stage, si) => {
+        const opts = stages[stage] || [];
+        if (opts.length === 0) return '';
+
+        const totalForStage = opts.reduce((a, o) => a + o.count, 0);
+        const maxCount = Math.max(...opts.map(o => o.count), 1);
+
+        return `
+            <div class="decision-stage">
+                <div class="decision-stage-title">${stageNames[stage] || stage}</div>
+                <div class="decision-options">
+                    ${opts.sort((a,b) => b.count - a.count).map(o => {
+                        const pct = totalForStage > 0 ? ((o.count / totalForStage) * 100).toFixed(0) : 0;
+                        const barW = (o.count / maxCount * 100).toFixed(0);
+                        return `
+                            <div class="decision-opt">
+                                <div class="decision-opt-name" title="${o.title}">${o.title}</div>
+                                <div class="decision-opt-bar">
+                                    <div class="decision-opt-fill" style="width:${barW}%; background:${colors[si]}"></div>
+                                </div>
+                                <div class="decision-opt-count">${o.count}</div>
+                                <div class="decision-opt-pct">${pct}%</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ── Element Interactions ────────────────────────────────────────────────────
+function renderEngagement(events, summary) {
+    const tbody = document.getElementById('engage-tbody');
+    const starts = summary.gameStarts || 1;
+
+    const infoCardViews = events.filter(e => e.event === 'info_card_viewed').length;
+    const profileViews = events.filter(e => e.event === 'profile_viewed').length;
+    const artifactViews = events.filter(e => e.event === 'artifact_viewed').length;
+    const artifactCollOpens = events.filter(e => e.event === 'artifact_collection_opened').length;
+    const journeyViews = events.filter(e => e.event === 'journey_viewed').length;
+    const choiceExpands = events.filter(e => e.event === 'choice_expanded').length;
+    const csqSteps = events.filter(e => e.event === 'consequence_step').length;
+
+    const items = [
+        { name: 'Info Card Views', count: infoCardViews, rate: (infoCardViews / starts).toFixed(1) + '/player', badge: 'blue' },
+        { name: 'Choice Card Expands', count: choiceExpands, rate: (choiceExpands / starts).toFixed(1) + '/player', badge: 'blue' },
+        { name: 'Profile Icon Opens', count: profileViews, rate: ((profileViews / starts) * 100).toFixed(0) + '%', badge: 'green' },
+        { name: 'Artifact Collection Opens', count: artifactCollOpens, rate: ((artifactCollOpens / starts) * 100).toFixed(0) + '%', badge: 'amber' },
+        { name: 'Individual Artifact Views', count: artifactViews, rate: (artifactViews / starts).toFixed(1) + '/player', badge: 'blue' },
+        { name: 'Journey Modal Views', count: journeyViews, rate: ((journeyViews / starts) * 100).toFixed(0) + '%', badge: 'green' },
+        { name: 'Consequence Steps Viewed', count: csqSteps, rate: (csqSteps / starts).toFixed(1) + '/player', badge: 'blue' },
+    ];
+
+    tbody.innerHTML = items.map(it => `
+        <tr>
+            <td>${it.name}</td>
+            <td>${it.count}</td>
+            <td><span class="engage-badge badge-${it.badge}">${it.rate}</span></td>
+        </tr>
+    `).join('');
+}
+
+// ── Info Card Types Chart ───────────────────────────────────────────────────
+function renderCardTypes(types) {
+    const ctx = document.getElementById('chart-card-types');
+    if (ctx._chart) ctx._chart.destroy();
+
+    const labels = Object.keys(types);
+    const values = Object.values(types);
+
+    if (labels.length === 0) {
+        labels.push('No data');
+        values.push(0);
+    }
+
+    const bgColors = ['#3B82F6', '#4B9B4B', '#F59E0B', '#EC4899', '#8B5CF6', '#10B981', '#EF4444'];
+
+    ctx._chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels,
+            datasets: [{
+                data: values,
+                backgroundColor: bgColors.slice(0, labels.length),
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { color: '#6B7280', font: { size: 11 }, padding: 12 }
+                }
+            }
+        }
+    });
+}
+
+// ── Audio & Backstory ───────────────────────────────────────────────────────
+function renderAudio(events, summary) {
+    const tbody = document.getElementById('audio-tbody');
+    const starts = summary.gameStarts || 1;
+
+    const muteCount = summary.muteCount || 0;
+    const mutedTrue = summary.mutedTrue || 0;
+    const unmuted = muteCount - mutedTrue;
+    const audioSkips = summary.audioSkipCount || 0;
+    const backstoryStarted = summary.backstoryStarted || 0;
+    const backstoryCompleted = summary.backstoryCompleted || 0;
+    const backstoryRate = backstoryStarted > 0 ? ((backstoryCompleted / backstoryStarted) * 100).toFixed(0) : 0;
+
+    const rows = [
+        {
+            metric: 'Mute Toggles',
+            count: muteCount,
+            insight: `${mutedTrue} muted, ${unmuted} unmuted`
+        },
+        {
+            metric: 'Audio Skipped (consequence)',
+            count: audioSkips,
+            insight: audioSkips > 0 ? `${((audioSkips / starts) * 100).toFixed(0)}% of players skipped` : 'No skips'
+        },
+        {
+            metric: 'Backstory Started',
+            count: backstoryStarted,
+            insight: `${((backstoryStarted / starts) * 100).toFixed(0)}% chose backstory`
+        },
+        {
+            metric: 'Backstory Completed',
+            count: backstoryCompleted,
+            insight: `${backstoryRate}% completion of those who started`
+        }
+    ];
+
+    tbody.innerHTML = rows.map(r => `
+        <tr>
+            <td>${r.metric}</td>
+            <td>${r.count}</td>
+            <td style="color: var(--text-dim); font-size: 0.72rem;">${r.insight}</td>
+        </tr>
+    `).join('');
+}
+
+// ── Games Played & Completed Over Time ──────────────────────────────────────
+let _timelineEvents = [];
+let _timeGranularity = 'daily';
+
+function setTimeGranularity(mode) {
+    _timeGranularity = mode;
+    document.querySelectorAll('.time-toggle').forEach(b => b.classList.remove('active'));
+    document.getElementById('toggle-' + mode).classList.add('active');
+    renderTimeline(_timelineEvents);
+}
+
+function renderTimeline(events) {
+    _timelineEvents = events;
+    const ctx = document.getElementById('chart-timeline');
+    if (ctx._chart) ctx._chart.destroy();
+
+    // Set active toggle
+    document.querySelectorAll('.time-toggle').forEach(b => b.classList.remove('active'));
+    document.getElementById('toggle-' + _timeGranularity).classList.add('active');
+
+    const isHourly = _timeGranularity === 'hourly';
+
+    // Bucket helper
+    const getBucket = (timestamp) => {
+        const ts = String(timestamp);
+        if (isHourly) {
+            // Format: YYYY-MM-DD HH:00
+            const match = ts.match(/^(\d{4}-\d{2}-\d{2})T(\d{2})/);
+            if (match) return match[1] + ' ' + match[2] + ':00';
+            return null;
+        } else {
+            // Format: YYYY-MM-DD
+            const date = ts.split('T')[0];
+            return (date && date.length === 10) ? date : null;
+        }
+    };
+
+    // Format label for display
+    const formatLabel = (bucket) => {
+        if (isHourly) {
+            // "2026-03-13 14:00" → "Mar 13 2pm"
+            const parts = bucket.split(' ');
+            const [y, m, d] = parts[0].split('-');
+            const hour = parseInt(parts[1]);
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const ampm = hour >= 12 ? 'pm' : 'am';
+            const h12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+            return `${months[parseInt(m)-1]} ${parseInt(d)} ${h12}${ampm}`;
+        } else {
+            // "2026-03-13" → "Mar 13"
+            const [y, m, d] = bucket.split('-');
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            return `${months[parseInt(m)-1]} ${parseInt(d)}`;
+        }
+    };
+
+    // Count game_start and game_complete by bucket
+    const startsBucket = {};
+    const completesBucket = {};
+
+    events.forEach(e => {
+        const bucket = getBucket(e.timestamp);
+        if (!bucket) return;
+
+        if (e.event === 'game_start') {
+            startsBucket[bucket] = (startsBucket[bucket] || 0) + 1;
+        }
+        if (e.event === 'game_complete') {
+            completesBucket[bucket] = (completesBucket[bucket] || 0) + 1;
+        }
+    });
+
+    // Merge all buckets and sort
+    const allBuckets = [...new Set([...Object.keys(startsBucket), ...Object.keys(completesBucket)])].sort();
+
+    if (allBuckets.length === 0) {
+        allBuckets.push('No data');
+        startsBucket['No data'] = 0;
+        completesBucket['No data'] = 0;
+    }
+
+    const labels = allBuckets.map(formatLabel);
+    const startsData = allBuckets.map(b => startsBucket[b] || 0);
+    const completesData = allBuckets.map(b => completesBucket[b] || 0);
+
+    ctx._chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: 'Games Started',
+                    data: startsData,
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                    borderColor: '#3B82F6',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.7,
+                    categoryPercentage: 0.8
+                },
+                {
+                    label: 'Games Completed',
+                    data: completesData,
+                    backgroundColor: 'rgba(75, 155, 75, 0.7)',
+                    borderColor: '#4B9B4B',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.7,
+                    categoryPercentage: 0.8
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    align: 'end',
+                    labels: {
+                        color: '#6B7280',
+                        font: { size: 11 },
+                        boxWidth: 12,
+                        boxHeight: 12,
+                        borderRadius: 3,
+                        useBorderRadius: true,
+                        padding: 16
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(31, 41, 55, 0.95)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: 'rgba(0,0,0,0.1)',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    padding: 10,
+                    callbacks: {
+                        afterBody: function(items) {
+                            const started = items[0]?.raw || 0;
+                            const completed = items[1]?.raw || 0;
+                            if (started > 0) {
+                                const rate = ((completed / started) * 100).toFixed(0);
+                                return `\nCompletion rate: ${rate}%`;
+                            }
+                            return '';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#6B7280', font: { size: 10 }, maxRotation: 45 },
+                    grid: { display: false }
+                },
+                y: {
+                    ticks: { color: '#6B7280', font: { size: 11 }, stepSize: 1 },
+                    grid: { color: 'rgba(0,0,0,0.06)' },
+                    beginAtZero: true,
+                    title: { display: true, text: 'Count', color: '#6B7280', font: { size: 11 } }
+                }
+            }
+        }
+    });
+}
+
+// ── Feedback Ratings ────────────────────────────────────────────────────────
+function renderRatings(events) {
+    const ctx = document.getElementById('chart-ratings');
+    if (ctx._chart) ctx._chart.destroy();
+
+    const ratings = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    events.filter(e => e.event === 'feedback_submitted').forEach(e => {
+        const r = parseInt(e.data?.rating);
+        if (r >= 1 && r <= 5) ratings[r]++;
+    });
+
+    const labels = ['1 - Poor', '2 - Fair', '3 - Good', '4 - Great', '5 - Outstanding'];
+    const values = [ratings[1], ratings[2], ratings[3], ratings[4], ratings[5]];
+    const colors = ['#EF4444', '#F97316', '#F59E0B', '#84CC16', '#22C55E'];
+
+    ctx._chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                data: values,
+                backgroundColor: colors.map(c => c + '99'),
+                borderColor: colors,
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: {
+                x: {
+                    ticks: { color: '#6B7280', font: { size: 11 }, stepSize: 1 },
+                    grid: { color: 'rgba(0,0,0,0.06)' },
+                    beginAtZero: true
+                },
+                y: { ticks: { color: '#6B7280', font: { size: 11 } }, grid: { display: false } }
+            }
+        }
+    });
+}
+
+// ── Decision Paths ──────────────────────────────────────────────────────────
+function renderPaths(events) {
+    const container = document.getElementById('paths-container');
+
+    // Group decisions by session to find complete paths
+    const sessionPaths = {};
+    events.filter(e => e.event === 'decision_made').forEach(e => {
+        const sid = e.sessionId;
+        if (!sessionPaths[sid]) sessionPaths[sid] = [];
+        sessionPaths[sid].push(e.data?.optionTitle || e.data?.optionId || '?');
+    });
+
+    // Count unique paths
+    const pathCounts = {};
+    Object.values(sessionPaths).forEach(path => {
+        const key = path.join(' → ');
+        pathCounts[key] = (pathCounts[key] || 0) + 1;
+    });
+
+    const sorted = Object.entries(pathCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+    if (sorted.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-dim); font-size:0.8rem; padding:20px; text-align:center;">No paths recorded yet</div>';
+        return;
+    }
+
+    const maxCount = sorted[0][1];
+
+    container.innerHTML = sorted.map(([path, count], i) => `
+        <div style="display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border);">
+            <span style="font-size:0.7rem; color:var(--text-dim); width:20px; flex-shrink:0;">#${i+1}</span>
+            <div style="flex:1; font-size:0.72rem; color:var(--text); line-height:1.4; overflow:hidden;">${path}</div>
+            <div style="width:60px; height:6px; background:rgba(0,0,0,0.06); border-radius:3px; flex-shrink:0;">
+                <div style="width:${(count/maxCount*100).toFixed(0)}%; height:100%; background:var(--accent); border-radius:3px;"></div>
+            </div>
+            <span style="font-size:0.75rem; font-weight:600; color:var(--text); width:24px; text-align:right; flex-shrink:0;">${count}</span>
+        </div>
+    `).join('');
+}
+
+// ── Raw Events ──────────────────────────────────────────────────────────────
+function renderRawEvents(events) {
+    const tbody = document.getElementById('raw-tbody');
+    const recent = events.slice(-100).reverse();
+
+    tbody.innerHTML = recent.map(e => {
+        const time = e.timestamp ? new Date(e.timestamp).toLocaleString() : '—';
+        const sid = (e.sessionId || '').slice(-8);
+        const dataStr = e.data ? JSON.stringify(e.data).slice(0, 80) : '';
+        return `
+            <tr>
+                <td style="white-space:nowrap; font-size:0.7rem;">${time}</td>
+                <td style="font-family:monospace; font-size:0.7rem; color:var(--text-dim);">…${sid}</td>
+                <td><span class="engage-badge badge-blue">${e.event || ''}</span></td>
+                <td style="font-size:0.7rem;">${e.currentStage || ''}</td>
+                <td style="font-size:0.65rem; color:var(--text-dim); max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${dataStr}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function toggleRaw() {
+    const el = document.getElementById('raw-events');
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────────────
+function fmt(n) { return n.toLocaleString(); }
+
+function countUnique(events, field) {
+    const set = new Set();
+    events.forEach(e => { if (e[field]) set.add(e[field]); });
+    return set.size;
+}
+</script>
+
+</body>
+</html>

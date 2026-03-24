@@ -14,6 +14,10 @@ const Narration = (() => {
     let _onEndCallback = null;
     let _audioDuration = 0;
 
+    let _viewportEl = null;
+    let _userScrolling = false;
+    let _userScrollTimer = null;
+
     // Build the crawl container — replaces the story text area
     function _renderCrawl(text, targetEl) {
         // Split into paragraphs
@@ -23,34 +27,66 @@ const Narration = (() => {
         card.className = 'narration-crawl-wrapper';
         card.id = 'narration-card';
         card.innerHTML = `
-            <div class="narration-crawl-viewport">
+            <div class="narration-crawl-viewport" id="narration-viewport">
                 <div class="narration-crawl-fade narration-crawl-fade--top"></div>
-                <div class="narration-crawl-perspective">
+                <div class="narration-crawl-content">
                     <div class="narration-crawl-text" id="narration-crawl-text">
                         ${paragraphs.map(p => `<p>${p.trim()}</p>`).join('')}
                     </div>
                 </div>
                 <div class="narration-crawl-fade narration-crawl-fade--bottom"></div>
-                <div class="narration-controls">
-                    <button class="narration-btn" id="narration-play-btn" aria-label="Play/Pause">
-                        <i class="ph ph-pause" id="narration-play-icon"></i>
-                    </button>
-                    <div class="narration-progress-bar" id="narration-progress-bar">
-                        <div class="narration-progress-fill" id="narration-progress-fill"></div>
-                    </div>
+            </div>
+            <div class="narration-controls">
+                <button class="narration-btn" id="narration-play-btn" aria-label="Play/Pause">
+                    <i class="ph ph-pause" id="narration-play-icon"></i>
+                </button>
+                <div class="narration-progress-bar" id="narration-progress-bar">
+                    <div class="narration-progress-fill" id="narration-progress-fill"></div>
                 </div>
+                <button class="narration-speed-btn" id="narration-speed-btn" aria-label="Playback speed">1x</button>
             </div>
         `;
 
         targetEl.after(card);
         _container = card;
         _crawlEl = document.getElementById('narration-crawl-text');
+        _viewportEl = document.getElementById('narration-viewport');
+
+        // Detect user manual scrolling — pause auto-scroll briefly
+        _viewportEl.addEventListener('touchstart', () => { _userScrolling = true; }, { passive: true });
+        _viewportEl.addEventListener('touchend', () => {
+            clearTimeout(_userScrollTimer);
+            _userScrollTimer = setTimeout(() => { _userScrolling = false; }, 3000);
+        }, { passive: true });
+        _viewportEl.addEventListener('wheel', () => {
+            _userScrolling = true;
+            clearTimeout(_userScrollTimer);
+            _userScrollTimer = setTimeout(() => { _userScrolling = false; }, 3000);
+        }, { passive: true });
 
         // Wire play/pause
-        document.getElementById('narration-play-btn').addEventListener('click', () => {
+        document.getElementById('narration-play-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
             if (_loading) return;
             if (_playing) pause();
             else resume();
+            _userScrolling = false;
+            clearTimeout(_userScrollTimer);
+        });
+
+        // Wire speed button
+        const speedBtn = document.getElementById('narration-speed-btn');
+        const speeds = [1, 1.5, 2];
+        let speedIdx = 0;
+        speedBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            speedIdx = (speedIdx + 1) % speeds.length;
+            const rate = speeds[speedIdx];
+            speedBtn.textContent = rate + 'x';
+            if (_audio) _audio.playbackRate = rate;
+            // Resume auto-scroll immediately (speed button is not manual scroll)
+            _userScrolling = false;
+            clearTimeout(_userScrollTimer);
         });
 
         return card;
@@ -66,16 +102,13 @@ const Narration = (() => {
         const fill = document.getElementById('narration-progress-fill');
         if (fill) fill.style.width = `${progress * 100}%`;
 
-        // Scroll the crawl text — starts at bottom of viewport, scrolls up
-        if (_crawlEl) {
-            const viewport = _crawlEl.parentElement;
-            const vpHeight = viewport ? viewport.clientHeight : 400;
-            // Start position: text begins near bottom of viewport (80% down)
-            const startOffset = vpHeight * 0.8;
-            // End position: text scrolled fully past top
-            const totalTravel = startOffset + _crawlEl.scrollHeight;
-            const offset = startOffset - (progress * totalTravel);
-            _crawlEl.style.transform = `translateY(${offset}px)`;
+        // Auto-scroll the viewport (unless user is manually scrolling)
+        if (_viewportEl && _crawlEl && !_userScrolling) {
+            const contentHeight = _crawlEl.scrollHeight;
+            const vpHeight = _viewportEl.clientHeight - 48; // minus controls
+            const maxScroll = _viewportEl.scrollHeight - _viewportEl.clientHeight;
+            const targetScroll = progress * maxScroll;
+            _viewportEl.scrollTop = targetScroll;
         }
     }
 
@@ -86,10 +119,13 @@ const Narration = (() => {
 
     // ── Public API ───────────────────────────────────────────────────────────
 
-    function start(text, audioSrc, targetEl, onEnd) {
+    let _onErrorCallback = null;
+
+    function start(text, audioSrc, targetEl, onEnd, onError) {
         stop();
 
         _onEndCallback = onEnd || null;
+        _onErrorCallback = onError || null;
 
         // Render the crawl UI
         _renderCrawl(text, targetEl);
@@ -106,19 +142,35 @@ const Narration = (() => {
         _audio.addEventListener('canplaythrough', () => {
             if (!_loading) return;
             _loading = false;
-            _playing = true;
             _audioDuration = _audio.duration;
-            _setIcon('pause');
 
-            // Position crawl text at bottom of viewport initially (80% down)
-            if (_crawlEl) {
-                const viewport = _crawlEl.parentElement;
-                const vpHeight = viewport ? viewport.clientHeight : 400;
-                _crawlEl.style.transform = `translateY(${vpHeight * 0.8}px)`;
+            // Respect global mute state
+            if (typeof AudioEngine !== 'undefined' && AudioEngine.isMuted()) {
+                _audio.muted = true;
             }
 
-            _audio.play();
-            _updateInterval = setInterval(_syncCrawl, 40);
+            // Scroll to top initially
+            if (_viewportEl) {
+                _viewportEl.scrollTop = 0;
+            }
+
+            // play() returns a Promise — handle autoplay policy rejection
+            const playPromise = _audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    _playing = true;
+                    _setIcon('pause');
+                    _updateInterval = setInterval(_syncCrawl, 40);
+                }).catch(() => {
+                    // Autoplay blocked by browser — wait for user gesture
+                    _playing = false;
+                    _setIcon('play');
+                });
+            } else {
+                _playing = true;
+                _setIcon('pause');
+                _updateInterval = setInterval(_syncCrawl, 40);
+            }
         }, { once: true });
 
         _audio.addEventListener('ended', () => {
@@ -136,10 +188,10 @@ const Narration = (() => {
             console.error('Narration audio error:', e);
             _loading = false;
             _setIcon('play');
-            if (_container) {
-                _container.remove();
-                _container = null;
+            if (typeof AudioEngine !== 'undefined' && AudioEngine.isStarted()) {
+                AudioEngine.duckVolume(false);
             }
+            if (_onErrorCallback) _onErrorCallback();
         });
 
         _audio.load();
@@ -155,11 +207,24 @@ const Narration = (() => {
 
     function resume() {
         if (_audio && !_playing) {
-            _audio.play();
-            _playing = true;
-            _setIcon('pause');
-            if (!_updateInterval) {
-                _updateInterval = setInterval(_syncCrawl, 40);
+            const playPromise = _audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    _playing = true;
+                    _setIcon('pause');
+                    if (!_updateInterval) {
+                        _updateInterval = setInterval(_syncCrawl, 40);
+                    }
+                }).catch(() => {
+                    _playing = false;
+                    _setIcon('play');
+                });
+            } else {
+                _playing = true;
+                _setIcon('pause');
+                if (!_updateInterval) {
+                    _updateInterval = setInterval(_syncCrawl, 40);
+                }
             }
         }
     }
@@ -174,6 +239,9 @@ const Narration = (() => {
         _loading = false;
         _audioDuration = 0;
         _crawlEl = null;
+        _viewportEl = null;
+        _userScrolling = false;
+        clearTimeout(_userScrollTimer);
         clearInterval(_updateInterval);
         _updateInterval = null;
 
@@ -279,5 +347,9 @@ const Narration = (() => {
         return hex(state[0]) + hex(state[1]) + hex(state[2]) + hex(state[3]);
     }
 
-    return { start, pause, resume, stop, isPlaying, textHash };
+    function setMuted(muted) {
+        if (_audio) _audio.muted = muted;
+    }
+
+    return { start, pause, resume, stop, isPlaying, textHash, setMuted };
 })();

@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metrics Update v4</title>
+<style>
+  :root {
+    --bg: #F5F2EE;
+    --ink: #1A1718;
+    --ink-mid: rgba(26, 23, 24, 0.4);
+    --ink-dim: rgba(26, 23, 24, 0.12);
+    --ink-ghost: rgba(26, 23, 24, 0.06);
+    --coral: #E8856C;
+    --coral-mid: rgba(232, 133, 108, 0.5);
+    --coral-dim: rgba(232, 133, 108, 0.15);
+    --coral-glow: rgba(232, 133, 108, 0.3);
+    --line: rgba(26, 23, 24, 0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  .screen {
+    position: relative;
+    width: 390px;
+    height: 700px;
+    overflow: hidden;
+  }
+
+  /* ═══ PROPAGATION NETWORK BACKGROUND ═══ */
+  .network-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* network lines */
+  .net-line {
+    stroke: var(--ink-mid);
+    stroke-width: 1;
+    fill: none;
+    opacity: 0;
+  }
+  .net-line.active {
+    animation: netLineIn 0.6s ease-out forwards;
+  }
+  @keyframes netLineIn {
+    0%   { opacity: 0; stroke-dashoffset: 300; }
+    40%  { stroke: var(--ink-mid); }
+    100% { opacity: 0.25; stroke-dashoffset: 0; }
+  }
+
+  .net-line { stroke-dasharray: 300; stroke-dashoffset: 300; }
+
+  .nl-1  { animation-delay: 0.02s !important; }
+  .nl-2  { animation-delay: 0.06s !important; }
+  .nl-3  { animation-delay: 0.04s !important; }
+  .nl-4  { animation-delay: 0.08s !important; }
+  .nl-5  { animation-delay: 0.05s !important; }
+  .nl-6  { animation-delay: 0.10s !important; }
+
+  /* secondary branches */
+  .net-branch {
+    stroke: var(--ink-dim);
+    stroke-width: 0.7;
+    fill: none;
+    stroke-dasharray: 150;
+    stroke-dashoffset: 150;
+    opacity: 0;
+  }
+  .net-branch.active {
+    animation: branchIn 0.45s ease-out forwards;
+  }
+  @keyframes branchIn {
+    0%   { opacity: 0; stroke-dashoffset: 150; }
+    100% { opacity: 0.18; stroke-dashoffset: 0; }
+  }
+
+  .nb-1  { animation-delay: 0.20s !important; }
+  .nb-2  { animation-delay: 0.24s !important; }
+  .nb-3  { animation-delay: 0.22s !important; }
+  .nb-4  { animation-delay: 0.26s !important; }
+  .nb-5  { animation-delay: 0.23s !important; }
+  .nb-6  { animation-delay: 0.28s !important; }
+  .nb-7  { animation-delay: 0.25s !important; }
+  .nb-8  { animation-delay: 0.30s !important; }
+  .nb-9  { animation-delay: 0.27s !important; }
+  .nb-10 { animation-delay: 0.32s !important; }
+  .nb-11 { animation-delay: 0.29s !important; }
+  .nb-12 { animation-delay: 0.34s !important; }
+
+  /* network nodes */
+  .net-node {
+    fill: var(--ink);
+    opacity: 0;
+  }
+  .net-node.active {
+    animation: netNodeIn 0.4s ease-out forwards;
+  }
+  @keyframes netNodeIn {
+    0%   { opacity: 0; }
+    50%  { opacity: 0.45; }
+    100% { opacity: 0.25; }
+  }
+
+  .nn-1  { animation-delay: 0.12s !important; }
+  .nn-2  { animation-delay: 0.16s !important; }
+  .nn-3  { animation-delay: 0.14s !important; }
+  .nn-4  { animation-delay: 0.18s !important; }
+  .nn-5  { animation-delay: 0.15s !important; }
+  .nn-6  { animation-delay: 0.20s !important; }
+
+  /* tertiary nodes */
+  .net-node-t {
+    fill: var(--ink);
+    opacity: 0;
+  }
+  .net-node-t.active {
+    animation: netNodeTIn 0.3s ease-out forwards;
+  }
+  @keyframes netNodeTIn {
+    0% { opacity: 0; } 50% { opacity: 0.3; } 100% { opacity: 0.15; }
+  }
+  .nnt-1  { animation-delay: 0.30s !important; }
+  .nnt-2  { animation-delay: 0.33s !important; }
+  .nnt-3  { animation-delay: 0.31s !important; }
+  .nnt-4  { animation-delay: 0.35s !important; }
+  .nnt-5  { animation-delay: 0.32s !important; }
+  .nnt-6  { animation-delay: 0.36s !important; }
+  .nnt-7  { animation-delay: 0.34s !important; }
+  .nnt-8  { animation-delay: 0.37s !important; }
+
+  /* signal fragments on network */
+  .net-sig {
+    fill: none;
+    stroke: var(--coral);
+    stroke-width: 1.2;
+    opacity: 0;
+  }
+  .net-sig.active {
+    animation: netSigIn 0.5s ease-out forwards;
+  }
+  .net-sig-fill {
+    fill: var(--coral);
+    stroke: none;
+    opacity: 0;
+  }
+  .net-sig-fill.active {
+    animation: netSigIn 0.4s ease-out forwards;
+  }
+  .net-sig-ink line {
+    stroke: var(--ink);
+    stroke-width: 1;
+    opacity: 0;
+  }
+  .net-sig-ink.active line {
+    animation: netSigInkIn 0.35s ease-out forwards;
+  }
+  .net-glyph {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+    opacity: 0;
+  }
+  .net-glyph.active {
+    animation: netSigIn 0.5s ease-out forwards;
+  }
+  .ng-coral { fill: var(--coral); }
+  .ng-ink   { fill: var(--ink); }
+
+  @keyframes netSigIn {
+    0% { opacity: 0; } 20% { opacity: 0.7; } 100% { opacity: 0.2; }
+  }
+  @keyframes netSigInkIn {
+    0% { opacity: 0; } 20% { opacity: 0.5; } 100% { opacity: 0.15; }
+  }
+
+  .ns-1  { animation-delay: 0.15s !important; }
+  .ns-2  { animation-delay: 0.19s !important; }
+  .ns-3  { animation-delay: 0.17s !important; }
+  .ns-4  { animation-delay: 0.22s !important; }
+  .ns-5  { animation-delay: 0.20s !important; }
+  .ns-6  { animation-delay: 0.25s !important; }
+  .ns-7  { animation-delay: 0.18s !important; }
+  .ns-8  { animation-delay: 0.28s !important; }
+  .ns-9  { animation-delay: 0.23s !important; }
+  .ns-10 { animation-delay: 0.26s !important; }
+
+  /* gentle network pulse — breathes after initial draw */
+  .network-layer.breathing .net-line {
+    animation: breatheLine 2.5s ease-in-out infinite !important;
+  }
+  .network-layer.breathing .net-node {
+    animation: breatheNode 2.5s ease-in-out infinite !important;
+  }
+  .network-layer.breathing .net-branch {
+    animation: breatheBranch 2.5s ease-in-out infinite !important;
+  }
+  .network-layer.breathing .net-sig,
+  .network-layer.breathing .net-sig-fill {
+    animation: breatheSig 2s ease-in-out infinite !important;
+  }
+
+  @keyframes breatheLine {
+    0%   { opacity: 0.12; }
+    50%  { opacity: 0.25; }
+    100% { opacity: 0.12; }
+  }
+  @keyframes breatheNode {
+    0%   { opacity: 0.15; }
+    50%  { opacity: 0.35; }
+    100% { opacity: 0.15; }
+  }
+  @keyframes breatheBranch {
+    0%   { opacity: 0.08; }
+    50%  { opacity: 0.18; }
+    100% { opacity: 0.08; }
+  }
+  @keyframes breatheSig {
+    0%   { opacity: 0.10; }
+    50%  { opacity: 0.25; }
+    100% { opacity: 0.10; }
+  }
+
+  /* ghost icons */
+  .ghost-icon { opacity: 0; }
+  .ghost-icon.active {
+    animation: ghostIn 0.8s ease-out forwards;
+  }
+  @keyframes ghostIn {
+    0% { opacity: 0; } 20% { opacity: 0.15; } 100% { opacity: 0.10; }
+  }
+  .gi-1 { animation-delay: 0.10s !important; }
+  .gi-2 { animation-delay: 0.16s !important; }
+  .gi-3 { animation-delay: 0.13s !important; }
+
+  /* ═══ FLOATING NUMBERS ═══ */
+  .float-num {
+    position: absolute;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .fn-1  { left: 8%;  top: 15%; animation: floatA 2.4s ease-in-out forwards; }
+  .fn-2  { left: 78%; top: 12%; animation: floatB 2.6s ease-in-out forwards; }
+  .fn-3  { left: 14%; top: 68%; animation: floatC 2.2s ease-in-out forwards; }
+  .fn-4  { left: 72%; top: 72%; animation: floatA 2.5s ease-in-out 0.1s forwards; }
+  .fn-5  { left: 42%; top: 18%; animation: floatB 2.3s ease-in-out 0.05s forwards; }
+  .fn-6  { left: 60%; top: 85%; animation: floatC 2.4s ease-in-out 0.08s forwards; }
+  .fn-7  { left: 5%;  top: 42%; animation: floatA 2.7s ease-in-out 0.02s forwards; }
+  .fn-8  { left: 85%; top: 48%; animation: floatB 2.5s ease-in-out 0.06s forwards; }
+  .fn-9  { left: 28%; top: 88%; animation: floatC 2.3s ease-in-out 0.12s forwards; }
+  .fn-10 { left: 88%; top: 28%; animation: floatA 2.6s ease-in-out 0.04s forwards; }
+
+  @keyframes floatA {
+    0%   { opacity: 0; transform: translateY(8px); }
+    8%   { opacity: 0.28; }
+    50%  { opacity: 0.15; transform: translateY(-14px); }
+    85%  { opacity: 0.18; }
+    100% { opacity: 0; transform: translateY(-30px); }
+  }
+  @keyframes floatB {
+    0%   { opacity: 0; transform: translateY(6px) translateX(0); }
+    8%   { opacity: 0.22; }
+    50%  { opacity: 0.12; transform: translateY(-10px) translateX(6px); }
+    85%  { opacity: 0.15; }
+    100% { opacity: 0; transform: translateY(-26px) translateX(8px); }
+  }
+  @keyframes floatC {
+    0%   { opacity: 0; transform: translateY(10px) translateX(0); }
+    8%   { opacity: 0.25; }
+    50%  { opacity: 0.14; transform: translateY(-8px) translateX(-5px); }
+    85%  { opacity: 0.16; }
+    100% { opacity: 0; transform: translateY(-24px) translateX(-4px); }
+  }
+
+  /* ═══ DRIFTING SHAPES ═══ */
+  .drift-shape {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+  }
+
+  .ds-diamond { width: 10px; height: 10px; border: 1.5px solid var(--coral); transform: rotate(45deg); }
+  .ds-circle  { width: 6px; height: 6px; border-radius: 50%; background: var(--coral); }
+  .ds-plus    { width: 8px; height: 8px; position: relative; }
+  .ds-plus::before, .ds-plus::after { content: ''; position: absolute; background: var(--ink); }
+  .ds-plus::before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
+  .ds-plus::after  { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
+
+  .ds-1 { left: 12%; top: 22%; animation: driftUp 2.8s ease-in-out forwards; }
+  .ds-2 { left: 82%; top: 60%; animation: driftUpR 2.5s ease-in-out 0.1s forwards; }
+  .ds-3 { left: 50%; top: 6%;  animation: driftDown 2.6s ease-in-out 0.05s forwards; }
+  .ds-4 { left: 30%; top: 80%; animation: driftUp 2.4s ease-in-out 0.08s forwards; }
+  .ds-5 { left: 90%; top: 18%; animation: driftUpR 2.8s ease-in-out 0.02s forwards; }
+  .ds-6 { left: 6%;  top: 55%; animation: driftUp 2.3s ease-in-out 0.12s forwards; }
+  .ds-7 { left: 75%; top: 88%; animation: driftUpR 2.6s ease-in-out 0.06s forwards; }
+  .ds-8 { left: 18%; top: 82%; animation: driftUp 2.5s ease-in-out 0.04s forwards; }
+  .ds-9 { left: 85%; top: 38%; animation: driftUpR 2.7s ease-in-out 0.09s forwards; }
+
+  @keyframes driftUp {
+    0% { opacity: 0; transform: translateY(0); }
+    6% { opacity: 0.35; }
+    40% { opacity: 0.20; }
+    80% { opacity: 0.14; transform: translateY(-35px); }
+    100% { opacity: 0; transform: translateY(-45px); }
+  }
+  @keyframes driftUpR {
+    0% { opacity: 0; transform: translate(0, 0); }
+    6% { opacity: 0.30; }
+    40% { opacity: 0.18; }
+    80% { opacity: 0.12; transform: translate(10px, -28px); }
+    100% { opacity: 0; transform: translate(14px, -38px); }
+  }
+  @keyframes driftDown {
+    0% { opacity: 0; transform: translateY(0); }
+    6% { opacity: 0.30; }
+    40% { opacity: 0.16; }
+    80% { opacity: 0.12; transform: translateY(22px); }
+    100% { opacity: 0; transform: translateY(32px); }
+  }
+
+  /* ═══ FLICKER BARS ═══ */
+  .flicker-bar {
+    position: absolute;
+    height: 1px;
+    background: var(--ink);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .fb-1 { left: 5%;  width: 40px; top: 20%; animation: flicker 2.2s ease-in-out forwards; }
+  .fb-2 { left: 80%; width: 48px; top: 35%; animation: flicker 2.4s ease-in-out 0.15s forwards; }
+  .fb-3 { left: 10%; width: 32px; top: 75%; animation: flicker 2.0s ease-in-out 0.08s forwards; }
+  .fb-4 { left: 75%; width: 42px; top: 80%; animation: flicker 2.3s ease-in-out 0.2s forwards; }
+  .fb-5 { left: 40%; width: 26px; top: 8%;  animation: flicker 2.5s ease-in-out 0.05s forwards; }
+
+  @keyframes flicker {
+    0% { opacity: 0; }
+    5% { opacity: 0.18; } 15% { opacity: 0.06; }
+    25% { opacity: 0.15; } 35% { opacity: 0.04; }
+    50% { opacity: 0.12; } 65% { opacity: 0.06; }
+    75% { opacity: 0.14; } 85% { opacity: 0.04; }
+    100% { opacity: 0; }
+  }
+
+  /* ═══ CONTENT ═══ */
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 28px;
+  }
+
+  .status-label {
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+    opacity: 0;
+    margin-bottom: 44px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .status-label.active { animation: labelIn 0.2s ease-out 0.05s forwards; }
+  @keyframes labelIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+
+  .pulse-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    border: 1px solid var(--coral);
+    position: relative;
+  }
+  .pulse-dot::after {
+    content: '';
+    position: absolute; inset: 1px;
+    border-radius: 50%;
+    background: var(--coral);
+    animation: dotPulse 0.5s ease-in-out infinite alternate;
+  }
+  @keyframes dotPulse { 0% { opacity: 0.2; } 100% { opacity: 1; } }
+
+  /* ─── METRIC CARD — ALIGNED GRID ─── */
+  .metric-card {
+    width: 100%;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--ink-ghost);
+    opacity: 0;
+  }
+  .metric-card:first-of-type {
+    border-top: 1px solid var(--ink-ghost);
+  }
+  .metric-card.active { animation: cardIn 0.2s ease-out forwards; }
+
+  .mc-1.active { animation-delay: 0.0s; }
+  .mc-2.active { animation-delay: 0.06s; }
+  .mc-3.active { animation-delay: 0.12s; }
+
+  @keyframes cardIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+
+  .metric-label {
+    font-size: 11px;
+    color: var(--ink-mid);
+    letter-spacing: 0.5px;
+    font-weight: 400;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  /* value row — 3 columns only, centered */
+  .value-row {
+    display: grid;
+    grid-template-columns: 90px 44px 90px;
+    align-items: center;
+    gap: 24px;
+    justify-content: center;
+  }
+
+  .value-current {
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    text-align: right;
+    opacity: 0;
+    font-variant-numeric: tabular-nums;
+    line-height: 34px;
+  }
+
+  /* before values appear immediately with cards */
+  .metric-card.active .value-current {
+    animation: beforeIn 0.25s ease-out forwards;
+  }
+  .mc-1.active .value-current { animation-delay: 0.05s; }
+  .mc-2.active .value-current { animation-delay: 0.11s; }
+  .mc-3.active .value-current { animation-delay: 0.17s; }
+
+  @keyframes beforeIn {
+    0%   { opacity: 0; transform: translateY(4px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* arrow — bold directional indicator */
+  .value-arrow {
+    font-size: 22px;
+    font-weight: 800;
+    text-align: center;
+    opacity: 0;
+    line-height: 34px;
+  }
+  .value-arrow.arrow-up   { color: #5A8A6A; }
+  .value-arrow.arrow-down { color: #C25B4A; }
+
+  .value-next-wrap {
+    position: relative;
+    height: 34px;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+  }
+
+  .value-scramble {
+    position: absolute;
+    left: 0;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--coral);
+    letter-spacing: -0.5px;
+    opacity: 0;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .value-resolved {
+    position: absolute;
+    left: 0;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    opacity: 0;
+    transform: translateY(8px);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  /* phase 2: arrow and scramble appear */
+  .metric-card.show-after .value-arrow {
+    animation: afterPartIn 0.2s ease-out forwards;
+  }
+  .metric-card.show-after .value-scramble {
+    animation: afterPartIn 0.2s ease-out forwards;
+  }
+
+  .mc-1.show-after .value-arrow    { animation-delay: 0.0s; }
+  .mc-1.show-after .value-scramble { animation-delay: 0.05s; }
+  .mc-2.show-after .value-arrow    { animation-delay: 0.08s; }
+  .mc-2.show-after .value-scramble { animation-delay: 0.13s; }
+  .mc-3.show-after .value-arrow    { animation-delay: 0.16s; }
+  .mc-3.show-after .value-scramble { animation-delay: 0.21s; }
+
+  @keyframes afterPartIn {
+    0%   { opacity: 0; }
+    100% { opacity: 0.7; }
+  }
+
+  /* phase 3: reveal resolved values */
+  .metric-card.revealing .value-scramble {
+    animation: scrambleOut 0.15s ease-in forwards !important;
+  }
+  .metric-card.revealing .value-resolved {
+    animation: resolveIn 0.25s ease-out forwards !important;
+  }
+
+  .mc-1.revealing .value-scramble { animation-delay: 0.00s !important; }
+  .mc-1.revealing .value-resolved { animation-delay: 0.10s !important; }
+  .mc-2.revealing .value-scramble { animation-delay: 0.10s !important; }
+  .mc-2.revealing .value-resolved { animation-delay: 0.20s !important; }
+  .mc-3.revealing .value-scramble { animation-delay: 0.20s !important; }
+  .mc-3.revealing .value-resolved { animation-delay: 0.30s !important; }
+
+  @keyframes scrambleOut {
+    0% { opacity: 0.7; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+  }
+  @keyframes resolveIn {
+    0% { opacity: 0; transform: translateY(8px); }
+    60% { opacity: 1; transform: translateY(-2px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .value-delta {
+    position: absolute;
+    left: 0;
+    top: -15px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    opacity: 0;
+    white-space: nowrap;
+    line-height: 1;
+  }
+  .delta-up   { color: #5A8A6A; }
+  .delta-down { color: #C25B4A; }
+
+  .metric-card.revealing .value-delta {
+    animation: deltaIn 0.2s ease-out forwards;
+  }
+  .mc-1.revealing .value-delta { animation-delay: 0.20s !important; }
+  .mc-2.revealing .value-delta { animation-delay: 0.30s !important; }
+  .mc-3.revealing .value-delta { animation-delay: 0.40s !important; }
+
+  @keyframes deltaIn {
+    0% { opacity: 0; transform: translateY(4px); }
+    60% { opacity: 0.7; }
+    100% { opacity: 0.6; transform: translateY(0); }
+  }
+
+  /* ─── SCAN LINE ─── */
+  .scan-line {
+    position: absolute;
+    left: 28px; right: 28px;
+    height: 1px;
+    background: var(--coral);
+    opacity: 0;
+    top: 50%;
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 8;
+  }
+  .scan-line.active {
+    animation: scanSweep 0.35s ease-out 0.02s forwards;
+  }
+  @keyframes scanSweep {
+    0% { opacity: 0; transform: scaleX(0); }
+    20% { opacity: 0.35; }
+    60% { opacity: 0.12; transform: scaleX(1); }
+    100% { opacity: 0; transform: scaleX(1); }
+  }
+
+  /* ─── NETWORK SLOW FADEOUT ─── */
+  .network-layer.fading {
+    transition: opacity 0.8s ease-in;
+    opacity: 0 !important;
+  }
+
+  /* ─── EXIT (metrics only, at the very end) ─── */
+  .screen.exiting .metric-card,
+  .screen.exiting .status-label {
+    animation: exitUp 0.3s ease-in forwards !important;
+  }
+  .screen.exiting .mc-1 { animation-delay: 0.00s !important; }
+  .screen.exiting .mc-2 { animation-delay: 0.05s !important; }
+  .screen.exiting .mc-3 { animation-delay: 0.10s !important; }
+  .screen.exiting .status-label { animation-delay: 0.00s !important; }
+
+  @keyframes exitUp {
+    0% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-8px); }
+  }
+
+  .replay-btn {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    background: none; border: 1px solid var(--ink-dim);
+    color: var(--ink-mid); font-family: inherit;
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 10px 28px; cursor: pointer; transition: border-color 0.2s; z-index: 100;
+  }
+  .replay-btn:hover { border-color: var(--coral); color: var(--coral); }
+</style>
+</head>
+<body>
+
+<div class="screen" id="screen">
+
+  <!-- ═══ PROPAGATION NETWORK (edges + corners, center clear) ═══ -->
+  <svg class="network-layer" id="networkLayer" viewBox="0 0 390 700" preserveAspectRatio="xMidYMid meet">
+
+    <!-- ══ TOP-LEFT CLUSTER ══ -->
+    <line class="net-line nl-1" x1="70" y1="130" x2="15"  y2="35"  />
+    <line class="net-line nl-2" x1="70" y1="130" x2="140" y2="55"  />
+    <line class="net-line nl-3" x1="70" y1="130" x2="25"  y2="195" />
+    <line class="net-branch nb-1" x1="15"  y1="35"  x2="55"  y2="8"   />
+    <line class="net-branch nb-2" x1="15"  y1="35"  x2="0"   y2="70"  />
+    <line class="net-branch nb-3" x1="140" y1="55"  x2="165" y2="12"  />
+    <line class="net-branch nb-4" x1="25"  y1="195" x2="5"   y2="240" />
+    <circle class="net-node nn-1" cx="70"  cy="130" r="3.5" />
+    <circle class="net-node nn-2" cx="15"  cy="35"  r="2.5" />
+    <circle class="net-node nn-3" cx="140" cy="55"  r="2.5" />
+    <circle class="net-node nn-4" cx="25"  cy="195" r="2" />
+    <circle class="net-node-t nnt-1" cx="55"  cy="8"   r="1.5" />
+    <circle class="net-node-t nnt-2" cx="165" cy="12"  r="1.5" />
+    <circle class="net-node-t nnt-3" cx="0"   cy="70"  r="1.5" />
+    <circle class="net-node-t nnt-4" cx="5"   cy="240" r="1.5" />
+
+    <!-- signals on top-left -->
+    <polygon class="net-sig ns-1" points="42,82 45,77 48,82 45,87" />
+    <rect class="net-sig-fill ns-3" x="105" y="90" width="3" height="3" />
+    <g class="net-sig-ink ns-5" transform="translate(48,162)">
+      <line x1="-3" y1="0" x2="3" y2="0" /><line x1="0" y1="-3" x2="0" y2="3" />
+    </g>
+    <text class="net-glyph ng-coral ns-9" x="85" y="100">$7.2B</text>
+
+    <!-- ══ TOP-RIGHT CLUSTER ══ -->
+    <line class="net-line nl-4" x1="345" y1="95"  x2="380" y2="20"  />
+    <line class="net-line nl-5" x1="345" y1="95"  x2="290" y2="30"  />
+    <line class="net-line nl-6" x1="345" y1="95"  x2="375" y2="175" />
+    <line class="net-branch nb-5" x1="380" y1="20"  x2="355" y2="0"   />
+    <line class="net-branch nb-6" x1="290" y1="30"  x2="240" y2="10"  />
+    <line class="net-branch nb-7" x1="375" y1="175" x2="388" y2="220" />
+    <line class="net-branch nb-8" x1="290" y1="30"  x2="310" y2="0"   />
+    <circle class="net-node nn-5" cx="345" cy="95"  r="3.5" />
+    <circle class="net-node nn-6" cx="380" cy="20"  r="2.5" />
+    <circle class="net-node nn-1" cx="290" cy="30"  r="2.5" />
+    <circle class="net-node nn-2" cx="375" cy="175" r="2" />
+    <circle class="net-node-t nnt-5" cx="355" cy="0"   r="1.5" />
+    <circle class="net-node-t nnt-6" cx="240" cy="10"  r="1.5" />
+    <circle class="net-node-t nnt-7" cx="388" cy="220" r="1.5" />
+    <circle class="net-node-t nnt-8" cx="310" cy="0"   r="1.5" />
+
+    <!-- signals on top-right -->
+    <polygon class="net-sig ns-2" points="362,58 365,53 368,58 365,63" />
+    <rect class="net-sig-fill ns-4" x="316" y="62" width="3" height="3" />
+    <text class="net-glyph ng-ink ns-10" x="300" y="55">MKT</text>
+
+    <!-- ══ LEFT EDGE (mid) ══ -->
+    <line class="net-line nl-1" x1="18" y1="320" x2="8"  y2="260" />
+    <line class="net-line nl-3" x1="18" y1="320" x2="5"  y2="400" />
+    <line class="net-branch nb-9"  x1="8"  y1="260" x2="30" y2="230" />
+    <line class="net-branch nb-10" x1="5"  y1="400" x2="25" y2="445" />
+    <circle class="net-node nn-3" cx="18" cy="320" r="3" />
+    <circle class="net-node nn-4" cx="8"  cy="260" r="2" />
+    <circle class="net-node nn-5" cx="5"  cy="400" r="2" />
+
+    <!-- signals left edge -->
+    <g class="net-sig-ink ns-7" transform="translate(12,290)">
+      <line x1="-3" y1="0" x2="3" y2="0" /><line x1="0" y1="-3" x2="0" y2="3" />
+    </g>
+
+    <!-- ══ RIGHT EDGE (mid) ══ -->
+    <line class="net-line nl-2" x1="378" y1="365" x2="385" y2="295" />
+    <line class="net-line nl-4" x1="378" y1="365" x2="390" y2="440" />
+    <line class="net-branch nb-11" x1="385" y1="295" x2="370" y2="255" />
+    <line class="net-branch nb-12" x1="390" y1="440" x2="375" y2="485" />
+    <circle class="net-node nn-6" cx="378" cy="365" r="3" />
+    <circle class="net-node nn-1" cx="385" cy="295" r="2" />
+    <circle class="net-node nn-2" cx="390" cy="440" r="2" />
+
+    <!-- signals right edge -->
+    <polygon class="net-sig ns-6" points="381,328 384,323 387,328 384,333" />
+
+    <!-- ══ BOTTOM-LEFT CLUSTER ══ -->
+    <line class="net-line nl-5" x1="55"  y1="590" x2="15"  y2="650" />
+    <line class="net-line nl-6" x1="55"  y1="590" x2="110" y2="665" />
+    <line class="net-line nl-3" x1="55"  y1="590" x2="20"  y2="540" />
+    <line class="net-branch nb-1" x1="15"  y1="650" x2="0"   y2="690" />
+    <line class="net-branch nb-2" x1="110" y1="665" x2="140" y2="700" />
+    <line class="net-branch nb-3" x1="110" y1="665" x2="80"  y2="698" />
+    <line class="net-branch nb-4" x1="20"  y1="540" x2="0"   y2="510" />
+    <circle class="net-node nn-3" cx="55"  cy="590" r="3.5" />
+    <circle class="net-node nn-4" cx="15"  cy="650" r="2.5" />
+    <circle class="net-node nn-5" cx="110" cy="665" r="2.5" />
+    <circle class="net-node nn-6" cx="20"  cy="540" r="2" />
+    <circle class="net-node-t nnt-1" cx="0"   cy="690" r="1.5" />
+    <circle class="net-node-t nnt-2" cx="140" cy="700" r="1.5" />
+    <circle class="net-node-t nnt-3" cx="80"  cy="698" r="1.5" />
+    <circle class="net-node-t nnt-4" cx="0"   cy="510" r="1.5" />
+
+    <!-- signals bottom-left -->
+    <polygon class="net-sig ns-8" points="35,620 38,615 41,620 38,625" />
+    <rect class="net-sig-fill ns-1" x="82" y="628" width="3" height="3" />
+    <text class="net-glyph ng-coral ns-3" x="30" y="575">REF</text>
+
+    <!-- ══ BOTTOM-RIGHT CLUSTER ══ -->
+    <line class="net-line nl-4" x1="340" y1="610" x2="380" y2="670" />
+    <line class="net-line nl-1" x1="340" y1="610" x2="290" y2="680" />
+    <line class="net-line nl-6" x1="340" y1="610" x2="370" y2="545" />
+    <line class="net-branch nb-5" x1="380" y1="670" x2="390" y2="700" />
+    <line class="net-branch nb-6" x1="380" y1="670" x2="360" y2="698" />
+    <line class="net-branch nb-7" x1="290" y1="680" x2="260" y2="700" />
+    <line class="net-branch nb-8" x1="370" y1="545" x2="388" y2="510" />
+    <circle class="net-node nn-1" cx="340" cy="610" r="3.5" />
+    <circle class="net-node nn-2" cx="380" cy="670" r="2.5" />
+    <circle class="net-node nn-3" cx="290" cy="680" r="2.5" />
+    <circle class="net-node nn-4" cx="370" cy="545" r="2" />
+    <circle class="net-node-t nnt-5" cx="390" cy="700" r="1.5" />
+    <circle class="net-node-t nnt-6" cx="360" cy="698" r="1.5" />
+    <circle class="net-node-t nnt-7" cx="260" cy="700" r="1.5" />
+    <circle class="net-node-t nnt-8" cx="388" cy="510" r="1.5" />
+
+    <!-- signals bottom-right -->
+    <polygon class="net-sig ns-4" points="360,640 363,635 366,640 363,645" />
+    <g class="net-sig-ink ns-8" transform="translate(315,645)">
+      <line x1="-3" y1="0" x2="3" y2="0" /><line x1="0" y1="-3" x2="0" y2="3" />
+    </g>
+    <text class="net-glyph ng-ink ns-6" x="350" y="580">0xA3</text>
+
+    <!-- ══ SCATTERED LONE CONNECTIONS (asymmetric filler) ══ -->
+    <!-- top center-left stray -->
+    <line class="net-branch nb-9"  x1="100" y1="15" x2="75" y2="50" />
+    <circle class="net-node-t nnt-1" cx="100" cy="15" r="1.5" />
+
+    <!-- right upper stray -->
+    <line class="net-branch nb-10" x1="390" y1="130" x2="365" y2="150" />
+    <circle class="net-node-t nnt-3" cx="390" cy="130" r="1.5" />
+
+    <!-- left lower stray -->
+    <line class="net-branch nb-11" x1="0" y1="470" x2="22" y2="455" />
+    <circle class="net-node-t nnt-5" cx="0" cy="470" r="1.5" />
+
+    <!-- bottom center stray -->
+    <line class="net-branch nb-12" x1="195" y1="698" x2="220" y2="670" />
+    <circle class="net-node-t nnt-7" cx="195" cy="698" r="1.5" />
+
+    <!-- ghost thematic icons — pushed to edges -->
+    <g class="ghost-icon gi-1" transform="translate(350, 38) rotate(-8)">
+      <rect fill="none" stroke="var(--ink)" stroke-width="0.8" x="0" y="0" width="18" height="32" rx="2.5" />
+      <rect fill="none" stroke="var(--ink)" stroke-width="0.5" x="2" y="4.5" width="14" height="21" rx="0.8" />
+    </g>
+
+    <g class="ghost-icon gi-2" transform="translate(5, 630) rotate(5)">
+      <rect fill="none" stroke="var(--ink)" stroke-width="0.6" x="5" y="5" width="18" height="18" rx="1" />
+      <line stroke="var(--ink)" stroke-width="0.5" x1="10" y1="5" x2="10" y2="0" />
+      <line stroke="var(--ink)" stroke-width="0.5" x1="18" y1="5" x2="18" y2="0" />
+      <line stroke="var(--ink)" stroke-width="0.5" x1="10" y1="23" x2="10" y2="28" />
+      <line stroke="var(--ink)" stroke-width="0.5" x1="18" y1="23" x2="18" y2="28" />
+      <line stroke="var(--ink)" stroke-width="0.5" x1="5"  y1="10" x2="0" y2="10" />
+      <line stroke="var(--ink)" stroke-width="0.5" x1="5"  y1="18" x2="0" y2="18" />
+      <line stroke="var(--ink)" stroke-width="0.5" x1="23" y1="10" x2="28" y2="10" />
+      <line stroke="var(--ink)" stroke-width="0.5" x1="23" y1="18" x2="28" y2="18" />
+    </g>
+
+    <g class="ghost-icon gi-3" transform="translate(15, 85) rotate(3)">
+      <rect fill="none" stroke="var(--ink)" stroke-width="0.5" x="0" y="0" width="7" height="7" rx="1.5" />
+      <rect fill="none" stroke="var(--ink)" stroke-width="0.5" x="10" y="0" width="7" height="7" rx="1.5" />
+      <rect fill="none" stroke="var(--ink)" stroke-width="0.5" x="0" y="10" width="7" height="7" rx="1.5" />
+      <rect fill="none" stroke="var(--ink)" stroke-width="0.5" x="10" y="10" width="7" height="7" rx="1.5" />
+    </g>
+
+    <!-- signal bars icon bottom-right corner -->
+    <g class="ghost-icon gi-1" transform="translate(355, 660) rotate(-4)">
+      <rect fill="var(--ink)" x="0" y="16" width="3" height="4" rx="0.5" />
+      <rect fill="var(--ink)" x="5" y="12" width="3" height="8" rx="0.5" />
+      <rect fill="var(--ink)" x="10" y="7"  width="3" height="13" rx="0.5" />
+      <rect fill="var(--ink)" x="15" y="2"  width="3" height="18" rx="0.5" />
+      <rect fill="var(--ink)" x="20" y="0"  width="3" height="20" rx="0.5" />
+    </g>
+
+  </svg>
+
+  <!-- scan line -->
+  <div class="scan-line"></div>
+
+  <!-- ═══ CONTENT ═══ -->
+  <div class="content">
+
+    <div class="status-label">
+      <div class="pulse-dot"></div>
+      Updating situation
+    </div>
+
+    <div class="metric-card mc-1">
+      <div class="metric-label">Global Smartphone Users</div>
+      <div class="value-row">
+        <span class="value-current">122M</span>
+        <span class="value-arrow arrow-up">→</span>
+        <div class="value-next-wrap">
+          <span class="value-scramble" data-final="168M">?</span>
+          <span class="value-resolved">168M</span>
+          <span class="value-delta delta-up">+38%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card mc-2">
+      <div class="metric-label">Your Share</div>
+      <div class="value-row">
+        <span class="value-current">42%</span>
+        <span class="value-arrow arrow-down">→</span>
+        <div class="value-next-wrap">
+          <span class="value-scramble" data-final="36%">?</span>
+          <span class="value-resolved">36%</span>
+          <span class="value-delta delta-down">−6%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card mc-3">
+      <div class="metric-label">Apple Share</div>
+      <div class="value-row">
+        <span class="value-current">0%</span>
+        <span class="value-arrow arrow-up">→</span>
+        <div class="value-next-wrap">
+          <span class="value-scramble" data-final="12%">?</span>
+          <span class="value-resolved">12%</span>
+          <span class="value-delta delta-up">+12%</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button class="replay-btn" id="replayBtn">Replay</button>
+
+<script>
+  const screen = document.getElementById('screen');
+  const networkLayer = document.getElementById('networkLayer');
+  const cards = screen.querySelectorAll('.metric-card');
+  const scrambles = screen.querySelectorAll('.value-scramble');
+
+  const scrambleChars = '0123456789%$BM.+-';
+  let scrambleIntervals = [];
+
+  function getMetricEls() {
+    return screen.querySelectorAll('.status-label, .metric-card');
+  }
+
+  function getNetworkEls() {
+    return screen.querySelectorAll(
+      '.net-line, .net-branch, .net-node, .net-node-t, ' +
+      '.net-sig, .net-sig-fill, .net-sig-ink, .net-glyph, .ghost-icon'
+    );
+  }
+
+  function startScramble() {
+    scrambles.forEach((el) => {
+      const final = el.dataset.final;
+      const interval = setInterval(() => {
+        let s = '';
+        for (let j = 0; j < final.length; j++) {
+          s += scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+        }
+        el.textContent = s;
+      }, 55);
+      scrambleIntervals.push(interval);
+    });
+  }
+
+  function stopScramble() {
+    scrambleIntervals.forEach(i => clearInterval(i));
+    scrambleIntervals = [];
+    scrambles.forEach(el => el.textContent = el.dataset.final);
+  }
+
+  function reset() {
+    screen.classList.remove('exiting');
+    networkLayer.classList.remove('breathing', 'fading');
+    networkLayer.style.opacity = '';
+    cards.forEach(c => c.classList.remove('revealing', 'show-after'));
+    getMetricEls().forEach(el => el.classList.remove('active'));
+    getNetworkEls().forEach(el => el.classList.remove('active'));
+    screen.querySelectorAll('.scan-line').forEach(el => el.classList.remove('active'));
+    stopScramble();
+    scrambles.forEach(el => { el.textContent = '?'; el.style.opacity = ''; el.style.transform = ''; });
+    screen.querySelectorAll('.value-resolved').forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(8px)'; });
+    screen.querySelectorAll('.value-delta').forEach(el => { el.style.opacity = '0'; });
+    screen.querySelectorAll('.value-current').forEach(el => { el.style.opacity = '0'; });
+    screen.querySelectorAll('.value-arrow').forEach(el => { el.style.opacity = '0'; });
+  }
+
+  function play() {
+    reset();
+    void screen.offsetHeight;
+
+    // ── PHASE 1 (0s): Metrics appear — labels + before values only ──
+    requestAnimationFrame(() => {
+      getMetricEls().forEach(el => el.classList.add('active'));
+    });
+
+    // ── PHASE 2 (0.15s): Background network starts drawing in ──
+    setTimeout(() => {
+      getNetworkEls().forEach(el => el.classList.add('active'));
+      screen.querySelector('.scan-line').classList.add('active');
+    }, 150);
+
+    // ── PHASE 3 (0.4s): Arrow + scramble ? appear on metrics ──
+    setTimeout(() => {
+      cards.forEach(c => c.classList.add('show-after'));
+    }, 400);
+
+    // ── PHASE 4 (0.55s): Network starts breathing, scramble begins ──
+    setTimeout(() => {
+      networkLayer.classList.add('breathing');
+      startScramble();
+    }, 550);
+
+    // ── PHASE 5 (0.85s): Network starts slow fadeout ──
+    setTimeout(() => {
+      networkLayer.classList.remove('breathing');
+      networkLayer.classList.add('fading');
+    }, 850);
+
+    // ── PHASE 6 (1.05s): Values resolve ──
+    setTimeout(() => {
+      stopScramble();
+      cards.forEach(c => c.classList.add('revealing'));
+    }, 1050);
+
+    // ── PHASE 7 (1.75s): Metrics exit ──
+    setTimeout(() => {
+      screen.classList.add('exiting');
+    }, 1750);
+  }
+
+  setTimeout(play, 300);
+  document.getElementById('replayBtn').addEventListener('click', play);
+</script>
+</body>
+</html>

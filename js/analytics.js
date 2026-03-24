@@ -5,7 +5,7 @@
 
 const Analytics = {
     // Configuration - UPDATE THIS with your Google Apps Script URL
-    WEBHOOK_URL: 'https://script.google.com/macros/s/AKfycbw9fV3O6IaS5Z-K1m8UimkXfH4SQbUj_n3akXR5Z0xRCQ1nz8JF8T-7J6g1GwmERu7csw/exec', // e.g., 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'
+    WEBHOOK_URL: 'https://script.google.com/macros/s/AKfycbw7YPAx6Nj4mRDvgzkXTq4PgeDXhfIXFTle-P1lbi3YNIFeadkMriw4Z7DEyKqsBMwzSA/exec', // e.g., 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'
 
     // Session tracking
     sessionId: null,
@@ -108,17 +108,17 @@ const Analytics = {
     // Send data to webhook
     async sendToWebhook(payload) {
         try {
-            // Use URL parameters for Google Apps Script compatibility
+            const jsonStr = JSON.stringify(payload);
             const params = new URLSearchParams();
-            params.append('data', JSON.stringify(payload));
+            params.append('data', jsonStr);
 
-            const url = `${this.WEBHOOK_URL}?${params.toString()}`;
-
-            // Use fetch - it handles redirects properly (unlike sendBeacon)
-            fetch(url, {
+            // Use GET with URL params — most reliable with Google Apps Script + no-cors
+            fetch(`${this.WEBHOOK_URL}?${params.toString()}`, {
                 method: 'GET',
                 mode: 'no-cors'
-            }).catch(() => {}); // Silently ignore errors
+            }).catch(() => {
+                console.warn('[Analytics] Failed to send event');
+            });
         } catch (error) {
             console.error('[Analytics] Failed to send event:', error);
         }
@@ -165,10 +165,12 @@ const Analytics = {
     },
 
     // Track info card viewed
-    trackInfoCardView(cardId, cardTitle) {
+    // source: 'tap' (direct card tap) or 'navigate' (arrow/swipe from another card)
+    trackInfoCardView(cardId, cardTitle, source) {
         this.trackEvent('info_card_viewed', {
             cardId: cardId,
-            cardTitle: cardTitle
+            cardTitle: cardTitle,
+            source: source || 'tap'
         });
     },
 
@@ -193,12 +195,13 @@ const Analytics = {
         this.trackEvent('game_complete', {
             endingId: endingId,
             endingTitle: endingTitle,
-            finalMarketShare: finalMetrics.marketShare,
-            finalMarketCap: finalMetrics.marketCap,
-            finalCash: finalMetrics.cash,
+            finalMarketShare: finalMetrics?.marketShare ?? 0,
+            finalMarketCap: finalMetrics?.marketCap ?? 0,
+            finalCash: finalMetrics?.cash ?? 0,
+            finalRevenue: finalMetrics?.mobileRevenue ?? 0,
             totalDecisions: gameState?.decisions?.length || 0,
             totalTime: Math.round((Date.now() - this.sessionStartTime) / 1000),
-            path: gameState?.decisions?.map(d => d.optionId).join(' → ') || ''
+            path: gameState?.decisions?.map(d => d.optionId).join(' > ') || ''
         });
     },
 
@@ -228,6 +231,38 @@ const Analytics = {
             resetAtStage: gameState?.currentDecisionStage || 'unknown',
             decisionsBeforeReset: gameState?.decisions?.length || 0
         });
+    },
+
+    // Track mute toggle
+    trackMuteToggle(isMuted) {
+        this.trackEvent('mute_toggle', { muted: isMuted });
+    },
+
+    // Track consequence TTS audio skip (user navigated away while audio was playing)
+    trackAudioSkip(momentType) {
+        this.trackEvent('audio_skip', { momentType: momentType });
+    },
+
+    // Track choice card expansion
+    trackChoiceExpand(stage, optionId, optionTitle) {
+        this.trackEvent('choice_expanded', { stage, optionId, optionTitle });
+    },
+
+    // Track artifact collection modal opened
+    trackArtifactCollectionOpen() {
+        this.trackEvent('artifact_collection_opened', {
+            artifactsUnlocked: gameState?.unlockedArtifacts?.length || 0
+        });
+    },
+
+    // Track consequence step viewed
+    trackConsequenceStep(stepIndex, momentType, totalSteps) {
+        this.trackEvent('consequence_step', { stepIndex, momentType, totalSteps });
+    },
+
+    // Track screen/stage view for funnel analysis
+    trackScreenView(screenName, extraData = {}) {
+        this.trackEvent('screen_view', { screen: screenName, ...extraData });
     }
 };
 

@@ -1,0 +1,147 @@
+# Task: Implement the Ending Screen for The Mobile Wars
+
+## Context
+The Mobile Wars is an interactive business simulation where players make 4-5 strategic decisions as Microsoft's CEO during the mobile platform wars (2007-2017). The game is built with Vite + React + TypeScript + Tailwind + Zustand + Framer Motion + Supabase, deployed on Vercel.
+
+The current ending screen is a flat results card. We're replacing it with an editorially-driven ending that assigns the player a **magazine cover** based on how they played — the publication itself IS the verdict on their decisions.
+
+## What to Build
+
+### 1. Archetype Assignment Engine (`lib/archetypes.ts`)
+
+Create a function that takes the player's game state and returns which publication cover they earned. Three archetypes:
+
+```ts
+type CoverArchetype = 'wired' | 'techcrunch' | 'time';
+
+function assignCover(gameState: GameState): CoverArchetype
+```
+
+**Assignment logic** — score the player on two axes using their decision history and final state variables:
+
+- **Boldness Score** (0-10): How unconventional were their choices? Early acquisitions, killing platforms, contrarian bets score high. Safe/incremental/wait-and-see choices score low. Derive from: which options they picked at each decision point (each option can have a `boldness` weight in the game definition JSON), plus whether they pivoted mid-game.
+
+- **Divergence Score** (0-10): How different was their outcome from actual history? Compare player's final `marketShare`, `revenue`, `costs`, `pnl` against the historical baseline. Larger delta = higher divergence.
+
+**Mapping:**
+- **WIRED** → Boldness ≥ 7 (regardless of outcome). The magazine that celebrates visionary risk.
+- **TIME** → Boldness ≥ 5 AND Divergence ≥ 7. Bold moves that actually changed the outcome. Hardest to earn.
+- **TechCrunch** → Default / fallback. Also assigned when Divergence is high but Boldness is low (methodical player who still beat history), or when the player crashed harder than reality (spectacular failure autopsy).
+
+### 2. Headline Generator (`lib/headlines.ts`)
+
+Generate dynamic headlines based on the player's specific path. Each cover needs:
+- `headline`: The main cover line (8 words max)
+- `subheadline`: The "what if" framing (one sentence)
+- `deck`: 2-3 sentences summarizing the path with editorial voice
+- `verdict`: One punchy sentence — the counterfactual takeaway
+- `turningPoint`: Which decision mattered most and why
+
+Use templates with variable interpolation based on game state. Example:
+
+```ts
+// WIRED template when player acquired Nokia early
+headline: `The $${divergenceAmount}B Difference`
+subheadline: `What if Microsoft had bet on Nokia ${yearsEarly} years before anyone else thought to?`
+```
+
+Write 3-4 headline templates per archetype to avoid repetition across replays.
+
+### 3. Cover Components
+
+Three cover components matching the attached mockup HTML (`ending-screen-final.jsx`). Translate the inline styles to Tailwind classes. Each cover faithfully imitates the visual identity of its real-world publication:
+
+- **`WiredCover.tsx`** — Black bg, letters-in-blocks masthead, large ghosted number as graphic center, bold condensed all-caps headline from bottom, red accent bar, side coverlines, stats strip.
+- **`TechCrunchCover.tsx`** — Dark nav with "TC" mark, hero image zone (abstract data viz placeholder for now), social sharing icon row, signature green section with serif headline, article-style body with inline data box and pull quote.
+- **`TimeCover.tsx`** — Red border frame, large serif "TIME" masthead, centered layout, ghosted "$X.XB" watermark, red verdict bar at bottom.
+
+Each cover has a clear **image zone** where we'll later add generated images. For now, use the abstract graphic treatments from the mockup (data rings for WIRED, grid squares for TC, ghosted text for TIME).
+
+### 4. ShareAndUnlock Component
+
+Renders below every cover. Three elements:
+- **Share CTA** (primary button) + download icon button
+- **Progress dots**: 3 indicators — pill shape for current cover, circles for others. Filled = unlocked, dim = locked.
+- **Locked cover hints**: Small pills showing the other two publication names with lock/checkmark icons.
+
+### 5. Debrief Section (`EndingDebrief.tsx`)
+
+Shared across all cover types. Renders below the cover on warm cream background (#F5F0E8). Contains:
+- **Turning Point** — the one decision that mattered most, with editorial explanation
+- **Full Comparison table** — player vs actual history (Status, Market Share, Revenue, Costs, P&L)
+- **Editorial interpretation** — one italicized sentence contextualizing the numbers
+- **Decision trail** — numbered list of all decisions, with the turning point highlighted in accent color
+- **CTAs** — "Try a different path" (primary) + "Help us improve" (secondary, triggers feedback form)
+
+### 6. Unlock Persistence
+
+Track which covers a player has unlocked across sessions in Supabase:
+
+```sql
+-- Add to existing playthroughs table or create new
+ALTER TABLE playthroughs ADD COLUMN cover_archetype TEXT;
+
+-- Or separate unlock tracking
+CREATE TABLE cover_unlocks (
+  session_id TEXT NOT NULL,
+  cover_archetype TEXT NOT NULL,
+  unlocked_at TIMESTAMPTZ DEFAULT NOW(),
+  PRIMARY KEY (session_id, cover_archetype)
+);
+```
+
+On game completion:
+1. Compute archetype via `assignCover()`
+2. Save to `playthroughs.cover_archetype`
+3. Upsert into `cover_unlocks`
+4. Fetch all unlocks for this session to pass to `ShareAndUnlock`
+
+### 7. Integration
+
+- Replace the current ending/results screen with the new `EndingScreen.tsx` that orchestrates: archetype assignment → cover selection → render cover + debrief
+- The ending screen should animate in with Framer Motion (fade up from the last game card)
+- Share button should generate an OG-image-friendly URL and copy to clipboard (existing share infra)
+
+## Design Reference
+
+The attached `ending-screen-final.jsx` is the high-fidelity mockup with all three covers, the unlock mechanic, and the debrief section. Use it as the pixel-level reference. Translate inline React styles → Tailwind. The mockup has a dev-only version switcher at the top — don't include that in production; the archetype engine determines which cover renders.
+
+## Key Design Tokens (extend existing Tailwind config)
+
+```
+// Cover-specific — add alongside existing theme
+cover: {
+  wired: { bg: '#1A1A1A', accent: '#FF4444' },
+  tc: { bg: '#000', green: '#00BF63', nav: '#1A1A2E' },
+  time: { red: '#E3120B', cream: '#F8F6F1' },
+},
+debrief: {
+  bg: '#F5F0E8',
+  accent: '#C4653A',
+  text: '#1A1916',
+  muted: '#6A6560',
+  border: '#E0DCD4',
+}
+```
+
+## What NOT to Build Yet
+- Actual image generation for cover hero zones (placeholder graphics only)
+- Feedback form UI (just wire the CTA to open existing feedback flow)
+- Social sharing to specific platforms (just clipboard copy for now)
+- Cover-specific OG image generation (future Vercel Edge function)
+
+## File Structure
+```
+src/
+  components/
+    ending/
+      EndingScreen.tsx          # Orchestrator
+      WiredCover.tsx
+      TechCrunchCover.tsx
+      TimeCover.tsx
+      ShareAndUnlock.tsx
+      EndingDebrief.tsx
+  lib/
+    archetypes.ts               # assignCover() + scoring
+    headlines.ts                # Dynamic headline templates
+```

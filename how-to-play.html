@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Play — The Mobile Wars</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231a1a2e'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='%23E8B4A0'%3E📱%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        .htp-header {
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-default);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .htp-header-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color var(--transition-fast);
+        }
+
+        .htp-header-back:hover {
+            color: var(--accent-primary);
+        }
+
+        .htp-header-title {
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 0.5px;
+        }
+
+        .htp-page {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 32px 24px 80px;
+            min-height: 100vh;
+        }
+
+        .htp-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 32px;
+        }
+
+        .htp-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-bottom: 40px;
+        }
+
+        .htp-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .htp-step:first-child {
+            border-top: 1px solid var(--border-default);
+        }
+
+        .htp-step-icon {
+            font-size: 1.2rem;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+            margin-top: 1px;
+            width: 28px;
+            text-align: center;
+        }
+
+        .htp-step-content {
+            flex: 1;
+        }
+
+        .htp-step-title {
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .htp-step-desc {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            line-height: 1.5;
+        }
+
+        .htp-start-btn {
+            display: inline-block;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            border: none;
+            padding: 12px 32px;
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background var(--transition-fast);
+        }
+
+        .htp-start-btn:hover {
+            background: var(--accent-primary);
+        }
+
+        .htp-sound-note {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 28px;
+            padding: 12px 16px;
+            background: rgba(192, 80, 40, 0.08);
+            border-left: 3px solid var(--accent-primary);
+            border-radius: 0 6px 6px 0;
+        }
+
+        .htp-sound-note-icon {
+            font-size: 1rem;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .htp-sound-note-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+    </style>
+</head>
+<body>
+    <div class="htp-header">
+        <a href="index.html" class="htp-header-back"><i class="ph ph-arrow-left"></i></a>
+        <span class="htp-header-title">How to Play</span>
+    </div>
+
+    <div class="htp-page">
+        <p class="htp-subtitle">You lead Microsoft's mobile division from 2007–2017. Make 5 strategic decisions that shape the fate of Windows Phone.</p>
+
+        <div class="htp-steps">
+            <div class="htp-step">
+                <span class="htp-step-icon"><i class="ph ph-headphones"></i></span>
+                <div class="htp-step-content">
+                    <div class="htp-step-title">Listen or read the briefing</div>
+                    <div class="htp-step-desc">Each decision starts with the situation: market shifts, competitor moves, internal politics.</div>
+                </div>
+            </div>
+            <div class="htp-step">
+                <span class="htp-step-icon"><i class="ph ph-files"></i></span>
+                <div class="htp-step-content">
+                    <div class="htp-step-title">Review intel cards</div>
+                    <div class="htp-step-desc">Tap to dig deeper. Some contain hidden artifact links.</div>
+                </div>
+            </div>
+            <div class="htp-step">
+                <span class="htp-step-icon"><i class="ph ph-path"></i></span>
+                <div class="htp-step-content">
+                    <div class="htp-step-title">Make your call</div>
+                    <div class="htp-step-desc">Choose a strategy. No right answers, only trade-offs.</div>
+                </div>
+            </div>
+            <div class="htp-step">
+                <span class="htp-step-icon"><i class="ph ph-chart-line-down"></i></span>
+                <div class="htp-step-content">
+                    <div class="htp-step-title">Watch the metrics</div>
+                    <div class="htp-step-desc">Market share and revenue update after every decision.</div>
+                </div>
+            </div>
+            <div class="htp-step">
+                <span class="htp-step-icon"><i class="ph ph-arrows-clockwise"></i></span>
+                <div class="htp-step-content">
+                    <div class="htp-step-title">Replay</div>
+                    <div class="htp-step-desc">Multiple endings and branching paths. Try different strategies.</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="index.html" class="htp-start-btn">Start playing →</a>
+
+        <div class="htp-sound-note">
+            <span class="htp-sound-note-icon"><i class="ph ph-speaker-simple-high"></i></span>
+            <span class="htp-sound-note-text">Sound on is recommended for the best experience. Each briefing has voice narration.</span>
+        </div>
+    </div>
+</body>
+</html>

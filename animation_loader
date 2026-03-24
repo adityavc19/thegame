@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decision Propagation v5</title>
+<style>
+  :root {
+    --bg: #F5F2EE;
+    --ink: #1A1718;
+    --ink-mid: rgba(26, 23, 24, 0.4);
+    --ink-dim: rgba(26, 23, 24, 0.12);
+    --ink-ghost: rgba(26, 23, 24, 0.06);
+    --coral: #E8856C;
+    --coral-mid: rgba(232, 133, 108, 0.5);
+    --coral-dim: rgba(232, 133, 108, 0.15);
+    --coral-glow: rgba(232, 133, 108, 0.3);
+    --line: rgba(26, 23, 24, 0.1);
+    --line-bright: rgba(26, 23, 24, 0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  .container {
+    position: relative;
+    width: 400px;
+    height: 700px;
+  }
+
+  .lines-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ─── PRIMARY LINES ─── */
+  .prop-line {
+    stroke: var(--line); stroke-width: 1; fill: none;
+    stroke-dasharray: 300; stroke-dashoffset: 300;
+  }
+  .prop-line.active { animation: drawPrimary 0.55s ease-out forwards; }
+
+  @keyframes drawPrimary {
+    0%   { stroke-dashoffset: 300; stroke: var(--line); }
+    40%  { stroke: var(--ink-mid); }
+    100% { stroke-dashoffset: 0; stroke: var(--line); }
+  }
+
+  .pl-1 { animation-delay: 0.38s !important; }
+  .pl-2 { animation-delay: 0.46s !important; }
+  .pl-3 { animation-delay: 0.42s !important; }
+  .pl-4 { animation-delay: 0.50s !important; }
+  .pl-5 { animation-delay: 0.44s !important; }
+  .pl-6 { animation-delay: 0.54s !important; }
+
+  /* ─── SECONDARY LINES ─── */
+  .sec-line {
+    stroke: var(--line); stroke-width: 0.6; fill: none;
+    stroke-dasharray: 180; stroke-dashoffset: 180; opacity: 0.7;
+  }
+  .sec-line.active { animation: drawSec 0.4s ease-out forwards; }
+
+  @keyframes drawSec {
+    0%   { stroke-dashoffset: 180; stroke: var(--line); }
+    40%  { stroke: var(--ink-dim); }
+    100% { stroke-dashoffset: 0; stroke: var(--ink-ghost); }
+  }
+
+  .sl-1a { animation-delay: 0.82s !important; }
+  .sl-1b { animation-delay: 0.88s !important; }
+  .sl-1c { animation-delay: 0.92s !important; }
+  .sl-2a { animation-delay: 0.86s !important; }
+  .sl-2b { animation-delay: 0.92s !important; }
+  .sl-2c { animation-delay: 0.96s !important; }
+  .sl-3a { animation-delay: 0.84s !important; }
+  .sl-3b { animation-delay: 0.90s !important; }
+  .sl-3c { animation-delay: 0.95s !important; }
+  .sl-4a { animation-delay: 0.88s !important; }
+  .sl-4b { animation-delay: 0.94s !important; }
+  .sl-4c { animation-delay: 0.98s !important; }
+  .sl-5a { animation-delay: 0.86s !important; }
+  .sl-5b { animation-delay: 0.92s !important; }
+  .sl-5c { animation-delay: 0.97s !important; }
+  .sl-6a { animation-delay: 0.90s !important; }
+  .sl-6b { animation-delay: 0.96s !important; }
+  .sl-6c { animation-delay: 1.00s !important; }
+
+  /* ─── TERTIARY LINES ─── */
+  .ter-line {
+    stroke: var(--line); stroke-width: 0.35; fill: none;
+    stroke-dasharray: 120; stroke-dashoffset: 120; opacity: 0.5;
+  }
+  .ter-line.active { animation: drawTer 0.35s ease-out forwards; }
+
+  @keyframes drawTer {
+    0%   { stroke-dashoffset: 120; }
+    100% { stroke-dashoffset: 0; opacity: 0.15; }
+  }
+
+  .tl-1  { animation-delay: 1.05s !important; }
+  .tl-2  { animation-delay: 1.08s !important; }
+  .tl-3  { animation-delay: 1.10s !important; }
+  .tl-4  { animation-delay: 1.12s !important; }
+  .tl-5  { animation-delay: 1.06s !important; }
+  .tl-6  { animation-delay: 1.14s !important; }
+  .tl-7  { animation-delay: 1.09s !important; }
+  .tl-8  { animation-delay: 1.16s !important; }
+  .tl-9  { animation-delay: 1.11s !important; }
+  .tl-10 { animation-delay: 1.18s !important; }
+
+  /* ═══ THEMATIC ICONS ═══ */
+  .theme-icon {
+    opacity: 0;
+    fill: none;
+    stroke: var(--coral);
+    stroke-width: 0.8;
+  }
+  .theme-icon.active {
+    animation: iconReveal 0.6s ease-out forwards;
+  }
+
+  .theme-icon-ink {
+    opacity: 0;
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 0.8;
+  }
+  .theme-icon-ink.active {
+    animation: iconRevealInk 0.6s ease-out forwards;
+  }
+
+  /* filled variant for small details inside icons */
+  .theme-fill {
+    opacity: 0;
+    fill: var(--coral);
+    stroke: none;
+  }
+  .theme-fill.active {
+    animation: iconReveal 0.6s ease-out forwards;
+  }
+
+  .theme-fill-ink {
+    opacity: 0;
+    fill: var(--ink);
+    stroke: none;
+  }
+  .theme-fill-ink.active {
+    animation: iconRevealInk 0.6s ease-out forwards;
+  }
+
+  @keyframes iconReveal {
+    0%   { opacity: 0; }
+    20%  { opacity: 0.7; }
+    50%  { opacity: 0.5; }
+    100% { opacity: 0.10; }
+  }
+
+  @keyframes iconRevealInk {
+    0%   { opacity: 0; }
+    20%  { opacity: 0.45; }
+    50%  { opacity: 0.3; }
+    100% { opacity: 0.06; }
+  }
+
+  /* icon timing — each arrives with its parent node */
+  .icon-d1 { animation-delay: 0.62s !important; }
+  .icon-d2 { animation-delay: 0.70s !important; }
+  .icon-d3 { animation-delay: 0.66s !important; }
+  .icon-d4 { animation-delay: 0.74s !important; }
+  .icon-d5 { animation-delay: 0.68s !important; }
+  .icon-d6 { animation-delay: 0.78s !important; }
+
+  /* ═══ SIGNAL FRAGMENTS ═══ */
+  .sig-diamond { fill: none; stroke: var(--coral); stroke-width: 1; opacity: 0; }
+  .sig-diamond.active { animation: sigCoral 0.4s ease-out forwards; }
+
+  .sig-cross line { stroke: var(--ink); stroke-width: 0.7; opacity: 0; }
+  .sig-cross.active line { animation: sigInk 0.35s ease-out forwards; }
+
+  .sig-square { fill: var(--coral); opacity: 0; }
+  .sig-square.active { animation: sigCoral 0.35s ease-out forwards; }
+
+  .sig-bracket { stroke: var(--ink); stroke-width: 0.7; fill: none; opacity: 0; }
+  .sig-bracket.active { animation: sigInk 0.3s ease-out forwards; }
+
+  .sig-tick line { stroke: var(--ink-mid); stroke-width: 0.5; opacity: 0; }
+  .sig-tick.active line { animation: sigInk 0.3s ease-out forwards; }
+
+  .sig-dots circle { fill: var(--coral); opacity: 0; }
+  .sig-dots.active circle { animation: sigCoral 0.35s ease-out forwards; }
+
+  .sig-arc { stroke: var(--coral-mid); stroke-width: 0.6; fill: none; opacity: 0; }
+  .sig-arc.active { animation: sigCoral 0.4s ease-out forwards; }
+
+  @keyframes sigCoral {
+    0% { opacity: 0; } 25% { opacity: 0.85; } 100% { opacity: 0.12; }
+  }
+  @keyframes sigInk {
+    0% { opacity: 0; } 25% { opacity: 0.5; } 100% { opacity: 0.08; }
+  }
+
+  .sd-1  { animation-delay: 0.48s !important; }
+  .sd-2  { animation-delay: 0.53s !important; }
+  .sd-3  { animation-delay: 0.50s !important; }
+  .sd-4  { animation-delay: 0.56s !important; }
+  .sd-5  { animation-delay: 0.52s !important; }
+  .sd-6  { animation-delay: 0.60s !important; }
+  .sd-7  { animation-delay: 0.54s !important; }
+  .sd-8  { animation-delay: 0.62s !important; }
+  .sd-9  { animation-delay: 0.58s !important; }
+  .sd-10 { animation-delay: 0.64s !important; }
+  .sd-11 { animation-delay: 0.56s !important; }
+  .sd-12 { animation-delay: 0.66s !important; }
+  .sd-13 { animation-delay: 0.68s !important; }
+  .sd-14 { animation-delay: 0.70s !important; }
+  .sd-15 { animation-delay: 0.72s !important; }
+  .sd-16 { animation-delay: 0.61s !important; }
+  .sd-20 { animation-delay: 0.90s !important; }
+  .sd-21 { animation-delay: 0.94s !important; }
+  .sd-22 { animation-delay: 0.92s !important; }
+  .sd-23 { animation-delay: 0.96s !important; }
+  .sd-24 { animation-delay: 0.88s !important; }
+  .sd-25 { animation-delay: 0.98s !important; }
+  .sd-26 { animation-delay: 1.06s !important; }
+  .sd-27 { animation-delay: 1.10s !important; }
+
+  /* ═══ MICRO-GLYPHS ═══ */
+  .micro-glyph {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 7px; opacity: 0; letter-spacing: 1px;
+  }
+  .mg-ink  { fill: var(--ink); }
+  .mg-coral { fill: var(--coral); }
+  .micro-glyph.active { animation: glyphFlash 0.5s ease-out forwards; }
+
+  @keyframes glyphFlash {
+    0% { opacity: 0; } 20% { opacity: 0.55; } 100% { opacity: 0.06; }
+  }
+
+  .gd-1  { animation-delay: 0.53s !important; }
+  .gd-2  { animation-delay: 0.60s !important; }
+  .gd-3  { animation-delay: 0.56s !important; }
+  .gd-4  { animation-delay: 0.63s !important; }
+  .gd-5  { animation-delay: 0.58s !important; }
+  .gd-6  { animation-delay: 0.68s !important; }
+  .gd-7  { animation-delay: 0.72s !important; }
+  .gd-8  { animation-delay: 0.76s !important; }
+
+  /* ─── CENTER NODE ─── */
+  .center-node {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--ink); opacity: 0; z-index: 10;
+  }
+  .center-node.active { animation: centerIn 0.35s ease-out forwards; }
+  .center-node::before {
+    content: ''; position: absolute; inset: -10px;
+    border-radius: 50%; border: 1px solid var(--coral-glow); opacity: 0;
+  }
+  .center-node.active::before { animation: ringOut 0.5s ease-out 0.1s forwards; }
+  .center-node::after {
+    content: ''; position: absolute; inset: -22px;
+    border-radius: 50%; border: 0.5px solid var(--coral-dim); opacity: 0;
+  }
+  .center-node.active::after { animation: ringOut 0.6s ease-out 0.18s forwards; }
+
+  @keyframes centerIn {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+    60%  { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+  @keyframes ringOut {
+    0% { opacity: 0; transform: scale(0.8); }
+    30% { opacity: 0.6; }
+    100% { opacity: 0; transform: scale(2.8); }
+  }
+
+  /* ─── SECONDARY NODES ─── */
+  .node {
+    position: absolute; width: 5px; height: 5px;
+    border-radius: 50%; background: var(--ink);
+    opacity: 0; z-index: 5; transform: translate(-50%, -50%);
+  }
+  .node.active { animation: nodeIn 0.45s ease-out forwards; }
+  .node::after {
+    content: ''; position: absolute; inset: -5px;
+    border-radius: 50%; border: 0.5px solid var(--coral-glow); opacity: 0;
+  }
+  .node.active::after { animation: nodeRing 0.4s ease-out forwards; animation-delay: inherit; }
+
+  .node-1 { left: 22%; top: 22%; }
+  .node-2 { left: 78%; top: 18%; }
+  .node-3 { left: 10%; top: 50%; }
+  .node-4 { left: 90%; top: 52%; }
+  .node-5 { left: 28%; top: 80%; }
+  .node-6 { left: 74%; top: 82%; }
+
+  .node-1.active { animation-delay: 0.58s; }
+  .node-2.active { animation-delay: 0.66s; }
+  .node-3.active { animation-delay: 0.62s; }
+  .node-4.active { animation-delay: 0.70s; }
+  .node-5.active { animation-delay: 0.64s; }
+  .node-6.active { animation-delay: 0.74s; }
+
+  @keyframes nodeIn {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+    50%  { opacity: 0.8; transform: translate(-50%, -50%) scale(2); }
+    100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+  }
+  @keyframes nodeRing {
+    0% { opacity: 0; transform: scale(0.5); }
+    35% { opacity: 0.4; }
+    100% { opacity: 0; transform: scale(2.2); }
+  }
+
+  /* ─── TERTIARY NODES ─── */
+  .node-t {
+    position: absolute; width: 2.5px; height: 2.5px;
+    border-radius: 50%; background: var(--ink);
+    opacity: 0; z-index: 3; transform: translate(-50%, -50%);
+  }
+  .node-t.active { animation: tIn 0.3s ease-out forwards; }
+
+  .nt-1  { left: 8%;  top: 10%; }
+  .nt-2  { left: 30%; top: 8%;  }
+  .nt-3  { left: 5%;  top: 32%; }
+  .nt-4  { left: 92%; top: 8%;  }
+  .nt-5  { left: 95%; top: 28%; }
+  .nt-6  { left: 70%; top: 6%;  }
+  .nt-7  { left: 3%;  top: 62%; }
+  .nt-8  { left: 4%;  top: 40%; }
+  .nt-9  { left: 97%; top: 64%; }
+  .nt-10 { left: 96%; top: 42%; }
+  .nt-11 { left: 12%; top: 92%; }
+  .nt-12 { left: 36%; top: 95%; }
+  .nt-13 { left: 22%; top: 88%; }
+  .nt-14 { left: 88%; top: 94%; }
+  .nt-15 { left: 66%; top: 96%; }
+  .nt-16 { left: 80%; top: 90%; }
+  .nt-17 { left: 50%; top: 4%;  }
+  .nt-18 { left: 50%; top: 97%; }
+
+  .nt-1.active  { animation-delay: 1.04s; }
+  .nt-2.active  { animation-delay: 1.08s; }
+  .nt-3.active  { animation-delay: 1.10s; }
+  .nt-4.active  { animation-delay: 1.06s; }
+  .nt-5.active  { animation-delay: 1.12s; }
+  .nt-6.active  { animation-delay: 1.09s; }
+  .nt-7.active  { animation-delay: 1.08s; }
+  .nt-8.active  { animation-delay: 1.11s; }
+  .nt-9.active  { animation-delay: 1.10s; }
+  .nt-10.active { animation-delay: 1.14s; }
+  .nt-11.active { animation-delay: 1.06s; }
+  .nt-12.active { animation-delay: 1.12s; }
+  .nt-13.active { animation-delay: 1.09s; }
+  .nt-14.active { animation-delay: 1.10s; }
+  .nt-15.active { animation-delay: 1.14s; }
+  .nt-16.active { animation-delay: 1.12s; }
+  .nt-17.active { animation-delay: 1.07s; }
+  .nt-18.active { animation-delay: 1.16s; }
+
+  @keyframes tIn {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+    50%  { opacity: 0.35; transform: translate(-50%, -50%) scale(1.5); }
+    100% { opacity: 0.12; transform: translate(-50%, -50%) scale(1); }
+  }
+
+  /* ─── CENTER KEYWORD ─── */
+  .center-keyword {
+    position: absolute; left: 50%; top: calc(50% + 22px);
+    transform: translateX(-50%);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--ink); opacity: 0;
+    white-space: nowrap; z-index: 10;
+  }
+  .center-keyword.active { animation: kwIn 0.4s ease-out 0.15s forwards; }
+
+  @keyframes kwIn {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(4px); }
+    100% { opacity: 0.75; transform: translateX(-50%) translateY(0); }
+  }
+
+  /* ─── CONTRACTION ─── */
+  .container.contracting .node          { animation: cNode 0.5s ease-in forwards !important; }
+  .container.contracting .node-t        { animation: cFade 0.35s ease-in forwards !important; }
+  .container.contracting .prop-line      { animation: cFade 0.35s ease-in forwards !important; }
+  .container.contracting .sec-line       { animation: cFade 0.3s ease-in forwards !important; }
+  .container.contracting .ter-line       { animation: cFade 0.25s ease-in forwards !important; }
+  .container.contracting .center-node    { animation: cCenter 0.5s ease-in forwards !important; }
+  .container.contracting .center-keyword { animation: cKw 0.3s ease-in forwards !important; }
+  .container.contracting .sig-diamond,
+  .container.contracting .sig-cross line,
+  .container.contracting .sig-square,
+  .container.contracting .sig-bracket,
+  .container.contracting .sig-tick line,
+  .container.contracting .sig-dots circle,
+  .container.contracting .sig-arc,
+  .container.contracting .micro-glyph,
+  .container.contracting .theme-icon,
+  .container.contracting .theme-icon-ink,
+  .container.contracting .theme-fill,
+  .container.contracting .theme-fill-ink { animation: cFade 0.3s ease-in forwards !important; }
+
+  .container.contracting .node-2,
+  .container.contracting .node-5 {
+    animation: cSurvive 0.5s ease-in forwards !important;
+  }
+
+  @keyframes cNode    { to { opacity: 0; transform: translate(-50%, -50%) scale(0.3); } }
+  @keyframes cSurvive { 0% { opacity: 0.3; } 35% { opacity: 0.8; background: var(--coral); } 100% { opacity: 0; } }
+  @keyframes cFade    { to { opacity: 0; } }
+  @keyframes cCenter  { 0% { opacity: 1; } 40% { transform: translate(-50%,-50%) scale(1.1); } 100% { opacity: 0; transform: translate(-50%,-50%) scale(0); } }
+  @keyframes cKw      { to { opacity: 0; transform: translateX(-50%) translateY(-3px); } }
+
+  /* ─── REPLAY ─── */
+  .replay-btn {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    background: none; border: 1px solid var(--ink-dim);
+    color: var(--ink-mid); font-family: inherit;
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 10px 28px; cursor: pointer; transition: border-color 0.2s; z-index: 100;
+  }
+  .replay-btn:hover { border-color: var(--coral); color: var(--coral); }
+</style>
+</head>
+<body>
+
+<div class="container" id="container">
+  <svg class="lines-layer" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid meet">
+
+    <!-- ═══ PRIMARY LINES ═══ -->
+    <line class="prop-line pl-1" x1="200" y1="350" x2="88"  y2="154" />
+    <line class="prop-line pl-2" x1="200" y1="350" x2="312" y2="126" />
+    <line class="prop-line pl-3" x1="200" y1="350" x2="40"  y2="350" />
+    <line class="prop-line pl-4" x1="200" y1="350" x2="360" y2="364" />
+    <line class="prop-line pl-5" x1="200" y1="350" x2="112" y2="560" />
+    <line class="prop-line pl-6" x1="200" y1="350" x2="296" y2="574" />
+
+    <!-- ═══ SECONDARY BRANCHES ═══ -->
+    <line class="sec-line sl-1a" x1="88"  y1="154" x2="32"  y2="70"  />
+    <line class="sec-line sl-1b" x1="88"  y1="154" x2="120" y2="56"  />
+    <line class="sec-line sl-1c" x1="88"  y1="154" x2="20"  y2="224" />
+
+    <line class="sec-line sl-2a" x1="312" y1="126" x2="368" y2="56"  />
+    <line class="sec-line sl-2b" x1="312" y1="126" x2="380" y2="196" />
+    <line class="sec-line sl-2c" x1="312" y1="126" x2="280" y2="42"  />
+
+    <line class="sec-line sl-3a" x1="40"  y1="350" x2="12"  y2="434" />
+    <line class="sec-line sl-3b" x1="40"  y1="350" x2="16"  y2="280" />
+    <line class="sec-line sl-3c" x1="40"  y1="350" x2="12"  y2="350" />
+
+    <line class="sec-line sl-4a" x1="360" y1="364" x2="388" y2="448" />
+    <line class="sec-line sl-4b" x1="360" y1="364" x2="384" y2="294" />
+    <line class="sec-line sl-4c" x1="360" y1="364" x2="392" y2="364" />
+
+    <line class="sec-line sl-5a" x1="112" y1="560" x2="48"  y2="644" />
+    <line class="sec-line sl-5b" x1="112" y1="560" x2="144" y2="665" />
+    <line class="sec-line sl-5c" x1="112" y1="560" x2="88"  y2="616" />
+
+    <line class="sec-line sl-6a" x1="296" y1="574" x2="352" y2="658" />
+    <line class="sec-line sl-6b" x1="296" y1="574" x2="264" y2="672" />
+    <line class="sec-line sl-6c" x1="296" y1="574" x2="320" y2="630" />
+
+    <!-- ═══ TERTIARY BRANCHES ═══ -->
+    <line class="ter-line tl-1"  x1="32"  y1="70"  x2="12"  y2="28"  />
+    <line class="ter-line tl-2"  x1="120" y1="56"  x2="200" y2="28"  />
+    <line class="ter-line tl-3"  x1="368" y1="56"  x2="388" y2="20"  />
+    <line class="ter-line tl-4"  x1="280" y1="42"  x2="200" y2="28"  />
+    <line class="ter-line tl-5"  x1="12"  y1="434" x2="4"   y2="480" />
+    <line class="ter-line tl-6"  x1="388" y1="448" x2="396" y2="494" />
+    <line class="ter-line tl-7"  x1="48"  y1="644" x2="36"  y2="680" />
+    <line class="ter-line tl-8"  x1="144" y1="665" x2="148" y2="692" />
+    <line class="ter-line tl-9"  x1="352" y1="658" x2="360" y2="688" />
+    <line class="ter-line tl-10" x1="264" y1="672" x2="200" y2="694" />
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- ═══ THEMATIC ICONS (scattered asymmetrically) ═══ -->
+    <!-- ═══════════════════════════════════════════════ -->
+
+    <!-- ICON 1: SMARTPHONE — upper center-right, tilted -->
+    <g transform="translate(248, 68) rotate(-8, 12, 21)">
+      <rect class="theme-icon icon-d1" x="0" y="0" width="24" height="42" rx="3" ry="3" />
+      <rect class="theme-icon icon-d1" x="3" y="6" width="18" height="28" rx="1" ry="1" />
+      <circle class="theme-fill icon-d1" cx="12" cy="39" r="1.5" />
+      <rect class="theme-fill icon-d1" x="8" y="2" width="8" height="1.5" rx="0.75" />
+    </g>
+
+    <!-- ICON 2: CHIP / SEMICONDUCTOR — left side, below center -->
+    <g transform="translate(4, 420) rotate(5, 20, 20)">
+      <rect class="theme-icon icon-d2" x="8" y="8" width="24" height="24" rx="1" />
+      <rect class="theme-icon icon-d2" x="14" y="14" width="12" height="12" rx="0.5" />
+      <line class="theme-icon icon-d2" x1="14" y1="8" x2="14" y2="0" />
+      <line class="theme-icon icon-d2" x1="20" y1="8" x2="20" y2="0" />
+      <line class="theme-icon icon-d2" x1="26" y1="8" x2="26" y2="0" />
+      <line class="theme-icon icon-d2" x1="14" y1="32" x2="14" y2="40" />
+      <line class="theme-icon icon-d2" x1="20" y1="32" x2="20" y2="40" />
+      <line class="theme-icon icon-d2" x1="26" y1="32" x2="26" y2="40" />
+      <line class="theme-icon icon-d2" x1="8" y1="14" x2="0" y2="14" />
+      <line class="theme-icon icon-d2" x1="8" y1="20" x2="0" y2="20" />
+      <line class="theme-icon icon-d2" x1="8" y1="26" x2="0" y2="26" />
+      <line class="theme-icon icon-d2" x1="32" y1="14" x2="40" y2="14" />
+      <line class="theme-icon icon-d2" x1="32" y1="20" x2="40" y2="20" />
+      <line class="theme-icon icon-d2" x1="32" y1="26" x2="40" y2="26" />
+      <circle class="theme-fill icon-d2" cx="20" cy="20" r="2" />
+    </g>
+
+    <!-- ICON 3: OS WINDOW — top-left, high up -->
+    <g transform="translate(28, 58) rotate(3, 18, 14)">
+      <rect class="theme-icon-ink icon-d3" x="0" y="0" width="36" height="28" rx="2" />
+      <line class="theme-icon-ink icon-d3" x1="0" y1="7" x2="36" y2="7" />
+      <circle class="theme-fill icon-d3" cx="5" cy="3.5" r="1.3" />
+      <circle class="theme-fill icon-d3" cx="10" cy="3.5" r="1.3" />
+      <circle class="theme-fill icon-d3" cx="15" cy="3.5" r="1.3" />
+      <line class="theme-icon-ink icon-d3" x1="4" y1="12" x2="28" y2="12" />
+      <line class="theme-icon-ink icon-d3" x1="4" y1="16" x2="22" y2="16" />
+      <line class="theme-icon-ink icon-d3" x1="4" y1="20" x2="32" y2="20" />
+    </g>
+
+    <!-- ICON 4: SIGNAL BARS — bottom center-left -->
+    <g transform="translate(148, 620) rotate(-4, 16, 15)">
+      <rect class="theme-fill icon-d4" x="0"  y="24" width="4" height="6" rx="0.5" />
+      <rect class="theme-fill icon-d4" x="7"  y="18" width="4" height="12" rx="0.5" />
+      <rect class="theme-fill icon-d4" x="14" y="11" width="4" height="19" rx="0.5" />
+      <rect class="theme-fill icon-d4" x="21" y="4"  width="4" height="26" rx="0.5" />
+      <rect class="theme-fill icon-d4" x="28" y="0"  width="4" height="30" rx="0.5" />
+      <path class="theme-icon icon-d4" d="M16,-4 Q24,-8 32,-4" />
+      <path class="theme-icon icon-d4" d="M12,-8 Q24,-14 36,-8" />
+    </g>
+
+    <!-- ICON 5: APP GRID — right side, mid-high -->
+    <g transform="translate(344, 230) rotate(6, 19, 19)">
+      <rect class="theme-fill icon-d5" x="0"  y="0"  width="10" height="10" rx="2.5" />
+      <rect class="theme-fill icon-d5" x="14" y="0"  width="10" height="10" rx="2.5" />
+      <rect class="theme-fill icon-d5" x="28" y="0"  width="10" height="10" rx="2.5" />
+      <rect class="theme-fill icon-d5" x="0"  y="14" width="10" height="10" rx="2.5" />
+      <rect class="theme-fill icon-d5" x="14" y="14" width="10" height="10" rx="2.5" />
+      <rect class="theme-fill icon-d5" x="28" y="14" width="10" height="10" rx="2.5" />
+      <rect class="theme-fill icon-d5" x="0"  y="28" width="10" height="10" rx="2.5" />
+      <rect class="theme-fill icon-d5" x="14" y="28" width="10" height="10" rx="2.5" />
+      <rect class="theme-fill icon-d5" x="28" y="28" width="10" height="10" rx="2.5" />
+    </g>
+
+    <!-- ICON 6: CIRCUIT TRACE — bottom-right, low and wide -->
+    <g transform="translate(296, 580) rotate(-3, 24, 24)">
+      <polyline class="theme-icon icon-d6" points="0,20 10,20 16,10 30,10 36,18 48,18" />
+      <polyline class="theme-icon icon-d6" points="0,30 8,30 14,38 28,38 34,30 48,30" />
+      <polyline class="theme-icon icon-d6" points="10,0 10,10" />
+      <polyline class="theme-icon icon-d6" points="36,10 36,0" />
+      <polyline class="theme-icon icon-d6" points="14,38 14,48" />
+      <polyline class="theme-icon icon-d6" points="34,30 42,38 42,48" />
+      <circle class="theme-fill icon-d6" cx="10" cy="20" r="2" />
+      <circle class="theme-fill icon-d6" cx="30" cy="10" r="2" />
+      <circle class="theme-fill icon-d6" cx="28" cy="38" r="2" />
+      <circle class="theme-fill icon-d6" cx="36" cy="18" r="1.5" />
+      <circle class="theme-fill icon-d6" cx="8"  cy="30" r="1.5" />
+    </g>
+
+
+    <!-- ═══ SIGNAL FRAGMENTS (along primary lines) ═══ -->
+    <polygon class="sig-diamond sd-1" points="144,252 148,246 152,252 148,258" />
+    <polygon class="sig-diamond sd-2" points="256,238 260,232 264,238 260,244" />
+    <polygon class="sig-diamond sd-5" points="156,455 160,449 164,455 160,461" />
+    <polygon class="sig-diamond sd-6" points="248,462 252,456 256,462 252,468" />
+
+    <g class="sig-cross sd-3" transform="translate(120,350)">
+      <line x1="-4" y1="0" x2="4" y2="0" /><line x1="0" y1="-4" x2="0" y2="4" />
+    </g>
+    <g class="sig-cross sd-4" transform="translate(280,357)">
+      <line x1="-4" y1="0" x2="4" y2="0" /><line x1="0" y1="-4" x2="0" y2="4" />
+    </g>
+
+    <rect class="sig-square sd-7"  x="168" y="290" width="3" height="3" />
+    <rect class="sig-square sd-8"  x="232" y="282" width="3" height="3" />
+    <rect class="sig-square sd-9"  x="176" y="400" width="2.5" height="2.5" />
+    <rect class="sig-square sd-10" x="224" y="408" width="2.5" height="2.5" />
+
+    <path class="sig-bracket sd-11" d="M140,310 L136,310 L136,320 L140,320" />
+    <path class="sig-bracket sd-12" d="M260,302 L264,302 L264,312 L260,312" />
+
+    <g class="sig-tick sd-13" transform="translate(110,270)">
+      <line x1="0" y1="-3" x2="0" y2="3" /><line x1="3" y1="-2" x2="3" y2="2" /><line x1="6" y1="-3" x2="6" y2="3" />
+    </g>
+    <g class="sig-tick sd-14" transform="translate(278,296)">
+      <line x1="0" y1="-3" x2="0" y2="3" /><line x1="3" y1="-2" x2="3" y2="2" /><line x1="6" y1="-3" x2="6" y2="3" />
+    </g>
+
+    <g class="sig-dots sd-15" transform="translate(142,410)">
+      <circle cx="0" cy="0" r="1.2" /><circle cx="5" cy="-1" r="0.8" /><circle cx="3" cy="3" r="1" />
+    </g>
+    <g class="sig-dots sd-16" transform="translate(258,418)">
+      <circle cx="0" cy="0" r="1" /><circle cx="4" cy="1" r="1.2" /><circle cx="2" cy="-3" r="0.8" />
+    </g>
+
+    <path class="sig-arc sd-15" d="M186,330 Q190,324 196,328" />
+
+    <!-- Along secondary branches -->
+    <polygon class="sig-diamond sd-20" points="60,112 63,107 66,112 63,117" />
+    <polygon class="sig-diamond sd-21" points="340,91  343,86  346,91  343,96"  />
+    <rect class="sig-square sd-22" x="26" y="386" width="2.5" height="2.5" />
+    <rect class="sig-square sd-23" x="374" y="406" width="2.5" height="2.5" />
+
+    <g class="sig-cross sd-24" transform="translate(104,108)">
+      <line x1="-3" y1="0" x2="3" y2="0" /><line x1="0" y1="-3" x2="0" y2="3" />
+    </g>
+    <g class="sig-cross sd-25" transform="translate(296,84)">
+      <line x1="-3" y1="0" x2="3" y2="0" /><line x1="0" y1="-3" x2="0" y2="3" />
+    </g>
+
+    <g class="sig-tick sd-22" transform="translate(80,600)">
+      <line x1="0" y1="-2.5" x2="0" y2="2.5" /><line x1="3" y1="-1.5" x2="3" y2="1.5" /><line x1="6" y1="-2.5" x2="6" y2="2.5" />
+    </g>
+    <g class="sig-tick sd-23" transform="translate(324,616)">
+      <line x1="0" y1="-2.5" x2="0" y2="2.5" /><line x1="3" y1="-1.5" x2="3" y2="1.5" /><line x1="6" y1="-2.5" x2="6" y2="2.5" />
+    </g>
+
+    <polygon class="sig-diamond sd-26" points="128,612 131,607 134,612 131,617" />
+    <polygon class="sig-diamond sd-27" points="308,644 311,639 314,644 311,649" />
+
+    <!-- ═══ MICRO-GLYPHS ═══ -->
+    <text class="micro-glyph mg-coral gd-1" x="138" y="240">07.4</text>
+    <text class="micro-glyph mg-ink gd-2"   x="256" y="226">-2.1%</text>
+    <text class="micro-glyph mg-ink gd-3"   x="104" y="358">REF</text>
+    <text class="micro-glyph mg-coral gd-4" x="290" y="366">0xA3</text>
+    <text class="micro-glyph mg-coral gd-5" x="152" y="470">$7.2B</text>
+    <text class="micro-glyph mg-ink gd-6"   x="250" y="478">INT</text>
+    <text class="micro-glyph mg-ink gd-7"   x="182" y="316">△</text>
+    <text class="micro-glyph mg-coral gd-8" x="218" y="308">▽</text>
+
+  </svg>
+
+  <div class="center-node"></div>
+  <div class="center-keyword">Acquire Nokia</div>
+
+  <div class="node node-1"></div>
+  <div class="node node-2"></div>
+  <div class="node node-3"></div>
+  <div class="node node-4"></div>
+  <div class="node node-5"></div>
+  <div class="node node-6"></div>
+
+  <div class="node-t nt-1"></div>
+  <div class="node-t nt-2"></div>
+  <div class="node-t nt-3"></div>
+  <div class="node-t nt-4"></div>
+  <div class="node-t nt-5"></div>
+  <div class="node-t nt-6"></div>
+  <div class="node-t nt-7"></div>
+  <div class="node-t nt-8"></div>
+  <div class="node-t nt-9"></div>
+  <div class="node-t nt-10"></div>
+  <div class="node-t nt-11"></div>
+  <div class="node-t nt-12"></div>
+  <div class="node-t nt-13"></div>
+  <div class="node-t nt-14"></div>
+  <div class="node-t nt-15"></div>
+  <div class="node-t nt-16"></div>
+  <div class="node-t nt-17"></div>
+  <div class="node-t nt-18"></div>
+</div>
+
+<button class="replay-btn" id="replayBtn">Replay</button>
+
+<script>
+  const container = document.getElementById('container');
+
+  function getAllAnimatable() {
+    return container.querySelectorAll(
+      '.center-node, .center-keyword, .node, .node-t, ' +
+      '.prop-line, .sec-line, .ter-line, ' +
+      '.sig-diamond, .sig-cross, .sig-square, .sig-bracket, .sig-tick, .sig-dots, .sig-arc, ' +
+      '.theme-icon, .theme-icon-ink, .theme-fill, .theme-fill-ink, ' +
+      '.micro-glyph'
+    );
+  }
+
+  function reset() {
+    container.classList.remove('contracting');
+    getAllAnimatable().forEach(el => el.classList.remove('active'));
+  }
+
+  function play() {
+    reset();
+    void container.offsetHeight;
+    requestAnimationFrame(() => {
+      getAllAnimatable().forEach(el => el.classList.add('active'));
+    });
+    setTimeout(() => {
+      container.classList.add('contracting');
+    }, 1800);
+  }
+
+  setTimeout(play, 300);
+  document.getElementById('replayBtn').addEventListener('click', play);
+</script>
+</body>
+</html>

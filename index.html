@@ -8,30 +8,43 @@
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aurora-labs-prototype.vercel.app/">
     <meta property="og:title" content="The Mobile Wars">
     <meta property="og:description" content="It's 2007. The iPhone just launched. $18 billion on the line. Can you save Microsoft from missing mobile?">
-    <meta property="og:image" content="assets/images/iphone-2007.jpg">
+    <meta property="og:image" content="https://aurora-labs-prototype.vercel.app/assets/images/og-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/png">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="The Mobile Wars">
     <meta name="twitter:description" content="It's 2007. The iPhone just launched. $18 billion on the line. Can you save Microsoft from missing mobile?">
-    <meta name="twitter:image" content="assets/images/iphone-2007.jpg">
+    <meta name="twitter:image" content="https://aurora-labs-prototype.vercel.app/assets/images/og-preview.png">
 
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23F5F1EA'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='%23C05028'%3E📱%3C/text%3E%3C/svg%3E">
-    <link rel="stylesheet" href="css/styles.css?v=120580837">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=20250317">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <!-- Metrics Bar -->
     <div id="metrics-bar" class="metrics-bar">
+        <button id="back-btn" class="back-btn" aria-label="Back to home" style="display:none">
+            <i class="ph ph-caret-left"></i>
+        </button>
         <div class="metric-detail clickable" id="progress-trigger" role="button" tabindex="0" aria-label="View journey progress">
-            <span class="metric-label">DATE</span>
-            <span class="metric-value">
-                <span id="date-metric">JAN 2007</span>
-                <span class="progress-badge" id="progress-badge" title="Decisions made - Click to view journey">0/6</span>
-            </span>
+            <span class="metric-label">DATE <i class="ph ph-info" style="font-size: 0.7rem; opacity: 0.6;"></i></span>
+            <span class="metric-value date-value" id="date-metric">JAN 2007</span>
+            <span class="progress-badge" id="progress-badge" title="Decisions made - Click to view journey">0/5</span>
+            <!-- Date Info Popup -->
+            <div class="date-info-popup" id="date-info-popup">
+                <div class="date-info-text">Each decision advances the timeline. Tap to view your journey so far.</div>
+            </div>
         </div>
         <div class="metric-detail clickable" id="pl-trigger" role="button" tabindex="0" aria-label="View revenue breakdown">
             <span class="metric-label">REVENUE <i class="ph ph-info" style="font-size: 0.7rem; opacity: 0.6;"></i></span>
@@ -55,10 +68,14 @@
             </div>
         </div>
         <div class="metric-detail">
-            <span class="metric-label">OS MARKET SHARE</span>
+            <span class="metric-label">MARKET SHARE</span>
             <span class="metric-value" id="share-metric">42% <span class="metric-trend declining" id="share-trend"><i class="ph ph-trend-down"></i></span></span>
             <span class="metric-competitors" id="competitor-shares"></span>
         </div>
+
+        <button id="mute-btn" class="mute-btn" aria-label="Toggle sound">
+            <i class="ph ph-speaker-simple-high" id="mute-icon"></i>
+        </button>
 
         <!-- Progress Bar (thin line at bottom of metrics bar) -->
         <div class="progress-bar-container" id="progress-bar-container">
@@ -71,37 +88,17 @@
         <!-- Content will be dynamically inserted here -->
     </main>
 
-    <!-- Artifact Collection Button (Bottom Left Corner) -->
-    <button id="artifact-toggle-btn" class="artifact-toggle-btn">
-        <div class="artifact-icon"><i class="ph ph-device-mobile"></i></div>
-        <div class="artifact-count-badge" id="artifact-count">0</div>
-    </button>
-
-    <!-- Utility Buttons (Bottom Right Corner) -->
-    <button id="mute-btn" class="mute-btn" aria-label="Toggle sound">
-        <i class="ph ph-speaker-simple-high" id="mute-icon"></i>
-    </button>
+    <!-- Profile Icon Button (Bottom Right) — includes artifact unseen dot -->
     <button id="profile-icon-btn" class="profile-icon-btn" aria-label="View Profile">
         <i class="ph ph-user"></i>
         <div class="profile-notify-dot hidden" id="profile-notify-dot"></div>
     </button>
 
-    <!-- Artifact Collection Modal -->
-    <div id="artifact-modal-collection" class="modal artifact-collection-modal hidden">
-        <div class="artifact-collection-content">
-            <div class="artifact-collection-header">
-                <h2>Artifact Collection</h2>
-                <button class="modal-close" id="artifact-collection-close">✕</button>
-            </div>
-            <div class="artifact-collection-grid" id="artifact-collection-grid">
-                <!-- Artifact cards will be inserted here -->
-            </div>
-        </div>
-    </div>
+    <!-- (Artifact collection now lives inside Profile Modal tabs) -->
 
     <!-- Bottom Action Bar -->
     <div id="action-bar" class="action-bar hidden">
-        <button id="back-btn" class="action-btn">◄ Back</button>
+        <button id="legacy-back-btn" class="action-btn">◄ Back</button>
         <button id="progress-btn" class="action-btn">Progress</button>
         <button id="share-btn" class="action-btn">Share</button>
     </div>
@@ -143,12 +140,29 @@
         </div>
     </div>
 
-    <!-- Profile Modal -->
+    <!-- Profile Modal (Tabbed: Journey + Collection) -->
     <div id="profile-modal" class="modal profile-modal hidden">
         <div class="profile-modal-content">
             <button class="sitrep-close" id="profile-modal-close"><i class="ph ph-x"></i></button>
-            <div class="profile-modal-body" id="profile-modal-body">
-                <!-- Profile content will be inserted here -->
+            <div class="profile-tabs" id="profile-tabs">
+                <button class="profile-tab profile-tab--active" data-tab="journey">Journey</button>
+                <button class="profile-tab" data-tab="collection">Collection</button>
+            </div>
+            <div class="profile-tab-panel" id="profile-tab-journey">
+                <div class="profile-modal-body" id="profile-modal-body">
+                    <!-- Profile/sitrep content inserted here -->
+                </div>
+            </div>
+            <div class="profile-tab-panel hidden" id="profile-tab-collection">
+                <div class="profile-collection-body">
+                    <p class="profile-collection-subtitle">Artifacts unlocked as you shape Microsoft's mobile strategy.</p>
+                    <div class="artifact-collection-grid" id="artifact-collection-grid">
+                        <!-- Artifact cards inserted here -->
+                    </div>
+                    <div class="profile-collection-empty hidden" id="profile-collection-empty">
+                        No artifacts unlocked yet. Keep playing to discover devices from the mobile era.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -166,15 +180,18 @@
         </div>
     </div>
 
-    <script src="js/audio.js?v=120580837"></script>
-    <script src="js/narration.js?v=120580837"></script>
-    <script src="js/data.js?v=120580837"></script>
-    <script src="js/state.js?v=120580837"></script>
-    <script src="js/artifacts.js?v=120580837"></script>
-    <script src="js/transitions.js?v=120580837"></script>
-    <script src="js/feedback.js?v=120580837"></script>
-    <script src="js/analytics.js?v=120580837"></script>
-    <script src="js/ui.js?v=120580837"></script>
-    <script src="js/app.js?v=120580837"></script>
+    <script src="js/audio.js?v=20250317"></script>
+    <script src="js/narration.js?v=20250317"></script>
+    <script src="js/data.js?v=20250317"></script>
+    <script src="js/state.js?v=20250317"></script>
+    <script src="js/artifacts.js?v=20250317"></script>
+    <script src="js/transitions.js?v=20250317"></script>
+    <script src="js/feedback.js?v=20250317"></script>
+    <script src="js/analytics.js?v=20250317"></script>
+    <script src="js/archetypes.js?v=20250317"></script>
+    <script src="js/headlines.js?v=20250317"></script>
+    <script src="js/ending.js?v=20250317"></script>
+    <script src="js/ui.js?v=20250317"></script>
+    <script src="js/app.js?v=20250317"></script>
 </body>
 </html>

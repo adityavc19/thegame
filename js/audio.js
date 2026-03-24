@@ -174,6 +174,10 @@ const AudioEngine = (() => {
         await Tone.start();
         _buildChain();
         _started = true;
+        // Respect mute state if user toggled before init
+        if (_muted && _master) {
+            _master.gain.value = 0;
+        }
     }
 
     function setPhase(name) {
@@ -183,8 +187,10 @@ const AudioEngine = (() => {
         _currentPhase = name;
         const token = ++_phaseToken;
 
-        // Graceful crossfade
-        _master.gain.rampTo(0.12, 0.8);
+        // Graceful crossfade (skip if muted — keep gain at 0)
+        if (!_muted) {
+            _master.gain.rampTo(0.12, 0.8);
+        }
 
         setTimeout(() => {
             if (_phaseToken !== token) return;
@@ -195,9 +201,10 @@ const AudioEngine = (() => {
     }
 
     function toggleMute() {
-        if (!_started) return false;
         _muted = !_muted;
-        _master.gain.rampTo(_muted ? 0 : 0.7, 0.4);
+        if (_started && _master) {
+            _master.gain.rampTo(_muted ? 0 : 0.7, 0.4);
+        }
         return _muted;
     }
 
@@ -249,6 +256,16 @@ const AudioEngine = (() => {
             case 'metricDown':
                 _sfxSynth.triggerAttackRelease('Eb4', '16n', now);
                 setTimeout(() => _sfxSynth.triggerAttackRelease('C4', '16n'), 80);
+                break;
+            case 'timelineTick':
+                // Subtle low tick — clock ticking forward through months
+                _sfxSynth.triggerAttackRelease('A3', '64n', now);
+                break;
+            case 'timelineStart':
+                // Soft descending chime — time compression beginning
+                _sfxSynth.triggerAttackRelease('E4', '32n', now);
+                setTimeout(() => _sfxSynth.triggerAttackRelease('C4', '32n'), 150);
+                setTimeout(() => _sfxSynth.triggerAttackRelease('A3', '16n'), 300);
                 break;
         }
     }

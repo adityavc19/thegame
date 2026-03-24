@@ -1,0 +1,467 @@
+// ============================================
+// D1 DATA TEMPLATE — Three Card Type Taxonomy
+// ============================================
+// This is the reference template for restructuring data.js
+// Each decision point has: intelCards[], options[], consequence{}
+// Card types: "entity" | "memo" | "briefing"
+//
+// D1 maps as follows:
+//   - d1-info-market    → 1 BRIEFING  (iPhone Launch Analysis)
+//   - d1-info-internal  → 1 MEMO      (Pieter Knook's strategic position)
+//   - d1-info-competitor → 2 ENTITIES  (Nokia, BlackBerry)
+//   + 1 ENTITY for Google (extracted from competitor intel)
+//
+// Total: 5 cards. Grid shows 4 prominent + Google as smaller/secondary.
+// ============================================
+
+const d1 = {
+  id: "d1",
+  title: "The iPhone Moment",
+  date: "JAN 2007",
+  decisionNum: 1,
+
+  // The objective shown above the intel grid
+  objective: "How should Microsoft respond to Apple's entry into mobile?",
+
+  // Your position card (always shown separately below the grid)
+  playerPosition: {
+    label: "Your Position — Microsoft",
+    stats: [
+      { label: "Mobile OS Share", value: "42%", color: "green" },
+      { label: "Revenue", value: "$800M/yr", color: "green" },
+      { label: "OEM Partners", value: "All majors", color: "default" },
+      { label: "Carrier deals", value: "Every carrier", color: "default" },
+      { label: "Enterprise moat", value: "Unassailable", color: "green" },
+      { label: "Consumer brand", value: "Weak", color: "gold" },
+    ],
+  },
+
+  // ==========================================
+  // INTEL CARDS — mixed types
+  // ==========================================
+  intelCards: [
+    // ---- BRIEFING: iPhone Launch Analysis ----
+    {
+      id: "d1-intel-iphone-market",
+      type: "briefing",
+
+      // Thumbnail appearance
+      thumb: {
+        icon: "📊",           // or could be a phosphor icon class
+        label: "MARKET REPORT",
+        title: "iPhone Launch Analysis",
+        subtitle: "$499 · No keyboard · AT&T only",
+        accentColor: "#7ab88e", // green for data/market
+      },
+
+      // Popup content
+      popup: {
+        title: "iPhone Launch Analysis",
+        source: "Gartner + Morgan Stanley Research",
+        date: "JAN 2007",
+        reliability: "HIGH",
+
+        // The hero stat — shown large at the top of the briefing popup
+        heroStat: {
+          value: "1%",
+          label: "Projected iPhone market share by end of 2008",
+          attribution: "Gartner",
+        },
+
+        // Structured sections
+        sections: [
+          {
+            heading: "The Device",
+            content: "Apple's iPhone combines iPod, phone, and internet communicator. Multi-touch is genuinely novel — but no physical keyboard, no enterprise email, no 3G, no apps.",
+            // Optional linked artifact
+            artifactId: "artifact-iphone-2g",
+          },
+          {
+            heading: "Key Specs",
+            // When type is "stats", render as key-value pairs instead of prose
+            type: "stats",
+            items: [
+              { label: "Camera", value: "2MP" },
+              { label: "Storage", value: "4/8GB" },
+              { label: "Network", value: "2G EDGE only", color: "red" },
+              { label: "Price", value: "$499/$599", color: "red" },
+              { label: "Contract", value: "2yr AT&T exclusive" },
+            ],
+          },
+          {
+            heading: "Market Context",
+            content: "Global smartphone market: 80M units/year, growing 35% annually. Current average selling price: $250. iPhone is 2× market average.",
+          },
+          {
+            heading: "Analyst Consensus",
+            content: "\"Apple is unlikely to make significant inroads into the corporate market.\" Nokia and BlackBerry remain the firms to watch.",
+          },
+        ],
+
+        // Footnote — rendered at bottom in italic
+        footnote: "Apple has never shipped a phone. Manufacturing at scale is unproven.",
+      },
+    },
+
+    // ---- MEMO: Windows Mobile Strategic Position ----
+    {
+      id: "d1-intel-internal-memo",
+      type: "memo",
+
+      thumb: {
+        icon: "📋",
+        label: "INTERNAL MEMO",
+        title: "Strategic Position",
+        subtitle: "From: Pieter Knook, SVP",
+        accentColor: "#c4a35a", // gold for internal
+      },
+
+      popup: {
+        from: "Pieter Knook, SVP Mobile Communications",
+        re: "Apple iPhone Announcement",
+        date: "JAN 2007",
+        classification: "INTERNAL", // shown as a stamp/badge
+        reliability: "MEDIUM",
+        source: "Microsoft Internal",
+
+        sections: [
+          {
+            heading: "Current Position",
+            content: "Windows Mobile commands 42% of smartphone market share with 14M devices shipped in 2006. Enterprise relationships unassailable: 89% of Fortune 500 standardized on Windows Mobile.",
+          },
+          {
+            heading: "iPhone Weaknesses for Enterprise",
+            type: "list",
+            items: [
+              "No Exchange support (push email impossible)",
+              "No keyboard (legal/compliance typing requirements)",
+              "Consumer-only carrier (AT&T, no Verizon/Sprint)",
+              "No IT management/MDM capabilities",
+            ],
+          },
+          {
+            heading: "Recommendation",
+            content: "Stay the course. The consumer smartphone market is margin-dilutive — ASPs are falling, carrier subsidies eat profitability. Our enterprise licensing model generates $18/device. Let Apple fight carriers for scraps.",
+            isHighlighted: true, // visually emphasized
+          },
+        ],
+
+        footnote: "Apple has historically failed outside its core: Newton, Pippin, Motorola ROKR.",
+      },
+    },
+
+    // ---- ENTITY: Nokia ----
+    {
+      id: "d1-intel-nokia",
+      type: "entity",
+
+      thumb: {
+        icon: "📞",
+        label: "COMPETITOR",
+        title: "NOKIA",
+        subtitle: "40% global share",
+        sentiment: "PUBLICLY CALM\nPRIVATELY SCRAMBLING",
+        sentimentColor: "#c4a35a", // gold
+      },
+
+      popup: {
+        name: "NOKIA",
+        icon: "📞",
+        category: "Incumbent",
+        gradient: "linear-gradient(135deg, #0f1f1a 0%, #1a2f25 50%, #0f1f1a 100%)",
+
+        // FRONT of card
+        front: {
+          shortStat: "40% global share",
+          sentiment: "PUBLICLY CALM / PRIVATELY SCRAMBLING",
+          sentimentKey: "panicking",
+          quickStats: [
+            { label: "Global share", value: "40%", color: "green" },
+            { label: "Platform", value: "Symbian" },
+            { label: "Touch R&D", value: "Accelerating", color: "gold" },
+            { label: "Devices/yr", value: "400M+" },
+          ],
+          source: "BD team + Industry",
+          reliability: "MEDIUM",
+        },
+
+        // BACK of card (intel brief)
+        back: {
+          keySignal: "Apple will only appeal to a niche market — but sources say Nokia has accelerated internal touch-screen projects and is evaluating Linux-based software.",
+          details: [
+            { label: "CEO stance", value: "Publicly dismissive" },
+            { label: "Symbian platform age", value: "Aging fast", color: "gold" },
+            { label: "Linux evaluation", value: "In progress" },
+            { label: "Manufacturing scale", value: "Unmatched", color: "green" },
+            { label: "US presence", value: "Weak", color: "red" },
+          ],
+          analysisNote: "Nokia has the scale but their software is a decade behind. They know it — that's why they're scrambling.",
+          // Optional linked artifact
+          artifactId: "artifact-nokia-7710",
+        },
+      },
+    },
+
+    // ---- ENTITY: BlackBerry / RIM ----
+    {
+      id: "d1-intel-rim",
+      type: "entity",
+
+      thumb: {
+        icon: "🔒",
+        label: "COMPETITOR",
+        title: "BLACKBERRY",
+        subtitle: "Enterprise dominant",
+        sentiment: "DISMISSIVE",
+        sentimentColor: "#6b6054", // dim
+      },
+
+      popup: {
+        name: "BLACKBERRY",
+        icon: "🔒",
+        category: "Incumbent",
+        gradient: "linear-gradient(135deg, #12121e 0%, #1a1a2a 50%, #12121e 100%)",
+
+        front: {
+          shortStat: "Enterprise dominant · Keyboard-first",
+          sentiment: "DISMISSIVE",
+          sentimentKey: "dismissive",
+          quickStats: [
+            { label: "Enterprise", value: "Dominant", color: "green" },
+            { label: "Security", value: "Best-in-class", color: "green" },
+            { label: "Touch plans", value: "None", color: "red" },
+            { label: "Keyboard bet", value: "Doubling down" },
+          ],
+          source: "Internal memo + Press",
+          reliability: "HIGH",
+        },
+
+        back: {
+          keySignal: "Someone finally made a phone for people who can't type.",
+          details: [
+            { label: "CEO stance", value: "Publicly mocking iPhone" },
+            { label: "Enterprise moat", value: "BES server lock-in", color: "green" },
+            { label: "Consumer appeal", value: "Growing (BBM)", color: "green" },
+            { label: "Touch-screen R&D", value: "No plans", color: "red" },
+          ],
+          analysisNote: "Lazaridis genuinely believes keyboards are the future. History suggests this level of certainty is dangerous.",
+          artifactId: "artifact-blackberry-storm",
+        },
+      },
+    },
+
+    // ---- ENTITY: Google (secondary/emerging) ----
+    {
+      id: "d1-intel-google",
+      type: "entity",
+      secondary: true, // flag to render smaller or in overflow
+
+      thumb: {
+        icon: "🔍",
+        label: "EMERGING",
+        title: "GOOGLE",
+        subtitle: "Android rumors · 12-24mo",
+        sentiment: "UNCLEAR",
+        sentimentColor: "#c4a35a", // gold
+      },
+
+      popup: {
+        name: "GOOGLE",
+        icon: "🔍",
+        category: "Emerging",
+        gradient: "linear-gradient(135deg, #121a18 0%, #1a2822 50%, #121a18 100%)",
+
+        front: {
+          shortStat: "Android rumors · No public announcement",
+          sentiment: "UNCLEAR TIMELINE",
+          sentimentKey: "unproven",
+          quickStats: [
+            { label: "Status", value: "Rumors", color: "gold" },
+            { label: "OEM talks", value: "HTC, Samsung" },
+            { label: "Pricing", value: "Unknown" },
+            { label: "Timeline", value: "12-24 mo", color: "dim" },
+          ],
+          source: "BD + Industry sources",
+          reliability: "MEDIUM",
+        },
+
+        back: {
+          keySignal: "HTC and Samsung reportedly in conversations about a 'Google phone.' Our OEM partners are not panicking — yet.",
+          details: [
+            { label: "OS pricing model", value: "Likely free", color: "red" },
+            { label: "Open source?", value: "Likely yes", color: "red" },
+            { label: "Our OEM partners", value: "In talks with Google", color: "gold" },
+            { label: "Andy Rubin background", value: "Ex-Danger/Sidekick" },
+          ],
+          analysisNote: "If Google ships a free OS, our licensing model breaks overnight. This is the real threat — not Apple.",
+          artifactId: "artifact-google-sooner",
+        },
+      },
+    },
+  ],
+
+  // ==========================================
+  // OPTIONS (unchanged structure, just cleaner)
+  // ==========================================
+  options: [
+    {
+      id: "enterprise",
+      title: "Reinforce Enterprise",
+      investment: "$100M",
+      desc: "Double down on what's working. Accelerate Windows Mobile enterprise features, deepen IT partnerships. Let Apple have the consumer toy market.",
+      risk: { text: "Consumer market evolves into the real market", severity: "medium" },
+      upside: "Protect $28B enterprise ecosystem",
+    },
+    {
+      id: "consumer",
+      title: "Launch Consumer Offensive",
+      investment: "$500M+",
+      desc: "Build a direct iPhone competitor. New hardware partnerships, consumer marketing push, app developer program.",
+      risk: { text: "Two-front war depletes resources and focus", severity: "high" },
+      upside: "Capture the consumer shift early",
+    },
+    {
+      id: "acquire",
+      title: "Acquisition Strategy",
+      investment: "$5-8B",
+      desc: "Buy Nokia or Palm outright. Acquire hardware capability, manufacturing scale, and global distribution.",
+      risk: { text: "Massive integration challenge, culture clash, OEM partners flee", severity: "high" },
+      upside: "Instant scale, global distribution",
+    },
+    {
+      id: "wait",
+      title: "Wait and Watch",
+      investment: "$0",
+      desc: "Hold position. The iPhone is unproven and expensive. Let the market reveal whether this is real before committing.",
+      risk: { text: "If this is real, you're already behind", severity: "medium" },
+      upside: "Preserve optionality, avoid costly mistakes",
+    },
+  ],
+
+  // ==========================================
+  // CONSEQUENCE (for "Wait and Watch" path)
+  // ==========================================
+  // Each option id maps to its own consequence object.
+  // Only showing "wait" here as the template.
+  consequences: {
+    wait: {
+      // Moments array — rendered as stepped sequence
+      moments: [
+        {
+          type: "verdict",
+          headline: "Wall Street approves of your discipline.",
+          subline: "\"Ballmer wisely avoiding panic,\" writes Goldman Sachs.",
+          sentiment: "positive", // positive | negative | neutral
+        },
+        {
+          type: "metrics",
+          changes: [
+            { metric: "Market Cap", change: "+$1B", direction: "up" },
+            { metric: "Stock Price", change: "+2.3%", direction: "up" },
+            { metric: "Board Mood", change: "Approving", direction: "up" },
+            { metric: "Mobile Team", change: "Complacent", direction: "neutral" },
+          ],
+        },
+        {
+          type: "timeline",
+          events: [
+            {
+              date: "JUN 29",
+              text: "iPhone launches. Lines around the block. Breathless media coverage.",
+              mood: "neutral",
+            },
+            {
+              date: "JULY",
+              text: "Early reviews: poor battery, AT&T struggling, no App Store. Your team memo: \"Told you so. It's a toy.\"",
+              mood: "positive",
+            },
+            {
+              date: "AUG",
+              text: "Windows Mobile 6.1 on schedule. Enterprise customers satisfied. Board commends patience.",
+              mood: "positive",
+            },
+            {
+              date: "OCT",
+              text: "Apple announces App Store is coming. They just created a platform, not just a phone.",
+              mood: "warning",
+            },
+          ],
+        },
+        {
+          type: "emerging",
+          icon: "⚡",
+          headline: "Then Google drops the real bomb.",
+          body: "Android with the Open Handset Alliance: HTC, Samsung, LG, Motorola — all your hardware partners. Android will be free and open source. The OEMs don't have to pay you licensing fees anymore.",
+          closing: "The market just forked and you're standing at the intersection holding a map from 2005.",
+        },
+      ],
+
+      // These still feed into state.js applyConsequences() — unchanged
+      metricDeltas: {
+        immediate: {
+          cash: 0,
+          marketCap: 1000,
+          stockDelta: 2.3,
+          boardPatience: 1,
+        },
+        delayed: {
+          marketShare: -15,
+          developerEcosystem: -1,
+          morale: -1,
+        },
+      },
+
+      // pathState settings — unchanged from current data.js
+      pathState: {
+        d1Choice: "wait",
+        d2Branch: "d2a", // routes to D2 variant A
+      },
+    },
+  },
+};
+
+export default d1;
+
+
+// ============================================
+// CARD TYPE REFERENCE
+// ============================================
+//
+// ENTITY CARD:
+//   - Has front/back flip in popup
+//   - Front: icon, name, quickStats grid, sentiment badge
+//   - Back: key signal quote, detail rows, analysis note
+//   - Thumbnail: gradient header, icon, name, sentiment
+//   - Use for: Companies, competitors, specific organizations
+//
+// MEMO:
+//   - Single-sided popup (no flip)
+//   - Has FROM/RE header, classification badge
+//   - Sections with headings, prose, and lists
+//   - Thumbnail: document icon, "INTERNAL" label, from name
+//   - Use for: Internal Microsoft communications, team reports,
+//     leadership assessments, post-mortems
+//
+// BRIEFING:
+//   - Single-sided popup (no flip)
+//   - Hero stat at top (large number + label)
+//   - Structured sections with mixed content (prose, stats, lists)
+//   - Thumbnail: chart icon, "REPORT" label, key number
+//   - Use for: Market reports, trend analysis, developer surveys,
+//     financial data, external research
+//
+// ============================================
+// GRID LAYOUT LOGIC
+// ============================================
+//
+// 4 cards or fewer: 2x2 grid, all equal size
+// 5 cards: 2x2 grid for primary 4 + 1 full-width secondary below
+// 6+ cards: 2x2 grid for top 4 + "More Intel (N)" expand button
+//           that reveals remaining cards
+//
+// Card type determines thumbnail appearance:
+//   - entity: gradient header strip + icon + sentiment tag
+//   - memo: solid muted header + document icon + FROM name
+//   - briefing: solid accent header + chart icon + hero number
+//
+// ============================================

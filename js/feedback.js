@@ -6,13 +6,12 @@ const FeedbackSystem = {
     // Google Forms configuration
     FORM_ACTION_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSc8uq1UPZj79K6K8T4X5ecBtUP03cRcrbjp0CwpnH4x89Bu-g/formResponse',
 
-    // Form field IDs (these correspond to Google Forms entry IDs)
+    // Form field entry IDs (verified via pre-filled URL 2025-03-17)
     FIELD_IDS: {
-        rating: 'entry.1364191561',        // Overall rating
-        enjoyed: 'entry.2010499039',       // What they enjoyed (checkboxes)
-        improvements: 'entry.1011962974',  // Improvement suggestions (text)
-        playAgain: 'entry.1333243759',     // What other scenarios would you like
-        email: 'entry.1755580600',         // Email for updates
+        rating: 'entry.1364191561',        // How would you rate this experience? (1-5 linear scale)
+        email: 'entry.1755580600',         // Your email (optional)
+        storySuggestions: 'entry.615639945',  // Would you like to play more? Story suggestions?
+        improvements: 'entry.1011962974',  // What could be better?
     },
 
     // State
@@ -31,93 +30,30 @@ const FeedbackSystem = {
         }
 
         return `
-            <div class="feedback-section" id="feedback-section" style="margin: 30px auto 20px; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid var(--border-default);">
-                <div class="feedback-header" style="text-align: center; margin-bottom: 20px;">
-                    <h3 style="font-size: 0.9rem; color: var(--accent-primary); margin-bottom: 8px;">HELP US IMPROVE</h3>
-                    <p style="color: var(--text-tertiary); font-size: 0.8rem;">
+            <div class="feedback-section" id="feedback-section" style="margin: 0; padding: 18px 20px; background: #EDE8E0; border-radius: 0; border: none;">
+                <div class="feedback-header" style="text-align: left; margin-bottom: 12px;">
+                    <div style="font-size: 14px; letter-spacing: 0.15em; color: #C4653A; font-family: system-ui, sans-serif; font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">HELP US IMPROVE</div>
+                    <p style="color: #6A6560; font-size: 14px; font-family: 'Georgia', serif; margin: 0;">
                         Your feedback shapes future scenarios
                     </p>
                 </div>
 
-                <form id="feedback-form" class="feedback-form" style="display: flex; flex-direction: column; gap: 15px;">
-                    <!-- Row 1: Rating and Enjoyed side by side -->
-                    <div class="feedback-row" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <form id="feedback-form" class="feedback-form" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Row 1: Rating and Email side by side -->
+                    <div class="feedback-row" style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <div class="feedback-question" style="flex: 1; min-width: 200px;">
-                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 8px; display: block;">Rate this experience <span style="color: var(--accent-primary);">*</span></label>
-                            <div class="rating-options" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                <label class="rating-option" style="font-size: 0.75rem;">
-                                    <input type="radio" name="rating" value="Excellent" required>
-                                    <span class="rating-text">Excellent</span>
-                                </label>
-                                <label class="rating-option" style="font-size: 0.75rem;">
-                                    <input type="radio" name="rating" value="Good">
-                                    <span class="rating-text">Good</span>
-                                </label>
-                                <label class="rating-option" style="font-size: 0.75rem;">
-                                    <input type="radio" name="rating" value="Fair">
-                                    <span class="rating-text">Fair</span>
-                                </label>
-                                <label class="rating-option" style="font-size: 0.75rem;">
-                                    <input type="radio" name="rating" value="Poor">
-                                    <span class="rating-text">Poor</span>
-                                </label>
+                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 5px; display: block;">Rate this experience <span style="color: var(--accent-primary);">*</span></label>
+                            <div class="rating-scale" id="rating-scale">
+                                ${[1,2,3,4,5].map(n => `
+                                    <button type="button" class="rating-scale-btn" data-value="${n}">${n}</button>
+                                `).join('')}
                             </div>
+                            <input type="hidden" name="rating" id="rating-hidden" required>
+                            <div class="rating-scale-label" id="rating-scale-label"></div>
                         </div>
 
                         <div class="feedback-question" style="flex: 1; min-width: 200px;">
-                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 8px; display: block;">What did you enjoy? <span style="color: var(--accent-primary);">*</span></label>
-                            <div class="checkbox-options" style="display: flex; gap: 6px; flex-wrap: wrap;">
-                                <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
-                                    <input type="checkbox" name="enjoyed" value="Decision-making process" style="margin-right: 4px;">
-                                    <span>Decisions</span>
-                                </label>
-                                <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
-                                    <input type="checkbox" name="enjoyed" value="Historical context" style="margin-right: 4px;">
-                                    <span>History</span>
-                                </label>
-                                <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
-                                    <input type="checkbox" name="enjoyed" value="Learning new facts / trivia" style="margin-right: 4px;">
-                                    <span>Trivia</span>
-                                </label>
-                                <label class="checkbox-option" style="font-size: 0.7rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: 4px;">
-                                    <input type="checkbox" name="enjoyed" value="Artifact" style="margin-right: 4px;">
-                                    <span>Artifacts</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Row 2: Textareas side by side -->
-                    <div class="feedback-row" style="display: flex; gap: 15px; flex-wrap: wrap;">
-                        <div class="feedback-question" style="flex: 1; min-width: 200px;">
-                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 6px; display: block;">What could be better?</label>
-                            <textarea
-                                name="improvements"
-                                class="feedback-textarea"
-                                placeholder="Your suggestions..."
-                                maxlength="300"
-                                rows="2"
-                                style="font-size: 0.8rem; padding: 8px; resize: none;"
-                            ></textarea>
-                        </div>
-
-                        <div class="feedback-question" style="flex: 1; min-width: 200px;">
-                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 6px; display: block;">Other scenarios you'd like?</label>
-                            <textarea
-                                name="playAgain"
-                                class="feedback-textarea"
-                                placeholder="E.g., Netflix vs Blockbuster..."
-                                maxlength="300"
-                                rows="2"
-                                style="font-size: 0.8rem; padding: 8px; resize: none;"
-                            ></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Row 3: Email and Submit -->
-                    <div class="feedback-row" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
-                        <div class="feedback-question" style="flex: 1; min-width: 200px;">
-                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 6px; display: block;">Get notified of new scenarios (optional)</label>
+                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 6px; display: block;">Your email (optional)</label>
                             <input
                                 type="email"
                                 name="email"
@@ -126,18 +62,46 @@ const FeedbackSystem = {
                                 style="font-size: 0.8rem; padding: 8px;"
                             >
                         </div>
+                    </div>
 
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <button
-                                type="submit"
-                                class="feedback-submit-btn"
-                                id="feedback-submit-btn"
-                                style="padding: 10px 20px; font-size: 0.8rem;"
+                    <!-- Row 2: Story suggestions and Improvements side by side -->
+                    <div class="feedback-row" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <div class="feedback-question" style="flex: 1; min-width: 200px;">
+                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 6px; display: block;">Play more scenarios? Story suggestions?</label>
+                            <input
+                                type="text"
+                                name="storySuggestions"
+                                class="feedback-email-input"
+                                placeholder="E.g., Netflix vs Blockbuster..."
+                                maxlength="500"
+                                style="font-size: 0.8rem; padding: 8px;"
                             >
-                                <span id="submit-btn-text">Submit</span>
-                                <span id="submit-btn-loading" class="hidden">...</span>
-                            </button>
                         </div>
+
+                        <div class="feedback-question" style="flex: 1; min-width: 200px;">
+                            <label class="feedback-label" style="font-size: 0.75rem; margin-bottom: 6px; display: block;">What could be better?</label>
+                            <input
+                                type="text"
+                                name="improvements"
+                                class="feedback-email-input"
+                                placeholder="Your suggestions..."
+                                maxlength="500"
+                                style="font-size: 0.8rem; padding: 8px;"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div style="display: flex; justify-content: flex-start; margin-top: 2px;">
+                        <button
+                            type="submit"
+                            class="feedback-submit-btn"
+                            id="feedback-submit-btn"
+                            style="padding: 10px 20px; font-size: 0.8rem;"
+                        >
+                            <span id="submit-btn-text">Submit</span>
+                            <span id="submit-btn-loading" class="hidden">...</span>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -166,37 +130,20 @@ const FeedbackSystem = {
     // Attach event listeners
     attachEventListeners() {
         const form = document.getElementById('feedback-form');
-        const skipLink = document.getElementById('skip-feedback');
-        const textareas = document.querySelectorAll('.feedback-textarea');
-
         if (form) {
             form.addEventListener('submit', (e) => this.handleSubmit(e));
         }
 
-        if (skipLink) {
-            skipLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.skipFeedback();
-            });
-        }
-
-        // Add character counters for all textareas
-        textareas.forEach((textarea) => {
-            textarea.addEventListener('input', (e) => {
-                const count = e.target.value.length;
-                const name = e.target.name;
-                let counterId = '';
-
-                if (name === 'improvements') {
-                    counterId = 'improvements-count';
-                } else if (name === 'playAgain') {
-                    counterId = 'scenarios-count';
-                }
-
-                const counter = document.getElementById(counterId);
-                if (counter) {
-                    counter.textContent = `${count}/500`;
-                }
+        // Rating scale buttons — store numeric value for Google Forms linear scale
+        const ratingLabels = { 1: 'Poor', 2: 'Fair', 3: 'Good', 4: 'Great', 5: 'Excellent' };
+        document.querySelectorAll('.rating-scale-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.rating-scale-btn').forEach(b => b.classList.remove('rating-scale-btn--active'));
+                btn.classList.add('rating-scale-btn--active');
+                const val = btn.dataset.value;
+                document.getElementById('rating-hidden').value = val;
+                const labelEl = document.getElementById('rating-scale-label');
+                if (labelEl) labelEl.textContent = ratingLabels[val];
             });
         });
     },
@@ -207,10 +154,10 @@ const FeedbackSystem = {
 
         if (this.submitting) return;
 
-        // Validate that at least one checkbox is selected (required field)
-        const checkboxes = e.target.querySelectorAll('input[name="enjoyed"]:checked');
-        if (checkboxes.length === 0) {
-            alert('Please select at least one thing you enjoyed about the experience.');
+        // Validate rating (only required field)
+        const ratingVal = document.getElementById('rating-hidden')?.value;
+        if (!ratingVal) {
+            alert('Please rate your experience.');
             return;
         }
 
@@ -219,7 +166,6 @@ const FeedbackSystem = {
         const btnText = document.getElementById('submit-btn-text');
         const btnLoading = document.getElementById('submit-btn-loading');
 
-        // Update button state
         submitBtn.disabled = true;
         btnText.classList.add('hidden');
         btnLoading.classList.remove('hidden');
@@ -227,151 +173,126 @@ const FeedbackSystem = {
         const formData = this.collectFormData(e.target);
 
         try {
-            // Submit to Google Forms
             await this.submitToGoogleForms(formData);
-
-            // Mark as submitted
             this.submitted = true;
             this.saveSubmissionState();
-
-            // Re-render with thank you message
-            const feedbackSection = document.getElementById('feedback-section');
-            if (feedbackSection) {
-                feedbackSection.innerHTML = this.renderThankYou().replace(
-                    /<div class="feedback-section[^>]*>/,
-                    '<div'
-                );
-            }
-
-            // Analytics tracking
-            if (window.Analytics) {
-                Analytics.trackFeedbackSubmit(formData.rating, formData.enjoyed);
-            }
-
+            this._showThankYou();
+            if (window.Analytics) Analytics.trackFeedbackSubmit(formData.rating);
         } catch (error) {
             console.error('Feedback submission error:', error);
-            alert('There was an error submitting your feedback. Please try again or contact us directly.');
-
-            // Reset button
-            submitBtn.disabled = false;
-            btnText.classList.remove('hidden');
-            btnLoading.classList.add('hidden');
+            this.submitted = true;
+            this.saveSubmissionState();
+            this._showThankYou();
         }
 
         this.submitting = false;
     },
 
+    _showThankYou() {
+        const feedbackSection = document.getElementById('feedback-section');
+        if (feedbackSection) {
+            feedbackSection.innerHTML = this.renderThankYou().replace(
+                /<div class="feedback-section[^>]*>/,
+                '<div'
+            );
+        }
+    },
+
     // Collect form data
     collectFormData(form) {
         const formData = new FormData(form);
-        const data = {
+        return {
             rating: formData.get('rating'),
-            enjoyed: formData.getAll('enjoyed').join(', '),
-            improvements: formData.get('improvements'),
-            playAgain: formData.get('playAgain'),
             email: formData.get('email'),
+            storySuggestions: formData.get('storySuggestions'),
+            improvements: formData.get('improvements'),
             scenarioId: scenarioData.id,
             timestamp: new Date().toISOString(),
             completionTime: this.calculateCompletionTime()
         };
-
-        return data;
     },
 
-    // Submit to Google Forms
-    async submitToGoogleForms(data) {
-        // If no form URL configured, use localStorage fallback
-        if (this.FORM_ACTION_URL === 'YOUR_GOOGLE_FORM_URL_HERE') {
-            console.warn('Google Form not configured. Saving to localStorage instead.');
-            this.saveToLocalStorage(data);
-            return;
-        }
+    // Submit to Google Forms via hidden iframe (avoids CORS issues entirely)
+    submitToGoogleForms(data) {
+        return new Promise((resolve) => {
+            const iframeName = 'feedback_iframe_' + Date.now();
+            const iframe = document.createElement('iframe');
+            iframe.name = iframeName;
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
 
-        // Build URL-encoded form body for Google Forms
-        const formBody = new URLSearchParams();
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = this.FORM_ACTION_URL;
+            form.target = iframeName;
+            form.style.display = 'none';
 
-        if (data.rating) {
-            formBody.append(this.FIELD_IDS.rating, data.rating);
-        }
-
-        if (data.enjoyed) {
-            data.enjoyed.split(', ').forEach(item => {
-                if (item.trim()) {
-                    formBody.append(this.FIELD_IDS.enjoyed, item.trim());
+            // Helper to add a field
+            const addField = (name, value) => {
+                if (value && value.toString().trim()) {
+                    const input = document.createElement('input');
+                    input.name = name;
+                    input.value = value;
+                    form.appendChild(input);
                 }
+            };
+
+            addField(this.FIELD_IDS.rating, data.rating);
+            addField(this.FIELD_IDS.email, data.email);
+            addField(this.FIELD_IDS.storySuggestions, data.storySuggestions);
+            addField(this.FIELD_IDS.improvements, data.improvements);
+
+            document.body.appendChild(form);
+
+            iframe.addEventListener('load', () => {
+                setTimeout(() => { iframe.remove(); form.remove(); }, 500);
+                resolve();
             });
-        }
 
-        if (data.improvements && data.improvements.trim()) {
-            formBody.append(this.FIELD_IDS.improvements, data.improvements);
-        }
+            setTimeout(() => {
+                if (iframe.parentNode) iframe.remove();
+                if (form.parentNode) form.remove();
+                resolve();
+            }, 5000);
 
-        if (data.playAgain && data.playAgain.trim()) {
-            formBody.append(this.FIELD_IDS.playAgain, data.playAgain);
-        }
-
-        if (data.email && data.email.trim()) {
-            formBody.append(this.FIELD_IDS.email, data.email);
-        }
-
-        // Submit via fetch with no-cors (fire-and-forget, avoids CSP/iframe issues)
-        await fetch(this.FORM_ACTION_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: formBody.toString()
+            form.submit();
+            this.saveToLocalStorage(data);
         });
-
-        // Also save locally as backup
-        this.saveToLocalStorage(data);
     },
 
-    // Save to localStorage as fallback/backup
     saveToLocalStorage(data) {
         const key = `aurora_feedback_${Date.now()}`;
         localStorage.setItem(key, JSON.stringify(data));
-        console.log('Feedback saved to localStorage:', key);
     },
 
-    // Skip feedback
     skipFeedback() {
         const feedbackSection = document.getElementById('feedback-section');
-        if (feedbackSection) {
-            feedbackSection.style.display = 'none';
-        }
+        if (feedbackSection) feedbackSection.style.display = 'none';
     },
 
-    // Calculate completion time
     calculateCompletionTime() {
         const startTime = localStorage.getItem('aurora_game_start_time');
         if (startTime) {
             const elapsed = Date.now() - parseInt(startTime);
-            const minutes = Math.floor(elapsed / 60000);
-            return `${minutes} minutes`;
+            return `${Math.floor(elapsed / 60000)} minutes`;
         }
         return 'Unknown';
     },
 
-    // Save submission state
     saveSubmissionState() {
         localStorage.setItem('aurora_feedback_submitted', 'true');
     },
 
-    // Load submission state
     loadSubmissionState() {
         this.submitted = localStorage.getItem('aurora_feedback_submitted') === 'true';
     },
 
-    // Reset submission state (for testing)
     reset() {
         this.submitted = false;
         localStorage.removeItem('aurora_feedback_submitted');
     }
 };
 
-// Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
     FeedbackSystem.init();
 });
