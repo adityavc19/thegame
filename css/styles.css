@@ -69,12 +69,40 @@ html {
 }
 
 body {
-    background: var(--bg-primary);
+    background: #1a1a1a;
     color: var(--text-primary);
     font-family: var(--font-body);
     line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
+}
+
+/* ━━━━━━━━━━ APP SHELL — mobile frame on desktop ━━━━━━━━━━ */
+
+#app-shell {
+    position: relative;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: var(--bg-primary);
+    overflow-x: hidden;
+}
+
+/* On desktop, add subtle phone-like shadow */
+@media (min-width: 481px) {
+    #app-shell {
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* On mobile, fill the screen normally */
+@media (max-width: 480px) {
+    body {
+        background: var(--bg-primary);
+    }
+    #app-shell {
+        max-width: 100%;
+    }
 }
 
 /* ━━━━━━━━━━ TYPOGRAPHY ━━━━━━━━━━ */
@@ -3960,11 +3988,7 @@ a:hover {
 
 @media (min-width: 1200px) {
     .metrics-bar {
-        padding: var(--spacing-md) var(--spacing-xl);
-    }
-
-    .main-content {
-        max-width: 1000px;
+        padding: var(--spacing-md) var(--spacing-md);
     }
 }
 
@@ -10667,4 +10691,46 @@ body:has(.ch-intro) .profile-icon-btn {
     .cover-tc__headline { font-size: 22px; }
     .cover-time__headline { font-size: 25px; }
     .cover-time__hero { min-height: 340px; }
+}
+
+/* ━━━━━━━━━━ DESKTOP — constrain fixed elements to app shell ━━━━━━━━━━ */
+
+@media (min-width: 481px) {
+    /* Full-screen overlays: center within 430px shell */
+    .story-bg-layer,
+    .modal,
+    .action-bar,
+    .decision-processing-overlay,
+    .restart-confirm-overlay,
+    .intel-popup-overlay,
+    .csq-stepper-bg,
+    .ch-intro,
+    .artifact-hotspot-detail {
+        left: 0 !important;
+        right: 0 !important;
+        max-width: 430px;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Metrics bar in story mode (position: fixed) */
+    .metrics-bar--story-mode {
+        left: 0 !important;
+        right: 0 !important;
+        max-width: 430px;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Profile icon — position relative to shell's right edge */
+    .profile-icon-btn {
+        right: calc(50% - 215px + 20px);
+    }
+
+    /* Toasts already use left:50% + translateX(-50%), no changes needed */
+
+    /* Don't expand main-content beyond shell */
+    .main-content {
+        max-width: 100%;
+    }
 }
